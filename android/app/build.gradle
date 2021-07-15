@@ -142,6 +142,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+         playServicesVersion = "17.0.0" // or find latest version
+    androidMapsUtilsVersion = "2.2.0"
     }
     splits {
         abi {
