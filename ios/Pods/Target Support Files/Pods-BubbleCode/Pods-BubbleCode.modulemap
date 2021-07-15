@@ -1,6 +1,0 @@
-module Pods_BubbleCode {
-  umbrella header "Pods-BubbleCode-umbrella.h"
-
-  export *
-  module * { export * }
-}
