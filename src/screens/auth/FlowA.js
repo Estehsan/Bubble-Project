@@ -8,12 +8,26 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
+import { connect } from 'react-redux';
+import { logIn } from '../../redux/action';
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "./../../component/TopBar";
 
-// This is REGISTER SCREEN
+
+const handleLogIn = async (email, password) => {
+  if (email != "" && password != "") {
+    var userDetails = {
+      email: email,
+      password: password
+    }
+    await this.props.logIn(userDetails)
+    props.navigation.replace("Home")
+  }
+}
+// This is Login SCREEN
 const FlowA = ({ ...props }) => {
-  const [number, setNumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   return (
     <LinearGradient colors={["#DD488C", "#000"]} style={styles.linearGradient}>
@@ -38,7 +52,7 @@ const FlowA = ({ ...props }) => {
             keyboardType="numeric"
           />
 
-          <TouchableOpacity onPress={() => props.navigation.replace("Home")}>
+          <TouchableOpacity onPress={() => handleLogIn(email, password)}>
             <View style={styles.btnopacity}>
               <Text style={styles.f}>VALIDER</Text>
             </View>
@@ -48,8 +62,14 @@ const FlowA = ({ ...props }) => {
     </LinearGradient>
   );
 };
+const mapDispatchToProps = dispatch => {
+  // console.log("mapStateToProps states =>> ", state);
+  return {
+    logIn: () => dispatch(logIn()),
+  }
+}
 
-export default FlowA;
+export default connect(mapDispatchToProps)(FlowA);
 
 const styles = StyleSheet.create({
   main: {

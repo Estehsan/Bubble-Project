@@ -8,14 +8,37 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
+import { connect } from 'react-redux';
+import { signUp } from '../../redux/action';
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "./../../component/TopBar";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
+const handleSignUp = async (email, password, userProfileImage, gender, FullName) => {
+
+  if (email != "" && password != "" && userProfileImage != null && gender != "" && FullName != "") {
+    var userDetails = {
+      email: email,
+      password: password,
+      userProfileImage: userProfileImage,
+      gender: gender,
+      FullName: FullName
+    }
+    await this.props.signUp(userDetails)
+    props.navigation.push("Home")
+  }
+}
+
+
 // This is register screen II
 
-const MonProfil = ({ ...props }) => {
+const MonProfil = ({ route, ...props }) => {
+  const { email, password } = route.params;
   const [number, setNumber] = useState("");
+  const [userProfileImage, setUserProfileImage] = useState(null)
+  const [gender, setGender] = useState("")
+  const [FullName, setFullName] = useState("")
+
   return (
     <LinearGradient colors={["#DD488C", "#000"]} style={styles.linearGradient}>
       <SafeAreaView style={styles.main}>
@@ -50,7 +73,7 @@ const MonProfil = ({ ...props }) => {
             <Ionicons style={styles.position} name="md-camera" size={60} />
           </View>
 
-          <TouchableOpacity onPress={() => props.navigation.push("Home")}>
+          <TouchableOpacity onPress={() => handleSignUp(email, password, userProfileImage, gender, FullName)}>
             <View style={styles.btn}>
               <Text style={styles.f}>MODIFIER</Text>
             </View>
@@ -66,7 +89,14 @@ const MonProfil = ({ ...props }) => {
   );
 };
 
-export default MonProfil;
+const mapDispatchToProps = dispatch => {
+  // console.log("mapStateToProps states =>> ", state);
+  return {
+    signUp: () => dispatch(signUp()),
+  }
+}
+
+export default connect(mapDispatchToProps)(MonProfil);
 
 const styles = StyleSheet.create({
   main: {
