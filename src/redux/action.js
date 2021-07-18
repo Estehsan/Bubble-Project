@@ -1,8 +1,9 @@
-import firebase from '../db/firebase';
+import firebase from '../db/firebase'
+import 'firebase/firestore';
 const db = firebase.firestore();
 
 
-signUp = (userDetails) => {
+function signUp(userDetails) {
     return (dispatch) => {
         var promise = new Promise((resolve, reject) => {
             const { userName, userEmail, userPassword, userGender, userProfileImage, /*userMapLink*/ } = userDetails;
@@ -29,7 +30,7 @@ signUp = (userDetails) => {
                             userProfileImageUrl: userProfileImageUrl,
                             //   userMapLink: userMapLink,
                         }
-                        db.collection("users").doc(uid).set(userDetailsForDb).then((docRef) => {
+                        firebase.firestore().collection("users").doc(uid).set(userDetailsForDb).then((docRef) => {
                             userDetails.navigation.push("MonProfil");;
                             resolve(userDetailsForDb)
                             dispatch({
@@ -64,29 +65,22 @@ signUp = (userDetails) => {
 }
 
 function logIn(userLoginDetails) {
-    return (dispatch) => {
-        var promise = new Promise((resolve, reject) => {
-            const { userLoginEmail, userLoginPassword } = userLoginDetails;
-            firebase.auth().signInWithEmailAndPassword(userLoginEmail, userLoginPassword).then((success) => {
-                db.collection('users').doc(success.user.uid).get().then((snapshot) => {
-                    console.log(snapshot.data())
-                    userLoginDetails.navigation.push("MonProfil");
-                    resolve(success)
-                    dispatch({
-                        type: 'LOGIN_USER',
-                        user: { isLogin: true },
-                    })
+    return new Promise((resolve, reject) => {
+        const { userLoginEmail, userLoginPassword } = userLoginDetails;
+        firebase.auth().signInWithEmailAndPassword(userLoginEmail, userLoginPassword).then((success) => {
+            db.collection('users').doc(success.user.uid).get().then((snapshot) => {
+                console.log(snapshot.data())
+                console.log("snapshot.data =>>", snapshot.data().isRestaurant);
+                resolve(success)
+            })
+        }).catch((error) => {
+            // Handle Errors here.
+            // var errorCode = error.code;
+            var errorMessage = error.message;
+            reject(errorMessage)
+        });
 
-                })
-            }).catch((error) => {
-                // Handle Errors here.
-                // var errorCode = error.code;
-                var errorMessage = error.message;
-                reject(errorMessage)
-            });
-
-        })
-    }
+    })
 }
 
 

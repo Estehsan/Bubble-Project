@@ -14,10 +14,9 @@ import TopBar from "./../../component/TopBar";
 // This is signUp SCREEN
 
 
-let handlecheck = (email, password) => {
-  if (email != "" && password != "")
-    props.navigation.push("MonProfil", { email, password })
-}
+// let handlecheck = (email, password) => {
+
+// }
 
 const FlowA = ({ ...props }) => {
   const [email, setEmail] = useState("");
@@ -33,20 +32,23 @@ const FlowA = ({ ...props }) => {
         <View style={styles.Form}>
           <TextInput
             style={styles.input}
-            onChangeText={setNumber}
-            value={number}
+            onChangeText={setEmail}
+            value={email}
             placeholder="pseudo"
-            keyboardType="numeric"
+            keyboardType="default"
           />
           <TextInput
             style={styles.input}
-            onChangeText={setNumber}
-            value={number}
+            onChangeText={setPassword}
+            value={password}
             placeholder="date de naissance"
-            keyboardType="numeric"
+            keyboardType="default"
           />
 
-          <TouchableOpacity onPress={() => handlecheck(email, password)}>
+          <TouchableOpacity onPress={() => {
+            if (email != "" && password != "")
+              props.navigation.push("MonProfil", { email, password })
+          }}>
             <View style={styles.btnopacity}>
               <Text style={styles.f}>VALIDER</Text>
             </View>

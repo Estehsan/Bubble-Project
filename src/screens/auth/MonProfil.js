@@ -8,26 +8,15 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { connect } from 'react-redux';
-import { signUp } from '../../redux/action';
+import { signUp } from '../../db/firebase';
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "./../../component/TopBar";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
-const handleSignUp = async (email, password, userProfileImage, gender, FullName) => {
+// const handleSignUp = async (email, password, userProfileImage, gender, FullName) => {
 
-  if (email != "" && password != "" && userProfileImage != null && gender != "" && FullName != "") {
-    var userDetails = {
-      email: email,
-      password: password,
-      userProfileImage: userProfileImage,
-      gender: gender,
-      FullName: FullName
-    }
-    await this.props.signUp(userDetails)
-    props.navigation.push("Home")
-  }
-}
+
+// }
 
 
 // This is register screen II
@@ -73,7 +62,26 @@ const MonProfil = ({ route, ...props }) => {
             <Ionicons style={styles.position} name="md-camera" size={60} />
           </View>
 
-          <TouchableOpacity onPress={() => handleSignUp(email, password, userProfileImage, gender, FullName)}>
+          <TouchableOpacity onPress={async () => {
+            if (email != "" && password != "" && userProfileImage != null && gender != "" && FullName != "") {
+              var userDetails = {
+                email: email,
+                password: password,
+                userProfileImage: userProfileImage,
+                gender: gender,
+                FullName: FullName
+              }
+
+              try {
+                const SignUpReturn = await signUp(userDetails)
+                props.navigation.push("Home")
+                console.log(userDetails)
+              }
+              catch(error){
+              console.log(error)
+              }
+            }
+          }}>
             <View style={styles.btn}>
               <Text style={styles.f}>MODIFIER</Text>
             </View>
@@ -89,14 +97,9 @@ const MonProfil = ({ route, ...props }) => {
   );
 };
 
-const mapDispatchToProps = dispatch => {
-  // console.log("mapStateToProps states =>> ", state);
-  return {
-    signUp: () => dispatch(signUp()),
-  }
-}
 
-export default connect(mapDispatchToProps)(MonProfil);
+
+export default MonProfil;
 
 const styles = StyleSheet.create({
   main: {

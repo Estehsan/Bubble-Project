@@ -8,22 +8,14 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { connect } from 'react-redux';
-import { logIn } from '../../redux/action';
+import { logIn } from '../../db/firebase';
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "./../../component/TopBar";
 
 
-const handleLogIn = async (email, password) => {
-  if (email != "" && password != "") {
-    var userDetails = {
-      email: email,
-      password: password
-    }
-    await this.props.logIn(userDetails)
-    props.navigation.replace("Home")
-  }
-}
+// const handleLogIn = async (email, password) => {
+
+// }
 // This is Login SCREEN
 const FlowA = ({ ...props }) => {
   const [email, setEmail] = useState("");
@@ -39,20 +31,41 @@ const FlowA = ({ ...props }) => {
         <View style={styles.Form}>
           <TextInput
             style={styles.input}
-            onChangeText={setNumber}
-            value={number}
+            onChangeText={setEmail}
+            value={email}
             placeholder="pseudo "
-            keyboardType="numeric"
+            keyboardType="default"
           />
           <TextInput
             style={styles.input}
-            onChangeText={setNumber}
-            value={number}
+            onChangeText={setPassword}
+            value={password}
             placeholder="date de naissance"
-            keyboardType="numeric"
+            keyboardType="default"
           />
 
-          <TouchableOpacity onPress={() => handleLogIn(email, password)}>
+          <TouchableOpacity onPress={async () => {
+            if (email != "" && password != "") {
+              const userDetails = {
+                email: email,
+                password: password
+              }
+
+              console.log(userDetails)
+              try {
+                const LoginReturn = await logIn(userDetails)
+                props.navigation.replace("Home")
+                console.log(error)
+              }
+              catch (error){
+                console.log(error)
+              }
+            }
+            else{
+              console.log("email password empty")
+            }
+
+          }}>
             <View style={styles.btnopacity}>
               <Text style={styles.f}>VALIDER</Text>
             </View>
@@ -62,14 +75,8 @@ const FlowA = ({ ...props }) => {
     </LinearGradient>
   );
 };
-const mapDispatchToProps = dispatch => {
-  // console.log("mapStateToProps states =>> ", state);
-  return {
-    logIn: () => dispatch(logIn()),
-  }
-}
 
-export default connect(mapDispatchToProps)(FlowA);
+export default FlowA;
 
 const styles = StyleSheet.create({
   main: {
