@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { AsyncStorage } from 'react-native';
+import firebase from '../../db/firebase'
 import {
   StyleSheet,
   Text,
@@ -8,9 +10,10 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { logIn } from '../../db/firebase';
+import { auth } from '../../db/firebase';
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "./../../component/TopBar";
+
 
 
 // const handleLogIn = async (email, password) => {
@@ -33,7 +36,7 @@ const FlowA = ({ ...props }) => {
             style={styles.input}
             onChangeText={setEmail}
             value={email}
-            placeholder="pseudo "
+            placeholder="pseudo"
             keyboardType="default"
           />
           <TextInput
@@ -44,24 +47,31 @@ const FlowA = ({ ...props }) => {
             keyboardType="default"
           />
 
-          <TouchableOpacity onPress={async () => {
+          <TouchableOpacity onPress={() => {
             if (email != "" && password != "") {
-              const userDetails = {
-                email: email,
-                password: password
-              }
 
-              console.log(userDetails)
+              // console.log(userDetails)
               try {
-                const LoginReturn = await logIn(userDetails)
-                props.navigation.replace("Home")
-                console.log(error)
+                auth.signInWithEmailAndPassword(email, password)
+                  .then((userCredential) => {
+                    // Signed in 
+                    var user = userCredential.user;
+                    props.navigation.replace("Home")
+                    console.log(user)
+                    // ...
+                  })
+                  .catch((error) => {
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    console.log(error)
+                    // ..
+                  });
               }
-              catch (error){
+              catch (error) {
                 console.log(error)
               }
             }
-            else{
+            else {
               console.log("email password empty")
             }
 

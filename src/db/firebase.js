@@ -22,7 +22,10 @@ if (firebase.apps.length === 0) {
 }
 
 const db = app.firestore();
+const firestore = firebase.firestore()
 const auth = firebase.auth();
+const storage = firebase.storage();
+
 
 
 function signUp(userDetails) {
@@ -49,7 +52,7 @@ function signUp(userDetails) {
           }
           db.collection("users").doc(uid).set(userDetailsForDb).then((docRef) => {
             // console.log("Document written with ID: ", docRef.id);
-            userDetails.propsHistory.push("/order-requests");
+            userDetails.navigation.push("Home")
             resolve(userDetailsForDb)
           }).catch(function (error) {
             console.error("Error adding document: ", error);
@@ -78,24 +81,21 @@ function signUp(userDetails) {
 }
 
 function logIn(userLoginDetails) {
-  return new Promise((resolve, reject) => {
-    const { userLoginEmail, userLoginPassword } = userLoginDetails;
-    firebase.auth().signInWithEmailAndPassword(userLoginEmail, userLoginPassword).then((success) => {
-      db.collection('users').doc(success.user.uid).get().then((snapshot) => {
-        console.log(snapshot.data())
-        resolve(success)
-      })
-    }).catch((error) => {
-      // Handle Errors here.
-      // var errorCode = error.code;
-      var errorMessage = error.message;
-      reject(errorMessage)
-    });
+  const { userLoginEmail, userLoginPassword } = userLoginDetails;
+  firebase.auth().signInWithEmailAndPassword(userLoginEmail, userLoginPassword).then((success) => {
+    db.collection('users').doc(success.user.uid).get().then((snapshot) => {
+      console.log(snapshot.data())
+      userLoginDetails.navigation.replace("Home")
 
-  })
+    })
+  }).catch((error) => {
+    // Handle Errors here.
+    // var errorCode = error.code;
+    var errorMessage = error.message;
+  });
 }
 
-export { db, auth, logIn, signUp }
+export { db, auth, firestore, storage, logIn, signUp }
 
 // export const app = firebase.initializeApp(firebaseConfig);
 // export const db = firebase.firestore();

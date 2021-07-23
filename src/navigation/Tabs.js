@@ -1,19 +1,22 @@
-import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import React, { useEffect, useState } from "react";
+import { auth, storage, firestore } from '../db/firebase';
+
+
+import { StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import FaIcon from 'react-native-vector-icons/FontAwesome5';
 import MIcon from 'react-native-vector-icons/MaterialIcons';
 import McIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import {createStackNavigator} from '@react-navigation/stack';
-import {NavigationContainer} from '@react-navigation/native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import Home from '../screens/user/Home';
 import Message from '../screens/user/Message';
 import Profile from '../screens/user/Profile';
-import {MaterialIcon} from './components/Icon';
+import { MaterialIcon } from './components/Icon';
 import Drink from '../screens/user/Drink';
 import MonProfil from '../screens/auth/MonProfil';
 import AchatUser from '../screens/extra/AchatUser';
@@ -46,7 +49,7 @@ function BottomTabNavigator() {
         name="Home"
         component={Home}
         options={{
-          tabBarIcon: ({focused}) => (
+          tabBarIcon: ({ focused }) => (
             <MIcon style={styles.position} name="home" size={30} />
           ),
         }}
@@ -64,7 +67,7 @@ function BottomTabNavigator() {
         name="Drink"
         component={Drink}
         options={{
-          tabBarIcon: ({focused}) => (
+          tabBarIcon: ({ focused }) => (
             <Ionicons style={styles.position} name="chatbubbles" size={30} />
           ),
         }}
@@ -73,7 +76,7 @@ function BottomTabNavigator() {
         name="Message"
         component={Message}
         options={{
-          tabBarIcon: ({focused}) => (
+          tabBarIcon: ({ focused }) => (
             <McIcon style={styles.position} name="glass-cocktail" size={30} />
           ),
         }}
@@ -82,7 +85,7 @@ function BottomTabNavigator() {
         name="Profile"
         component={Profile}
         options={{
-          tabBarIcon: ({focused}) => (
+          tabBarIcon: ({ focused }) => (
             <FaIcon style={styles.position} name="user-alt" size={30} />
           ),
         }}
@@ -95,23 +98,42 @@ const screenOptionStyle = {
   headerShown: false,
 };
 function Tabs() {
+
+  let [user, setUser] = useState(null)
+
+  useEffect( async () => {
+    const getUser = await auth.onAuthStateChanged((user) => {
+      if (user) {
+        // User is signed in.
+        setUser(user)
+        // console.log(user)
+
+      } else {
+        // No user is signed in.
+      }
+    })
+  }, [])
+
+
   return (
     <All.Navigator screenOptions={screenOptionStyle}>
-      <All.Screen name="Flow" component={Flow} options={{headerShown: false}} />
+
+      {user ? <All.Screen name="Home" component={BottomTabNavigator} />
+        : <All.Screen name="Flow" component={Flow} options={{ headerShown: false }} />}
+
       <All.Screen
         name="FlowA"
         component={FlowA}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <All.Screen
         name="FlowB"
         component={FlowB}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
 
       <All.Screen name="MonProfil" component={MonProfil} />
 
-      <All.Screen name="Home" component={BottomTabNavigator} />
       <All.Screen name="Drink" component={Drink} />
       <All.Screen name="Message" component={Message} />
       <All.Screen name="Fiche" component={Fiche} />
@@ -126,7 +148,7 @@ export default Tabs;
 const styles = StyleSheet.create({
   shadow: {
     shadowColor: '#7f5d50',
-    shadowOffset: {width: 0, height: 10},
+    shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.25,
     shadowRadius: 3.6,
     elevation: 5,

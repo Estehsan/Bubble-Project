@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -10,8 +10,13 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "../../component/TopBar";
+import { auth, storage, firestore } from '../../db/firebase';
+
 
 //  Login or Register Button
+
+
+
 
 function Flow({ ...props }) {
   const [number, setNumber] = useState("");

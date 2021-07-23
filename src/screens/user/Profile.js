@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -13,16 +13,16 @@ import TopBar from './../../component/TopBar';
 
 const Profile = () => {
   const [number, setNumber] = useState('');
-  return (  
+  return (
     <LinearGradient colors={['#DD488C', '#000']} style={styles.linearGradient}>
       <SafeAreaView style={styles.main}>
         <TopBar />
         <View style={styles.Profile}>
           <Text style={styles.h1}>MON PROFIL </Text>
           <Image
-            style={{height: 70, width: 70, borderRadius: 70}}
+            style={{ height: 70, width: 70, borderRadius: 70 }}
             resizeMode="contain"
-            source={{uri: 'https://www.w3schools.com/howto/img_avatar.png'}}
+            source={{ uri: 'https://www.w3schools.com/howto/img_avatar.png' }}
           />
         </View>
         <View style={styles.Form}>
@@ -59,7 +59,7 @@ const Profile = () => {
               alignItems: 'center',
             }}>
             <Image
-              style={{height: 70, width: 70, borderRadius: 70}}
+              style={{ height: 70, width: 70, borderRadius: 70 }}
               resizeMode="contain"
               source={require('./../../assets/images/rose.png')}
             />
@@ -96,9 +96,9 @@ const styles = StyleSheet.create({
     fontSize: 50,
     opacity: 0.5,
   },
-  Profile: {alignItems: 'center', marginVertical: 30},
+  Profile: { alignItems: 'center', marginVertical: 30 },
 
-  linearGradient: {flex: 1},
+  linearGradient: { flex: 1 },
   Form: {
     alignItems: 'center',
   },

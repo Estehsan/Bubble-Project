@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+// import { AsyncStorage } from '@react-native-async-storage/async-storage';
 import {
   StyleSheet,
   Text,
@@ -8,10 +9,11 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { signUp } from '../../db/firebase';
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "./../../component/TopBar";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import {  auth, storage, firestore } from '../../db/firebase';
+
 
 // const handleSignUp = async (email, password, userProfileImage, gender, FullName) => {
 
@@ -62,25 +64,76 @@ const MonProfil = ({ route, ...props }) => {
             <Ionicons style={styles.position} name="md-camera" size={60} />
           </View>
 
-          <TouchableOpacity onPress={async () => {
-            if (email != "" && password != "" && userProfileImage != null && gender != "" && FullName != "") {
-              var userDetails = {
-                email: email,
-                password: password,
-                userProfileImage: userProfileImage,
-                gender: gender,
-                FullName: FullName
-              }
+          <TouchableOpacity onPress={() => {
+            if (email != "" && password != "" /*&& userProfileImage != null && gender != "" && FullName != "" */) {
+              // var userDetails = {
+              //   email: email,
+              //   password: password,
+              //   userProfileImage: userProfileImage,
+              //   gender: gender,
+              //   FullName: FullName
+              // }
 
-              try {
-                const SignUpReturn = await signUp(userDetails)
-                props.navigation.push("Home")
-                console.log(userDetails)
-              }
-              catch(error){
-              console.log(error)
-              }
+
+              // const SignUpReturn = signUp(userDetails)
+              // console.log(userDetails)
+              auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                  // Signed in 
+                  var userInfo = userCredential.user;
+                  props.navigation.push("Home")
+                  console.log("userinfo =>",userInfo)
+                  let user = auth.currentUser;
+                  var uid;
+                  if (user != null) {
+                    uid = user.uid;
+                  };
+                  // storage.ref().child(`userProfileImage/${uid}/` + userProfileImage.name).put(userProfileImage).then((url) => {
+                  //   url.ref.getDownloadURL().then((success) => {
+                  //     const userProfileImageUrl = success
+                  //     console.log(userProfileImageUrl)
+                  const userDetailsForDb = {
+                    // userName: FullName,
+                    userEmail: email,
+                    userPassword: password,
+                    // userGender: gender,
+                    userUid: uid,
+                    // userProfileImageUrl: userProfileImageUrl,
+                    //   userMapLink: userMapLink,
+                  }
+                  firestore.collection("users").doc(uid).set(userDetailsForDb).then((docRef) => {
+                    // console.log("Document written with ID: ", docRef.id);
+                    console.log("userAdded =>" , docRef.id)
+                    props.navigation.push("Home")
+                    // ...
+                    // resolve(userDetailsForDb)
+                  }).catch(function (error) {
+                    console.error("Error adding document: ", error);
+                    // reject(error)
+                  })
+                  //   }).catch((error) => {
+                  //     // Handle Errors here.
+                  //     let errorCode = error.code;
+                  //     let errorMessage = error.message;
+                  //     console.log("Error in getDownloadURL function", errorMessage);
+                  //     // reject(errorMessage)
+                  //   })
+                  // }).catch((error) => {
+                  //   // Handle Errors here.
+                  //   let errorCode = error.code;
+                  //   let errorMessage = error.message;
+                  //   console.log("Error in Image Uploading", errorMessage);
+                  //   // reject(errorMessage)
+                  // })
+                })
+                .catch((error) => {
+                  var errorCode = error.code;
+                  var errorMessage = error.message;
+                  console.log(error)
+                  // ..
+                });
             }
+
           }}>
             <View style={styles.btn}>
               <Text style={styles.f}>MODIFIER</Text>
