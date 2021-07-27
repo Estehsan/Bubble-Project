@@ -10,12 +10,10 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "../../component/TopBar";
-import { auth, storage, firestore } from '../../db/firebase';
+import { auth, storage, firestore } from "../../db/firebase";
 
 
 //  Login or Register Button
-
-
 
 
 function Flow({ ...props }) {
@@ -33,7 +31,7 @@ function Flow({ ...props }) {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => props.navigation.push("FlowB")}>
+          <TouchableOpacity onPress={() => props.navigation.navigate("FlowB")}>
             <View style={styles.btn}>
               <Text style={styles.f}>INSCRIPTION</Text>
             </View>

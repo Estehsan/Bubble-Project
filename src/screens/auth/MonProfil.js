@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-// import { AsyncStorage } from '@react-native-async-storage/async-storage';
+import ImagePicker from "react-native-image-crop-picker";
+
+import { AsyncStorage } from "@react-native-async-storage/async-storage";
 import {
   StyleSheet,
   Text,
@@ -8,27 +10,40 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  Touchable,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "./../../component/TopBar";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import {  auth, storage, firestore } from '../../db/firebase';
+import { auth, storage, firestore } from "../../db/firebase";
 
-
-// const handleSignUp = async (email, password, userProfileImage, gender, FullName) => {
-
-
-// }
-
+const handleSignUp = async (
+  email,
+  password,
+  userProfileImage,
+  gender,
+  FullName
+) => {};
 
 // This is register screen II
 
 const MonProfil = ({ route, ...props }) => {
   const { email, password } = route.params;
   const [number, setNumber] = useState("");
-  const [userProfileImage, setUserProfileImage] = useState(null)
-  const [gender, setGender] = useState("")
-  const [FullName, setFullName] = useState("")
+  const [userProfileImage, setUserProfileImage] = useState(null);
+  const [gender, setGender] = useState("");
+  const [FullName, setFullName] = useState(null);
+
+  const TakeImgFromGallery = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true,
+    }).then((image) => {
+      console.log(image);
+      setUserProfileImage(image.path);
+    });
+  };
 
   return (
     <LinearGradient colors={["#DD488C", "#000"]} style={styles.linearGradient}>
@@ -55,86 +70,152 @@ const MonProfil = ({ route, ...props }) => {
           />
 
           <View style={styles.SelectGender}>
-            <Ionicons style={styles.position} name="male-female" size={60} />
+            <TouchableOpacity onPress={() => setGender("mix")}>
+              <View>
+                <Ionicons
+                  style={styles.position}
+                  name="male-female"
+                  size={60}
+                  color={gender === "mix" ? "pink" : "#000"}
+                />
+              </View>
+            </TouchableOpacity>
 
-            <Ionicons style={styles.position} name="female" size={60} />
-            <Ionicons style={styles.position} name="male" size={60} />
+            <TouchableOpacity onPress={() => setGender("male")}>
+              <View>
+                <Ionicons
+                  style={styles.position}
+                  name="female"
+                  size={60}
+                  color={gender === "male" ? "pink" : "#000"}
+                />
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setGender("female")}>
+              <View>
+                <Ionicons
+                  style={styles.position}
+                  name="male"
+                  size={60}
+                  color={gender === "female" ? "pink" : "#000"}
+                />
+              </View>
+            </TouchableOpacity>
           </View>
-          <View style={styles.uploadImg}>
-            <Ionicons style={styles.position} name="md-camera" size={60} />
-          </View>
 
-          <TouchableOpacity onPress={() => {
-            if (email != "" && password != "" /*&& userProfileImage != null && gender != "" && FullName != "" */) {
-              // var userDetails = {
-              //   email: email,
-              //   password: password,
-              //   userProfileImage: userProfileImage,
-              //   gender: gender,
-              //   FullName: FullName
-              // }
+          {userProfileImage === null ? (
+            <TouchableOpacity
+              onPress={TakeImgFromGallery}
+              style={styles.uploadImg}
+            >
+              <Ionicons style={styles.position} name="md-camera" size={60} />
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.uploadImg}>
+              <Image
+                style={{ height: 80, width: 80, borderRadius: 50 }}
+                resizeMode="contain"
+                source={{
+                  uri: userProfileImage,
+                }}
+              />
+            </View>
+          )}
 
+          <TouchableOpacity
+            onPress={() => {
+              if (
+                email != "" &&
+                password != "" &&
+                userProfileImage != null &&
+                gender != "null" &&
+                FullName != ""
+              ) {
+                var userDetails = {
+                  email: email,
+                  password: password,
+                  userProfileImage: userProfileImage,
+                  gender: gender,
+                  FullName: FullName,
+                };
 
-              // const SignUpReturn = signUp(userDetails)
-              // console.log(userDetails)
-              auth.createUserWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                  // Signed in 
-                  var userInfo = userCredential.user;
-                  props.navigation.push("Home")
-                  console.log("userinfo =>",userInfo)
-                  let user = auth.currentUser;
-                  var uid;
-                  if (user != null) {
-                    uid = user.uid;
-                  };
-                  // storage.ref().child(`userProfileImage/${uid}/` + userProfileImage.name).put(userProfileImage).then((url) => {
-                  //   url.ref.getDownloadURL().then((success) => {
-                  //     const userProfileImageUrl = success
-                  //     console.log(userProfileImageUrl)
-                  const userDetailsForDb = {
-                    // userName: FullName,
-                    userEmail: email,
-                    userPassword: password,
-                    // userGender: gender,
-                    userUid: uid,
-                    // userProfileImageUrl: userProfileImageUrl,
-                    //   userMapLink: userMapLink,
-                  }
-                  firestore.collection("users").doc(uid).set(userDetailsForDb).then((docRef) => {
-                    // console.log("Document written with ID: ", docRef.id);
-                    console.log("userAdded =>" , docRef.id)
-                    props.navigation.push("Home")
-                    // ...
-                    // resolve(userDetailsForDb)
-                  }).catch(function (error) {
-                    console.error("Error adding document: ", error);
-                    // reject(error)
+                const SignUpReturn = signUp(userDetails);
+                console.log(userDetails);
+                auth
+                  .createUserWithEmailAndPassword(email, password)
+                  .then((userCredential) => {
+                    // Signed in
+                    var userInfo = userCredential.user;
+                    props.navigation.push("Home");
+                    console.log("userinfo =>", userInfo);
+                    let user = auth.currentUser;
+                    var uid;
+                    if (user != null) {
+                      uid = user.uid;
+                    }
+                    storage
+                      .ref()
+                      .child(`userProfileImage/${uid}/` + userProfileImage.name)
+                      .put(userProfileImage)
+                      .then((url) => {
+                        url.ref
+                          .getDownloadURL()
+                          .then((success) => {
+                            const userProfileImageUrl = success;
+                            console.log(userProfileImageUrl);
+                            const userDetailsForDb = {
+                              userName: FullName,
+                              userEmail: email,
+                              userPassword: password,
+                              userGender: gender,
+                              userUid: uid,
+                              userProfileImageUrl: userProfileImageUrl,
+                              //   userMapLink: userMapLink,
+                            };
+                            firestore
+                              .collection("users")
+                              .doc(uid)
+                              .set(userDetailsForDb)
+                              .then((docRef) => {
+                                // console.log("Document written with ID: ", docRef.id);
+                                console.log("userAdded =>", docRef.id);
+                                props.navigation.push("Home");
+
+                                resolve(userDetailsForDb);
+                              })
+                              .catch(function (error) {
+                                console.error("Error adding document: ", error);
+                                // reject(error)
+                              });
+                          })
+                          .catch((error) => {
+                            // Handle Errors here.
+                            let errorCode = error.code;
+                            let errorMessage = error.message;
+                            console.log(
+                              "Error in getDownloadURL function",
+                              errorMessage
+                            );
+                            // reject(errorMessage)
+                          });
+                      })
+                      .catch((error) => {
+                        // Handle Errors here.
+                        let errorCode = error.code;
+                        let errorMessage = error.message;
+                        console.log("Error in Image Uploading", errorMessage);
+                        // reject(errorMessage)
+                      });
                   })
-                  //   }).catch((error) => {
-                  //     // Handle Errors here.
-                  //     let errorCode = error.code;
-                  //     let errorMessage = error.message;
-                  //     console.log("Error in getDownloadURL function", errorMessage);
-                  //     // reject(errorMessage)
-                  //   })
-                  // }).catch((error) => {
-                  //   // Handle Errors here.
-                  //   let errorCode = error.code;
-                  //   let errorMessage = error.message;
-                  //   console.log("Error in Image Uploading", errorMessage);
-                  //   // reject(errorMessage)
-                  // })
-                })
-                .catch((error) => {
-                  var errorCode = error.code;
-                  var errorMessage = error.message;
-                  console.log(error)
-                  // ..
-                });
-            }
-
-          }}>
+                  .catch((error) => {
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    console.log(error);
+                    // ..
+                  });
+              }
+            }}
+          >
             <View style={styles.btn}>
               <Text style={styles.f}>MODIFIER</Text>
             </View>
@@ -149,8 +230,6 @@ const MonProfil = ({ route, ...props }) => {
     </LinearGradient>
   );
 };
-
-
 
 export default MonProfil;
 
