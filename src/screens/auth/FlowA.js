@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { AsyncStorage } from 'react-native';
-import firebase from '../../db/firebase'
 import {
   StyleSheet,
   Text,
