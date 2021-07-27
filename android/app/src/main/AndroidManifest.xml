@@ -2,7 +2,13 @@
   package="com.bubblecode">
 
     <uses-permission android:name="android.permission.INTERNET" />
+<<<<<<< HEAD
     <uses-permission android:name="android.permission.CAMERA"/>
+=======
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
+>>>>>>> 11a50c048b0d0222d5c3487ebb8311b4859db4b2
 
 
     <application
@@ -27,6 +33,7 @@
        <meta-data
      android:name="com.google.android.geo.API_KEY"
      android:value="AIzaSyCI4_jhTZcxnYHla6xmzgatq4s_blaURno"/>
+     
 
      <!-- You will also only need to add this uses-library tag -->
    <uses-library android:name="org.apache.http.legacy" android:required="false"/>
