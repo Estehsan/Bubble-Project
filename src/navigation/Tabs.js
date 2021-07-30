@@ -1,29 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { auth, storage, firestore } from '../db/firebase';
+import { auth, storage, firestore } from "../db/firebase";
 
+import { StyleSheet, Text, View } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
+import FaIcon from "react-native-vector-icons/FontAwesome5";
+import MIcon from "react-native-vector-icons/MaterialIcons";
+import McIcon from "react-native-vector-icons/MaterialCommunityIcons";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
-import { StyleSheet, Text, View } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import FaIcon from 'react-native-vector-icons/FontAwesome5';
-import MIcon from 'react-native-vector-icons/MaterialIcons';
-import McIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { createStackNavigator } from "@react-navigation/stack";
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
-import Home from '../screens/user/Home';
-import Message from '../screens/user/Message';
-import Profile from '../screens/user/Profile';
-import { MaterialIcon } from './components/Icon';
-import Drink from '../screens/user/Drink';
-import MonProfil from '../screens/auth/MonProfil';
-import AchatUser from '../screens/extra/AchatUser';
-import Flow from './../screens/auth/Flow';
-import FlowA from './../screens/auth/FlowA';
-import FlowB from './../screens/auth/FlowB';
-import Fiche from '../screens/extra/Fiche';
+import Home from "../screens/user/Home";
+import Message from "../screens/user/Message";
+import Profile from "../screens/user/Profile";
+import { MaterialIcon } from "./components/Icon";
+import Drink from "../screens/user/Drink";
+import MonProfil from "../screens/auth/MonProfil";
+import AchatUser from "../screens/extra/AchatUser";
+import Flow from "./../screens/auth/Flow";
+import FlowA from "./../screens/auth/FlowA";
+import FlowB from "./../screens/auth/FlowB";
+import Fiche from "../screens/extra/Fiche";
 const Stack = createBottomTabNavigator();
 
 function BottomTabNavigator() {
@@ -31,20 +30,21 @@ function BottomTabNavigator() {
     <Stack.Navigator
       initialRouteName="Home"
       tabBarOptions={{
-        activeTintColor: 'blue',
+        activeTintColor: "blue",
         showLabel: false,
         style: {
-          position: 'absolute',
+          position: "absolute",
           bottom: 25,
           left: 40,
           right: 40,
-          alignContent: 'center',
+          alignContent: "center",
           elevation: 0,
           height: 70,
           borderRadius: 30,
           ...styles.shadow,
         },
-      }}>
+      }}
+    >
       <Stack.Screen
         name="Home"
         component={Home}
@@ -98,28 +98,31 @@ const screenOptionStyle = {
   headerShown: false,
 };
 function Tabs() {
+  let [user, setUser] = useState(null);
 
-  let [user, setUser] = useState(null)
-
-  useEffect( async () => {
+  useEffect(async () => {
     const getUser = await auth.onAuthStateChanged((user) => {
       if (user) {
         // User is signed in.
-        setUser(user)
+        setUser(user);
         // console.log(user)
-
       } else {
         // No user is signed in.
       }
-    })
-  }, [])
-
+    });
+  }, []);
 
   return (
     <All.Navigator screenOptions={screenOptionStyle}>
-
-      {user ? <All.Screen name="Home" component={BottomTabNavigator} />
-        : <All.Screen name="Flow" component={Flow} options={{ headerShown: false }} />}
+      {user ? (
+        <All.Screen name="Home" component={BottomTabNavigator} />
+      ) : (
+        <All.Screen
+          name="Flow"
+          component={Flow}
+          options={{ headerShown: false }}
+        />
+      )}
 
       <All.Screen
         name="FlowA"
@@ -147,15 +150,15 @@ export default Tabs;
 
 const styles = StyleSheet.create({
   shadow: {
-    shadowColor: '#7f5d50',
+    shadowColor: "#7f5d50",
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.25,
     shadowRadius: 3.6,
     elevation: 5,
   },
   position: {
-    justifyContent: 'center',
-    alignContent: 'center',
+    justifyContent: "center",
+    alignContent: "center",
     top: 15,
   },
 });

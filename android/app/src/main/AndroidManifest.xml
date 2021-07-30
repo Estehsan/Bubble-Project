@@ -2,13 +2,10 @@
   package="com.bubblecode">
 
     <uses-permission android:name="android.permission.INTERNET" />
-<<<<<<< HEAD
     <uses-permission android:name="android.permission.CAMERA"/>
-=======
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
->>>>>>> 11a50c048b0d0222d5c3487ebb8311b4859db4b2
 
 
     <application
