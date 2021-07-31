@@ -223,9 +223,9 @@ const Home = () => {
           </MapView> */}
           <MapHome />
         </View>
-        <View style={{ marginBottom: 80 }}>
+        {/* <View style={{ marginBottom: 80 }}>
           <ListContainer />
-        </View>
+        </View> */}
       </SafeAreaView>
     </LinearGradient>
   );

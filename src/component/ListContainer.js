@@ -1,22 +1,19 @@
-import React, {useState} from 'react';
-import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
-import Colors from '../assets/colors/Colors';
+import React, { useState } from "react";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import Colors from "../assets/colors/Colors";
 
-const ListContainer = ({...props}) => {
+const ListContainer = ({ title, locations, place, code, img, ...props }) => {
   return (
     <View style={styles.Container}>
       <View style={styles.main}>
         <View style={styles.lContainer}>
-          <Image
-            style={{height: 100, width: 110}}
-            source={require('./../assets/images/description.png')}
-          />
+          <Image style={{ height: 100, width: 110 }} source={img} />
         </View>
         <View style={styles.rContainer}>
-          <Text>LE PERCHOIR DE L’EST</Text>
-          <Text>10 place Paris</Text>
-          <Text>Ouverte 18h</Text>
-          <Text>01.98.97.96.95</Text>
+          <Text>{title}</Text>
+          <Text>{locations}</Text>
+          <Text>{place}</Text>
+          <Text>{code}</Text>
           <TouchableOpacity>
             <View style={styles.btn}>
               <Text>Hello</Text>
@@ -32,29 +29,29 @@ export default ListContainer;
 
 const styles = StyleSheet.create({
   Container: {
-    alignItems: 'center',
+    alignItems: "center",
     ...Colors.customShadow,
   },
   main: {
-    backgroundColor: '#fff',
-    width: '90%',
+    backgroundColor: "#fff",
+    width: "90%",
     padding: 20,
     marginBottom: 20,
     height: 145,
     borderRadius: 100,
-    justifyContent: 'space-around',
-    display: 'flex',
-    alignContent: 'center',
-    flexDirection: 'row',
+    justifyContent: "space-around",
+    display: "flex",
+    alignContent: "center",
+    flexDirection: "row",
   },
   btn: {
     height: 40,
     width: 70,
-    backgroundColor: '#D8D8D8',
+    backgroundColor: "#D8D8D8",
     marginStart: 70,
     marginTop: 10,
-    justifyContent: 'center',
+    justifyContent: "center",
     borderRadius: 60,
-    alignItems: 'center',
+    alignItems: "center",
   },
 });

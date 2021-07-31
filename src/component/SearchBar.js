@@ -1,36 +1,108 @@
-import React from 'react';
+import React from "react";
 import {
   StyleSheet,
   Text,
   View,
   TextInput,
+  FlatList,
   TouchableOpacity,
-} from 'react-native';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
+} from "react-native";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import EvilIcons from "react-native-vector-icons/EvilIcons";
+import Icon from "react-native-vector-icons/Ionicons";
+
+const data = [
+  {
+    id: "1",
+    content: "Malir, Saudabad",
+  },
+  {
+    id: "123",
+    content: "Kara, Saudabad",
+  },
+  {
+    id: "421",
+    content: "Pakistan, Saudabad",
+  },
+];
 
 const SearchBar = () => {
-  const [number, onChangeNumber] = React.useState(null);
+  const [search, onSearch] = React.useState(null);
 
   return (
-    <View>
-      <View style={{flex: 1, alignItems: 'center'}}>
+    <View style={styles.container}>
+      <View style={styles.inputField}>
+        <GooglePlacesAutocomplete
+          placeholder="Where You wanna go ? "
+          onPress={(data, details = null) => {
+            // 'details' is provided when fetchDetails = true
+            console.log(data, details);
+          }}
+          styles={{
+            textInput: styles.textInput,
+          }}
+          query={{
+            key: "AIzaSyCI4_jhTZcxnYHla6xmzgatq4s_blaURno",
+            language: "en",
+          }}
+        />
+        <TouchableOpacity
+          style={{ alignItems: "center", justifyContent: "center" }}
+          underlayColor="transparent"
+        >
+          <View>
+            <EvilIcons name="search" size={35} />
+          </View>
+        </TouchableOpacity>
+      </View>
+
+      {/* <View
+        style={{
+          alignItems: "center",
+        }}
+      >
         <View style={styles.inputField}>
           <TextInput
             style={styles.input}
-            onChangeText={onChangeNumber}
-            value={number}
+            onChangeText={onSearch}
+            value={search}
             placeholder="useless placeholder"
             keyboardType="numeric"
           />
           <TouchableOpacity
-            style={{alignItems: 'center', justifyContent: 'center'}}
-            underlayColor="transparent">
+            style={{ alignItems: "center", justifyContent: "center" }}
+            underlayColor="transparent"
+          >
             <View>
               <EvilIcons name="search" size={35} />
             </View>
           </TouchableOpacity>
         </View>
       </View>
+      <View style={styles.showResult}>
+        <FlatList
+          data={data}
+          renderItem={({ item }) => (
+            <View style={styles.row}>
+              <View style={styles.iconContainer}>
+                <Icon
+                  style={styles.position}
+                  name="ios-location-sharp"
+                  size={30}
+                />
+              </View>
+              <View>
+                <Text styles={styles.locationText}>{item.content}</Text>
+              </View>
+            </View>
+          )}
+        />
+
+
+
+      </View>
+   
+    */}
     </View>
   );
 };
@@ -39,18 +111,34 @@ export default SearchBar;
 
 const styles = StyleSheet.create({
   input: {
-    width: '90%',
+    width: "90%",
+  },
+  container: {
+    marginHorizontal: 10,
   },
   inputField: {
-    height: 40,
+    height: 47,
 
-    backgroundColor: '#fff',
-    flexDirection: 'row',
-    alignContent: 'center',
-    justifyContent: 'space-between',
-    width: '90%',
+    backgroundColor: "#fff",
+    flexDirection: "row",
+    alignContent: "center",
+    justifyContent: "space-between",
+    width: "100%",
     marginTop: 20,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     borderRadius: 20,
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderColor: "lightgrey",
+  },
+  iconContainer: {
+    backgroundColor: "#b2bec3",
+    padding: 5,
+    borderRadius: 10,
+    marginRight: 10,
   },
 });
