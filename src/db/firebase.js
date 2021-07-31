@@ -26,32 +26,28 @@ const firestore = firebase.firestore();
 const auth = firebase.auth();
 const storage = firebase.storage();
 
-function signUp(userDetails) {
+const signUp = (userDetails) => {
+
+  const { email, password, userProfileImage, gender, FirstName, LastName, UserProfileImageConfig, contentType, navigation } = userDetails;
+  const metadata = {
+    contentType: contentType
+  }
   return new Promise((resolve, reject) => {
-    const {
-      userName,
-      userEmail,
-      userPassword,
-      userGender,
-      userProfileImage /*userMapLink*/,
-    } = userDetails;
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(
-        userDetails.userEmail,
-        userDetails.userPassword
-      )
-      .then((success) => {
-        let user = firebase.auth().currentUser;
+    auth
+      .createUserWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        // Signed in
+        var userInfo = userCredential.user;
+        console.log("userinfo =>", userInfo);
+        var user = auth.currentUser;
         var uid;
         if (user != null) {
           uid = user.uid;
         }
-        firebase
-          .storage()
+        storage
           .ref()
-          .child(`userProfileImage/${uid}/` + userProfileImage.name)
-          .put(userProfileImage)
+          .child(`userProfileImage/${uid}/` + userProfileImage.substr(userProfileImage.length - 6))
+          .put(UserProfileImageConfig, metadata)
           .then((url) => {
             url.ref
               .getDownloadURL()
@@ -59,33 +55,31 @@ function signUp(userDetails) {
                 const userProfileImageUrl = success;
                 console.log(userProfileImageUrl);
                 const userDetailsForDb = {
-                  userName: userName,
-                  userEmail: userEmail,
-                  userPassword: userPassword,
-                  userGender: userGender,
+                  userName: FirstName + LastName,
+                  userEmail: email,
+                  userPassword: password,
+                  userGender: gender,
                   userUid: uid,
                   userProfileImageUrl: userProfileImageUrl,
-                  //   userMapLink: userMapLink,
-                };
-                db.collection("users")
+                }
+                let user = firestore
+                  .collection("users")
                   .doc(uid)
                   .set(userDetailsForDb)
-                  .then((docRef) => {
-                    // console.log("Document written with ID: ", docRef.id);
-                    userDetails.navigation.push("Home");
-                    resolve(userDetailsForDb);
-                  })
-                  .catch(function (error) {
-                    console.error("Error adding document: ", error);
-                    reject(error);
-                  });
+                console.log(user)
+                // navigation.push("Home")
+                resolve(userDetailsForDb)
+
               })
               .catch((error) => {
                 // Handle Errors here.
                 let errorCode = error.code;
                 let errorMessage = error.message;
-                console.log("Error in getDownloadURL function", errorMessage);
-                reject(errorMessage);
+                console.log(
+                  "Error in getDownloadURL function",
+                  errorMessage
+                );
+                reject(errorMessage)
               });
           })
           .catch((error) => {
@@ -93,13 +87,14 @@ function signUp(userDetails) {
             let errorCode = error.code;
             let errorMessage = error.message;
             console.log("Error in Image Uploading", errorMessage);
-            reject(errorMessage);
+            reject(errorMessage)
           });
       })
       .catch((error) => {
+        var errorCode = error.code;
         var errorMessage = error.message;
-        console.log("Error in Authentication", errorMessage);
-        reject(errorMessage);
+        console.log(error);
+        // ..
       });
   });
 }

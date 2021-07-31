@@ -114,15 +114,15 @@ function Tabs() {
 
   return (
     <All.Navigator screenOptions={screenOptionStyle}>
-      {user ? (
+      {/* {user ? ( */}
         <All.Screen name="Home" component={BottomTabNavigator} />
-      ) : (
+      {/* ) : ( */}
         <All.Screen
           name="Flow"
           component={Flow}
           options={{ headerShown: false }}
         />
-      )}
+      {/* )} */}
 
       <All.Screen
         name="FlowA"

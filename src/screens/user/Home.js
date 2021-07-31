@@ -22,6 +22,7 @@ import TopBar from "../../component/TopBar";
 import LinearGradient from "react-native-linear-gradient";
 navigator.geolocation = require("@react-native-community/geolocation");
 import Geolocation from "@react-native-community/geolocation";
+import { auth } from '../../db/firebase'
 
 import MapView, {
   Marker,
@@ -33,8 +34,8 @@ import MapView, {
 
 // import haversine from "haversine";
 
-const LATITUDE_DELTA = 0.009;
-const LONGITUDE_DELTA = 0.009;
+const LATITUDE_DELTA = 0.006;
+const LONGITUDE_DELTA = 0.006;
 const LATITUDE = 37.78825;
 const LONGITUDE = -122.4324;
 
@@ -113,22 +114,23 @@ class MapHome extends Component {
     }
     requestLocationPermission();
 
-    var lat = 0;
-    var long = 0;
 
-    var initialRegion = {
-      latitude: lat,
-      longitude: long,
-      latitudeDelta: LATITUDE_DELTA,
-      longitudeDelta: LONGITUDE_DELTA,
-    };
-    this._timeout = setInterval(() => {
+
+    this._timeout = setTimeout(() => {
       // Your code
 
       Geolocation.getCurrentPosition(
         (position) => {
-          lat = parseFloat(position.coords.latitude);
-          long = parseFloat(position.coords.longitude);
+          var lat = parseFloat(position.coords.latitude);
+          var long = parseFloat(position.coords.longitude);
+
+
+          var initialRegion = {
+            latitude: lat,
+            longitude: long,
+            latitudeDelta: LATITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA,
+          };
 
           this.setState({ region: initialRegion });
           console.log(initialRegion);
@@ -139,11 +141,7 @@ class MapHome extends Component {
           timeout: 5000,
         }
       );
-    }, 2000);
-
-    if (lat != 0 || long != 0) {
-      clearInterval(this._timeout);
-    }
+    }, 5000);
   }
 
   componentWillUnmount() {
@@ -162,7 +160,7 @@ class MapHome extends Component {
         provider={PROVIDER_GOOGLE} // remove if not using Google Maps
         style={styles.map}
         loadingEnabled
-        followsUserLocation={true}
+        // followsUserLocation={true}
         showsUserLocation
         region={this.state.region}
         onRegionChange={this.onRegionChange}
@@ -171,10 +169,7 @@ class MapHome extends Component {
         zoomControlEnabled={true}
         zoomEnabled={true}
         zoomTapEnabled={true}
-        showsScale={true}
-        showsBuildings={true}
-        showsUserLocation={true}
-        showsCompass={true}
+
       >
         {/* <Marker draggable
           coordinate={{ latitude: this.state.initialPosition.latitude, longitude: this.state.initialPosition.longitude }}
@@ -185,13 +180,13 @@ class MapHome extends Component {
   }
 }
 
-const Home = () => {
+const Home = (props) => {
   let [latitude, setLatitude] = useState(37.78825);
   let [longitude, setLongitude] = useState(-122.4324);
   let [latitudeDelta, setLatitudeDelta] = useState(0.0922);
   let [longitudeDelta, setLongitudeDelta] = useState(0.0421);
 
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   return (
     <LinearGradient
@@ -200,6 +195,19 @@ const Home = () => {
     >
       <SafeAreaView style={styles.main}>
         <TopBar />
+        <Button
+          title="logout"
+          onPress={() => {
+            auth.signOut().then(() => {
+              // Sign-out successful.
+              props.navigation.push("Flow")
+            }).catch(() => {
+              // An error happened.
+            });
+          }}
+        >
+
+        </Button>
         <View style={{ marginTop: 30 }}>
           <LocationTab />
         </View>
@@ -209,18 +217,6 @@ const Home = () => {
             resizeMode="contain"
             source={require('../../assets/images/map.png')}
           /> */}
-          {/* <MapView
-            provider={PROVIDER_GOOGLE} // remove if not using Google Maps
-            style={styles.map}
-            showsUserLocation
-            region={{
-              latitude: 37.78825,
-              longitude: -122.4324,
-              latitudeDelta: 0.015,
-              longitudeDelta: 0.0121,
-            }}
-          >
-          </MapView> */}
           <MapHome />
         </View>
         {/* <View style={{ marginBottom: 80 }}>
