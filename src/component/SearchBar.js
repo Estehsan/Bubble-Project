@@ -27,12 +27,12 @@ const data = [
   },
 ];
 
-const SearchBar = () => {
+const SearchBar = ({ ...props }) => {
   const [search, onSearch] = React.useState(null);
 
   return (
     <View style={styles.container}>
-      <View style={styles.inputField}>
+      <View>
         <GooglePlacesAutocomplete
           placeholder="Where You wanna go ? "
           onPress={(data, details = null) => {
@@ -119,8 +119,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
     marginTop: 15,
-    paddingHorizontal: 10,
-    borderRadius: 100,
+    padding: 15,
+    backgroundColor: "#fff",
+    borderRadius: 20,
   },
   row: {
     flexDirection: "row",

@@ -65,8 +65,8 @@ function BottomTabNavigator() {
         }}
       /> */}
       <Stack.Screen
-        name="Drink"
-        component={Drink}
+        name="Message"
+        component={Message}
         options={{
           tabBarIcon: ({ focused }) => (
             <Ionicons style={styles.position} name="chatbubbles" size={30} />
@@ -74,8 +74,8 @@ function BottomTabNavigator() {
         }}
       />
       <Stack.Screen
-        name="Message"
-        component={Message}
+        name="Drink"
+        component={Drink}
         options={{
           tabBarIcon: ({ focused }) => (
             <McIcon style={styles.position} name="glass-cocktail" size={30} />
@@ -110,7 +110,6 @@ function Tabs() {
         options={{ headerShown: false }}
       />
       {/* )} */}
-
       <All.Screen
         name="FlowA"
         component={FlowA}
@@ -121,16 +120,13 @@ function Tabs() {
         component={FlowB}
         options={{ headerShown: false }}
       />
-
       <All.Screen name="MonProfil" component={MonProfil} />
-
       <All.Screen name="Drink" component={Drink} />
       <All.Screen name="Message" component={Message} />
+      <All.Screen name="UsersListPlace" component={UsersListPlace} />
       <All.Screen name="Fiche" component={Fiche} />
-
       <All.Screen name="Profile" component={Profile} />
       <All.Screen name="AchatUser" component={AchatUser} />
-      <All.Screen name="UsersListPlace" component={UsersListPlace} />
     </All.Navigator>
   );
 }

@@ -22,7 +22,7 @@ import TopBar from "../../component/TopBar";
 import LinearGradient from "react-native-linear-gradient";
 navigator.geolocation = require("@react-native-community/geolocation");
 import Geolocation from "@react-native-community/geolocation";
-import { auth } from '../../db/firebase'
+import { auth } from "../../db/firebase";
 
 import MapView, {
   Marker,
@@ -114,8 +114,6 @@ class MapHome extends Component {
     }
     requestLocationPermission();
 
-
-
     this._timeout = setTimeout(() => {
       // Your code
 
@@ -123,7 +121,6 @@ class MapHome extends Component {
         (position) => {
           var lat = parseFloat(position.coords.latitude);
           var long = parseFloat(position.coords.longitude);
-
 
           var initialRegion = {
             latitude: lat,
@@ -169,7 +166,6 @@ class MapHome extends Component {
         zoomControlEnabled={true}
         zoomEnabled={true}
         zoomTapEnabled={true}
-
       >
         {/* <Marker draggable
           coordinate={{ latitude: this.state.initialPosition.latitude, longitude: this.state.initialPosition.longitude }}
@@ -186,7 +182,7 @@ const Home = (props) => {
   let [latitudeDelta, setLatitudeDelta] = useState(0.0922);
   let [longitudeDelta, setLongitudeDelta] = useState(0.0421);
 
-  useEffect(() => { }, []);
+  useEffect(() => {}, []);
 
   return (
     <LinearGradient
@@ -198,16 +194,17 @@ const Home = (props) => {
         <Button
           title="logout"
           onPress={() => {
-            auth.signOut().then(() => {
-              // Sign-out successful.
-              props.navigation.push("Flow")
-            }).catch(() => {
-              // An error happened.
-            });
+            auth
+              .signOut()
+              .then(() => {
+                // Sign-out successful.
+                props.navigation.push("Flow");
+              })
+              .catch(() => {
+                // An error happened.
+              });
           }}
-        >
-
-        </Button>
+        ></Button>
         <View style={{ marginTop: 30 }}>
           <LocationTab />
         </View>
