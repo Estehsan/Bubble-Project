@@ -44,6 +44,19 @@ const signUp = (userDetails) => {
         if (user != null) {
           uid = user.uid;
         }
+        // const blob = new Promise((resolve, reject) => {
+        //   const xhr = new XMLHttpRequest();
+        //   xhr.onload = function() {
+        //     resolve(xhr.response);
+        //   };
+        //   xhr.onerror = function() {
+        //     reject(new TypeError("Network request failed"));
+        //   };
+        //   xhr.responseType = "blob";
+        //   xhr.open("GET", UserProfileImageConfig, true);
+        //   xhr.send(null);
+        // });
+        
         storage
           .ref()
           .child(`userProfileImage/${uid}/` + userProfileImage.substr(userProfileImage.length - 6))

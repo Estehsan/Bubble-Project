@@ -1,6 +1,6 @@
 import firebase from '../db/firebase'
-import 'firebase/firestore';
-const db = firebase.firestore();
+import { auth, storage, firestore } from "../db/firebase";
+
 
 
 function signUp(userDetails) {
@@ -84,4 +84,26 @@ function logIn(userLoginDetails) {
 }
 
 
-export { logIn, signUp };
+function current_User() {
+    return async (dispatch) => {
+        const getUser = await auth.onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in.
+                // console.log("update_user =>>", user.uid)
+                db.collection('users').doc(user.uid).get().then((snapshot) => {
+                    // console.log("snapshot.data =>>", snapshot.data());
+                    dispatch({
+                        type: 'SET_USER',
+                        user: { ...snapshot.data(), isLogin: true }
+                    })
+                })
+            } else {
+                // No user is signed in.
+            }
+
+        })
+    }
+}
+
+
+export { logIn, signUp, current_User };

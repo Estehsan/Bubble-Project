@@ -6,6 +6,9 @@ const reducer = (state = {}, action) => {
         case "SIGNUP_USER": {
             return { ...state, user: action.user }
         }
+        case "SET_USER": {
+            return { ...state, user: action.user }
+        }
         default: {
             return state;
         }

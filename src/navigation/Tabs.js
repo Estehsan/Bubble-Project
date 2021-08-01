@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { auth, storage, firestore } from "../db/firebase";
 
 import { StyleSheet, Text, View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -98,19 +97,7 @@ const screenOptionStyle = {
   headerShown: false,
 };
 function Tabs() {
-  let [user, setUser] = useState(null);
-
-  useEffect(async () => {
-    const getUser = await auth.onAuthStateChanged((user) => {
-      if (user) {
-        // User is signed in.
-        setUser(user);
-        // console.log(user)
-      } else {
-        // No user is signed in.
-      }
-    });
-  }, []);
+  
 
   return (
     <All.Navigator screenOptions={screenOptionStyle}>
