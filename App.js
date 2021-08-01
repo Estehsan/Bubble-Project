@@ -9,20 +9,17 @@ import { LogBox } from "react-native";
 import SplashScreen from "react-native-splash-screen";
 import { auth, storage, firestore } from "./src/db/firebase";
 import { current_User } from "./src/redux/action";
-import { connect } from 'react-redux';
-
+import { connect } from "react-redux";
 
 const App = (props) => {
-
   useEffect(() => {
-    if (props.current_User)
-    {
-      props.navigation.push("Home")
+    SplashScreen.hide();
+
+    if (props.current_User) {
+      props.navigation.push("Home");
+    } else {
+      props.navigation.push("Flow");
     }
-    else{
-      props.navigation.push("Flow")
-    }
-      SplashScreen.hide();
   }, []);
   return (
     <Provider store={store}>
@@ -34,11 +31,11 @@ const App = (props) => {
   );
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     current_User: () => dispatch(current_User()),
-  }
-}
+  };
+};
 
 export default connect(null, mapDispatchToProps)(App);
 

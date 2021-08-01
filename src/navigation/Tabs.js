@@ -22,6 +22,8 @@ import Flow from "./../screens/auth/Flow";
 import FlowA from "./../screens/auth/FlowA";
 import FlowB from "./../screens/auth/FlowB";
 import Fiche from "../screens/extra/Fiche";
+import UsersListPlace from "../screens/user/Drink/UsersListPlace";
+
 const Stack = createBottomTabNavigator();
 
 function BottomTabNavigator() {
@@ -97,18 +99,16 @@ const screenOptionStyle = {
   headerShown: false,
 };
 function Tabs() {
-  
-
   return (
     <All.Navigator screenOptions={screenOptionStyle}>
       {/* {user ? ( */}
-        <All.Screen name="Home" component={BottomTabNavigator} />
+      <All.Screen name="Home" component={BottomTabNavigator} />
       {/* ) : ( */}
-        <All.Screen
-          name="Flow"
-          component={Flow}
-          options={{ headerShown: false }}
-        />
+      <All.Screen
+        name="Flow"
+        component={Flow}
+        options={{ headerShown: false }}
+      />
       {/* )} */}
 
       <All.Screen
@@ -130,6 +130,7 @@ function Tabs() {
 
       <All.Screen name="Profile" component={Profile} />
       <All.Screen name="AchatUser" component={AchatUser} />
+      <All.Screen name="UsersListPlace" component={UsersListPlace} />
     </All.Navigator>
   );
 }

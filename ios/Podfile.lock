@@ -402,10 +402,10 @@ PODS:
     - React-Core
   - RNCMaskedView (0.1.11):
     - React
-  - RNFBApp (12.3.0):
+  - RNFBApp (12.4.0):
     - Firebase/CoreOnly (= 8.4.0)
     - React-Core
-  - RNFBAuth (12.3.0):
+  - RNFBAuth (12.4.0):
     - Firebase/Auth (= 8.4.0)
     - React-Core
     - RNFBApp
@@ -702,8 +702,8 @@ SPEC CHECKSUMS:
   RNBootSplash: 4844706cbb56a3270556c9b94e59dedadccd47e4
   RNCAsyncStorage: b03032fdbdb725bea0bd9e5ec5a7272865ae7398
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
-  RNFBApp: 64c90ab78b6010ed5c3ade026dfe5ff6442c21fd
-  RNFBAuth: 59fe503707ab7bd2c2790ac5b7a11d4e14b44452
+  RNFBApp: 97b2da195d4606716b284a7c8a988dd8ed5cec41
+  RNFBAuth: 63a3ca8a290937f73fa90d3bf37766458ce03e17
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNImageCropPicker: 35a3ceb837446fa11547704709bb22b5fac6d584
   RNReanimated: 9c13c86454bfd54dab7505c1a054470bfecd2563

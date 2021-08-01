@@ -10,6 +10,7 @@ import {
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import Icon from "react-native-vector-icons/Ionicons";
+import SearchFlatList from "./SearchFlatList";
 
 const data = [
   {
@@ -39,21 +40,17 @@ const SearchBar = () => {
             console.log(data, details);
           }}
           styles={{
-            textInput: styles.textInput,
+            textInput: styles.inputField,
           }}
           query={{
             key: "AIzaSyCI4_jhTZcxnYHla6xmzgatq4s_blaURno",
             language: "en",
           }}
+          currentLocation={true}
+          suppressDefaultStyles
+          currentLocationLabel="Current location"
+          renderRow={(item) => <SearchFlatList item={item} />}
         />
-        <TouchableOpacity
-          style={{ alignItems: "center", justifyContent: "center" }}
-          underlayColor="transparent"
-        >
-          <View>
-            <EvilIcons name="search" size={35} />
-          </View>
-        </TouchableOpacity>
       </View>
 
       {/* <View
@@ -117,16 +114,13 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   inputField: {
-    height: 47,
-
-    backgroundColor: "#fff",
     flexDirection: "row",
     alignContent: "center",
     justifyContent: "space-between",
     width: "100%",
-    marginTop: 20,
+    marginTop: 15,
     paddingHorizontal: 10,
-    borderRadius: 20,
+    borderRadius: 100,
   },
   row: {
     flexDirection: "row",
