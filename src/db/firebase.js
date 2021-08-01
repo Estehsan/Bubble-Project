@@ -35,7 +35,7 @@ const signUp = (userDetails) => {
   return new Promise((resolve, reject) => {
     auth
       .createUserWithEmailAndPassword(email, password)
-      .then((userCredential) => {
+      .then(async (userCredential) => {
         // Signed in
         var userInfo = userCredential.user;
         console.log("userinfo =>", userInfo);
@@ -44,29 +44,33 @@ const signUp = (userDetails) => {
         if (user != null) {
           uid = user.uid;
         }
-        // const blob = new Promise((resolve, reject) => {
-        //   const xhr = new XMLHttpRequest();
-        //   xhr.onload = function() {
-        //     resolve(xhr.response);
-        //   };
-        //   xhr.onerror = function() {
-        //     reject(new TypeError("Network request failed"));
-        //   };
-        //   xhr.responseType = "blob";
-        //   xhr.open("GET", UserProfileImageConfig, true);
-        //   xhr.send(null);
-        // });
-        
+
+        const filename = userProfileImage.substring(userProfileImage.lastIndexOf('/') + 1);
+
+
+        const blob = await new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.onload = function () {
+            resolve(xhr.response);
+          };
+          xhr.onerror = function () {
+            reject(new TypeError("Network request failed"));
+          };
+          xhr.responseType = "blob";
+          xhr.open("GET", userProfileImage, true);
+          xhr.send(null);
+        });
+
         storage
           .ref()
-          .child(`userProfileImage/${uid}/` + userProfileImage.substr(userProfileImage.length - 6))
-          .put(UserProfileImageConfig, metadata)
+          .child(`userProfileImage/${uid}/` + filename)
+          .put(blob, metadata)
           .then((url) => {
             url.ref
               .getDownloadURL()
               .then((success) => {
+                console.log(success);
                 const userProfileImageUrl = success;
-                console.log(userProfileImageUrl);
                 const userDetailsForDb = {
                   userName: FirstName + LastName,
                   userEmail: email,
