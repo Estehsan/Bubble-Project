@@ -10,8 +10,10 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "./../../component/TopBar";
+import { auth } from "../../db/firebase";
 
-const Profile = () => {
+
+const Profile = (props) => {
   const [number, setNumber] = useState("");
   return (
     <LinearGradient colors={["#DD488C", "#000"]} style={styles.linearGradient}>

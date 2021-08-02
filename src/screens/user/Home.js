@@ -27,6 +27,7 @@ import { auth } from "../../db/firebase";
 
 import MapView, {
   Marker,
+  MyCustomMarkerView,
   AnimatedRegion,
   Animated,
   Polyline,
@@ -35,8 +36,8 @@ import MapView, {
 
 // import haversine from "haversine";
 
-const LATITUDE_DELTA = 0.009;
-const LONGITUDE_DELTA = 0.009;
+const LATITUDE_DELTA = 0.100;
+const LONGITUDE_DELTA = 0.100;
 const LATITUDE = 37.78825;
 const LONGITUDE = -122.4324;
 
@@ -50,23 +51,21 @@ class MapHome extends Component {
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA,
       },
-      markers: [
-        {
-          title: "Firs Place",
-          coordinates: {
-            latitude: 24.959809247960834,
-            longitude: 67.12201478387814,
-          },
+      markers: ([{
+        title: 'hello',
+        coordinates: {
+          latitude: 24.9401511,
+          longitude: 67.0424337
         },
-        {
-          title: "Second Place",
-          coordinates: {
-            latitude: 24.96248884615662,
-            longitude: 67.12659736959563,
-          },
+      },
+      {
+        title: 'hello',
+        coordinates: {
+          latitude: 24.9401517,
+          longitude: 67.0424339
         },
-      ],
-      restaurantList: [],
+      }]),
+      restaurantList: []
     };
   }
 
@@ -152,29 +151,32 @@ class MapHome extends Component {
       );
     }, 4000);
 
-    let handleRestaurantSearch = () => {
-      console.log("here");
-      const url =
-        "https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
-      const location = `location=${this.state.region.latitude},${this.state.region.longitude}`;
-      const radius = "&radius=2000";
-      const type = "&keyword=restaurant";
-      const key = "&key=AIzaSyCI4_jhTZcxnYHla6xmzgatq4s_blaURno";
-      const restaurantSearchUrl = url + location + radius + type + key;
-      fetch(restaurantSearchUrl)
-        .then((response) => response.json())
-        .then(
-          (result) => this.setState({ restaurantList: result })
-          // console.log(result.results[0].geometry.location)
+    // let handleRestaurantSearch = () => {
+    //   console.log("here")
+    //   const url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?'
+    //   const location = `location=${this.state.region.latitude},${this.state.region.longitude}`;
+    //   const radius = '&radius=10000';
+    //   const type = '&keyword=restaurant';
+    //   const key = '&key=AIzaSyCI4_jhTZcxnYHla6xmzgatq4s_blaURno';
+    //   const restaurantSearchUrl = url + location + radius + type + key;
+    //   fetch(restaurantSearchUrl)
+    //     .then(response => response.json())
+    //     .then(result =>
 
-          // console.log(result.results[0].place_id)
-        )
-        .catch((e) => console.log(e));
-    };
+    //       this.setState({ restaurantList: result })
+    //       // console.log(result.results[0].geometry.location)
 
-    setTimeout(() => {
-      handleRestaurantSearch();
-    }, 5000);
+    //       // console.log(result.results[0].place_id)
+    //     )
+    //     .catch(e => console.log(e))
+    // }
+
+    // setTimeout(() => {
+    //   handleRestaurantSearch()
+
+    // }, 5000);
+
+
   }
 
   componentWillUnmount() {
@@ -187,45 +189,47 @@ class MapHome extends Component {
   };
 
   render() {
-    // console.log(this.state.restaurantList.results[0].name)
+    // console.log(this.state.restaurantList.results)
     return (
       <MapView
-        initialRegion={this.state.region}
         provider={PROVIDER_GOOGLE} // remove if not using Google Maps
         style={styles.map}
         loadingEnabled
-        // followsUserLocation={true}
         showsUserLocation
         region={this.state.region}
-        onRegionChange={this.onRegionChange}
-        showsIndoors={true}
-        showsMyLocationButton={true}
-        zoomControlEnabled={true}
+        followUserLocation={true}
         zoomEnabled={false}
-        zoomTapEnabled={true}
+        scrollEnabled={false}
       >
-        <Marker
-          coordinate={{
-            latitude: 24.959809247960834,
-            longitude: 67.12201478387814,
-          }}
-        >
-          <View>
-            <Text>Test</Text>
-          </View>
-        </Marker>
+
+
+       
+
+        {/* {
+          this.state.restaurantList.results &&
+          Object.keys(this.state.restaurantList.results).map((item, index) => {
+            <View>
+              <Marker
+                key={index}
+                title={this.state.restaurantList.results[item].name}
+                coordinate={{
+                  latitude: this.state.restaurantList.results[item].geometry.location.lat,
+                  longitude: this.state.restaurantList.results[item].geometry.location.lng
+                }}
+              />
+            </View>
+          })
+        } */}
+
       </MapView>
     );
   }
 }
 
 const Home = (props) => {
-  let [latitude, setLatitude] = useState(37.78825);
-  let [longitude, setLongitude] = useState(-122.4324);
-  let [latitudeDelta, setLatitudeDelta] = useState(0.0922);
-  let [longitudeDelta, setLongitudeDelta] = useState(0.0421);
+  useEffect(() => {
 
-  useEffect(() => {}, []);
+  }, []);
 
   return (
     <LinearGradient
@@ -234,34 +238,9 @@ const Home = (props) => {
     >
       <SafeAreaView style={styles.main}>
         <TopBar />
-        <Button
-          title="logout"
-          onPress={() => {
-            auth
-              .signOut()
-              .then(() => {
-                // Sign-out successful.
-                props.navigation.push("Flow");
-              })
-              .catch(() => {
-                // An error happened.
-              });
-          }}
-        ></Button>
         <View style={{ marginTop: 30 }}>
           <LocationTab />
         </View>
-        {/* <GooglePlacesAutocomplete
-          placeholder='Search'
-          onPress={(data, details = null) => {
-            // 'details' is provided when fetchDetails = true
-            console.log(data, details);
-          }}
-          query={{
-            key: 'AIzaSyCI4_jhTZcxnYHla6xmzgatq4s_blaURno',
-            language: 'en',
-          }}
-        /> */}
         <View style={styles.mapContainer}>
           {/* <Image
             style={{height: 400, width: '80%'}}

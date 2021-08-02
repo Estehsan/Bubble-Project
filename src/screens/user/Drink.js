@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -13,6 +13,7 @@ import LocationTab from "../../component/LocationTab";
 import TopBar from "../../component/TopBar";
 import ListContainer from "./../../component/ListContainer";
 import SearchBar from "./../../component/SearchBar";
+import { firestore } from "../../db/firebase";
 
 // linear-gradient(0deg, #FFFFFF 0%, #FFC1DD 78.9%)
 
@@ -26,7 +27,7 @@ const data = [
     img: require("./../../assets/images/description.png"),
   },
   {
-    id: "213213124",
+    id: "2132131242",
     title: "Second",
     place: "Second place Paris",
     location: "Karachi 18h",
@@ -35,7 +36,7 @@ const data = [
   },
 
   {
-    id: "213213124",
+    id: "2132131247",
     title: "Second",
     place: "Second place Paris",
     location: "Karachi 18h",
@@ -44,7 +45,7 @@ const data = [
   },
 
   {
-    id: "213213124",
+    id: "2132131249",
     title: "Second",
     place: "Second place Paris",
     location: "Karachi 18h",
@@ -53,7 +54,28 @@ const data = [
   },
 ];
 
-const Drink = ({ ...props }) => {
+const Drink = ({ navigation }) => {
+  let [locationData, useLocationData] = useState([]);
+
+  useEffect(() => {
+    firestore.collection("location").onSnapshot((querySnapshot) => {
+      let docs = querySnapshot.docs.map((doc) => ({
+        key: doc.id,
+        title: doc.data().title,
+        address: doc.data().address,
+        description: doc.data().description,
+        schedules: doc.data().schedules,
+        photo: doc.data().photo,
+      }));
+      useLocationData(docs);
+    });
+
+    // let gud = firestore.collection("location").doc("6sFYCoO5eIjYqIxxTtt8").get({
+    //   setLocationData
+    // })
+  }, []);
+
+  console.log(locationData);
   return (
     <LinearGradient
       colors={["#FFC1DD", "#ffffff"]}
@@ -68,32 +90,54 @@ const Drink = ({ ...props }) => {
         </View>
         <SearchBar />
         <View style={{ marginTop: 10 }}>
-          <FlatList
-            data={data}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() =>
-                  props.navigation.navigate("UsersListPlace", {
-                    id: item.id,
-                    title: item.title,
-                    place: item.place,
-                    location: item.location,
-                    code: item.code,
-                    img: item.img,
-                  })
-                }
-              >
-                <ListContainer
-                  title={item.title}
-                  place={item.place}
-                  location={item.location}
-                  code={item.code}
-                  img={item.img}
-                />
-              </TouchableOpacity>
-            )}
-          />
+          {locationData && (
+            <FlatList
+              data={data}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate("UsersListPlace", {
+                      id: item.id,
+                      title: item.title,
+                      place: item.place,
+                      location: item.location,
+                      code: item.code,
+                      img: item.img,
+                    })
+                  }
+                >
+                  <ListContainer
+                    title={item.title}
+                    place={item.place}
+                    location={item.location}
+                    code={item.code}
+                    img={item.img}
+                  />
+                </TouchableOpacity>
+              )}
+            />
+          )}
+          {locationData && (
+            <FlatList
+              data={locationData}
+              keyExtractor={(item) => item.key}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("AchatUser")}
+                >
+                  <ListContainer
+                    title={item.title}
+                    place={item.address}
+                    location={item.description}
+                    code={item.schedules}
+                    img={item.photo}
+                    navigation={navigation}
+                  />
+                </TouchableOpacity>
+              )}
+            />
+          )}
         </View>
       </SafeAreaView>
     </LinearGradient>
