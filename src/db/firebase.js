@@ -1,4 +1,4 @@
-import firebase from "firebase/app";
+import * as firebase from 'firebase';
 import "firebase/auth";
 import "firebase/database";
 import "firebase/firestore";
@@ -14,14 +14,16 @@ var firebaseConfig = {
   measurementId: "G-4YC4STKFS9",
 };
 
-let app;
-if (firebase.apps.length === 0) {
-  app = firebase.initializeApp(firebaseConfig);
-} else {
-  app = firebase.app();
-}
+// let app;
+// if (firebase.apps.length === 0) {
+//   app = firebase.initializeApp(firebaseConfig);
+// } else {
+//   app = firebase.app();
+// }
 
-const db = app.firestore();
+firebase.initializeApp(firebaseConfig);
+
+// const db = app.firestore();
 const firestore = firebase.firestore();
 const auth = firebase.auth();
 const storage = firebase.storage();
@@ -137,7 +139,7 @@ function logIn({ userLoginDetails, ...props }) {
     });
 }
 
-export { db, auth, firestore, storage, logIn, signUp };
+export { auth, firestore, storage, logIn, signUp };
 
 // export const app = firebase.initializeApp(firebaseConfig);
 // export const db = firebase.firestore();

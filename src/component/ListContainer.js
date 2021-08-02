@@ -2,19 +2,21 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import Colors from "../assets/colors/Colors";
 
-const ListContainer = ({ title, locations, place, code, img, ...props }) => {
+const ListContainer = ({ title, location, place, code, img , navigation}) => {
   return (
     <View style={styles.Container}>
       <View style={styles.main}>
         <View style={styles.lContainer}>
-          <Image style={{ height: 100, width: 110 }} source={img} />
+          <Image style={{ height: 100, width: 110 }} source={{ uri: img }} />
         </View>
         <View style={styles.rContainer}>
           <Text>{title}</Text>
-          <Text>{locations}</Text>
+          <Text>{location}</Text>
           <Text>{place}</Text>
           <Text>{code}</Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => {
+            navigation.navigate('UsersListPlace');
+          }}>
             <View style={styles.btn}>
               <Text>Hello</Text>
             </View>
