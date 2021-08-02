@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { StyleSheet, Text, View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -23,6 +23,11 @@ import FlowA from "./../screens/auth/FlowA";
 import FlowB from "./../screens/auth/FlowB";
 import Fiche from "../screens/extra/Fiche";
 import UsersListPlace from "../screens/user/Drink/UsersListPlace";
+
+
+
+import { connect } from "react-redux";
+
 
 const Stack = createBottomTabNavigator();
 
@@ -101,15 +106,12 @@ const screenOptionStyle = {
 function Tabs() {
   return (
     <All.Navigator screenOptions={screenOptionStyle}>
-      {/* {user ? ( */}
-      <All.Screen name="Home" component={BottomTabNavigator} />
-      {/* ) : ( */}
       <All.Screen
         name="Flow"
         component={Flow}
         options={{ headerShown: false }}
       />
-      {/* )} */}
+     
       <All.Screen
         name="FlowA"
         component={FlowA}
@@ -120,6 +122,8 @@ function Tabs() {
         component={FlowB}
         options={{ headerShown: false }}
       />
+
+      <All.Screen name="Home" component={BottomTabNavigator} />
       <All.Screen name="MonProfil" component={MonProfil} />
       <All.Screen name="Drink" component={Drink} />
       <All.Screen name="Message" component={Message} />
@@ -130,7 +134,12 @@ function Tabs() {
     </All.Navigator>
   );
 }
-export default Tabs;
+
+
+
+
+export default Tabs
+
 
 const styles = StyleSheet.create({
   shadow: {

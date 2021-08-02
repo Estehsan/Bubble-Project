@@ -10,17 +10,32 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "../../component/TopBar";
-import { auth, storage, firestore } from "../../db/firebase";
+
+import { auth } from "../../db/firebase";
 
 
 //  Login or Register Button
 
 
-function Flow({ ...props }) {
-  const [number, setNumber] = useState("");
+
+function Flow(props) {
+
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        props.navigation.push("Home")
+      } else {
+
+      }
+
+    })
+
+  }, []);
+
 
   return (
-    <LinearGradient colors={["#000", "#DD488C"]} style={styles.linearGradient}>
+
+    < LinearGradient colors={["#000", "#DD488C"]} style={styles.linearGradient} >
       <SafeAreaView style={styles.main}>
         <TopBar />
 
@@ -38,9 +53,10 @@ function Flow({ ...props }) {
           </TouchableOpacity>
         </View>
       </SafeAreaView>
-    </LinearGradient>
+    </LinearGradient >
   );
 }
+
 
 export default Flow;
 

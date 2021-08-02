@@ -84,26 +84,26 @@ function logIn(userLoginDetails) {
 }
 
 
-function current_User() {
-    return async (dispatch) => {
-        const getUser = await auth.onAuthStateChanged((user) => {
-            if (user) {
-                // User is signed in.
-                // console.log("update_user =>>", user.uid)
-                db.collection('users').doc(user.uid).get().then((snapshot) => {
-                    // console.log("snapshot.data =>>", snapshot.data());
-                    dispatch({
-                        type: 'SET_USER',
-                        user: { ...snapshot.data(), isLogin: true }
-                    })
-                })
-            } else {
-                // No user is signed in.
-            }
+// function current_User() {
+//     return async (dispatch) => {
+//         const getUser = await auth.onAuthStateChanged((user) => {
+//             if (user) {
+//                 // User is signed in.
+//                 // console.log("update_user =>>", user.uid)
+//                 db.collection('users').doc(user.uid).get().then((snapshot) => {
+//                     // console.log("snapshot.data =>>", snapshot.data());
+//                     dispatch({
+//                         type: 'SET_USER',
+//                         user: { ...snapshot.data(), isLogin: true }
+//                     })
+//                 })
+//             } else {
+//                 // No user is signed in.
+//             }
 
-        })
-    }
-}
+//         })
+//     }
+// }
 
 
 export { logIn, signUp, current_User };

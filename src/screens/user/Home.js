@@ -13,6 +13,7 @@ import {
   DeviceEventEmitter,
 } from "react-native";
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 import Colors from "../../assets/colors/Colors";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -34,8 +35,8 @@ import MapView, {
 
 // import haversine from "haversine";
 
-const LATITUDE_DELTA = 0.006;
-const LONGITUDE_DELTA = 0.006;
+const LATITUDE_DELTA = 0.009;
+const LONGITUDE_DELTA = 0.009;
 const LATITUDE = 37.78825;
 const LONGITUDE = -122.4324;
 
@@ -49,12 +50,21 @@ class MapHome extends Component {
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA,
       },
-      initialPosition: {
-        latitude: LATITUDE,
-        longitude: LONGITUDE,
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA,
+      markers: [{
+        title: 'hello',
+        coordinates: {
+          latitude: 37.78825,
+          longitude: -122.4324
+        },
       },
+      {
+        title: 'hello',
+        coordinates: {
+          latitude: 37.78821,
+          longitude: -122.4329
+        },
+      }],
+      restaurantList: []
     };
   }
 
@@ -112,7 +122,7 @@ class MapHome extends Component {
         console.warn(err);
       }
     }
-    requestLocationPermission();
+    await requestLocationPermission();
 
     this._timeout = setTimeout(() => {
       // Your code
@@ -138,7 +148,34 @@ class MapHome extends Component {
           timeout: 5000,
         }
       );
+    }, 4000);
+
+    let handleRestaurantSearch = () => {
+      console.log("here")
+      const url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?'
+      const location = `location=${this.state.region.latitude},${this.state.region.longitude}`;
+      const radius = '&radius=2000';
+      const type = '&keyword=restaurant';
+      const key = '&key=AIzaSyCI4_jhTZcxnYHla6xmzgatq4s_blaURno';
+      const restaurantSearchUrl = url + location + radius + type + key;
+      fetch(restaurantSearchUrl)
+        .then(response => response.json())
+        .then(result =>
+
+          this.setState({ restaurantList: result })
+          // console.log(result.results[0].geometry.location)
+
+          // console.log(result.results[0].place_id)
+        )
+        .catch(e => console.log(e))
+    }
+
+    setTimeout(() => {
+      handleRestaurantSearch()
+
     }, 5000);
+
+
   }
 
   componentWillUnmount() {
@@ -151,6 +188,7 @@ class MapHome extends Component {
   };
 
   render() {
+    // console.log(this.state.restaurantList.results[0].name)
     return (
       <MapView
         initialRegion={this.state.region}
@@ -164,13 +202,35 @@ class MapHome extends Component {
         showsIndoors={true}
         showsMyLocationButton={true}
         zoomControlEnabled={true}
-        zoomEnabled={true}
+        zoomEnabled={false}
         zoomTapEnabled={true}
+        scrollEnabled={false}
       >
-        {/* <Marker draggable
-          coordinate={{ latitude: this.state.initialPosition.latitude, longitude: this.state.initialPosition.longitude }}
-          onDragEnd={(e) => this.setState({ x: e.nativeEvent.coordinate })}
-        /> */}
+
+        {/* {this.state.markers.map((marker, index) => {
+          <MapView.Marker
+            key={index}
+            coordinate={marker.coordinates}
+            title={marker.title}
+
+          />
+        })
+        } */}
+
+        {
+          this.state.restaurantList.results &&
+          Object.keys(this.state.restaurantList.results).map((item, index) => {
+            <Marker
+              key={index}
+              title={this.state.restaurantList.results[item].name}
+              coordinate={{
+                latitude: this.state.restaurantList.results[item].geometry.location.lat,
+                longitude: this.state.restaurantList.results[item].geometry.location.lng
+              }}
+            />
+          })
+        }
+        
       </MapView>
     );
   }
@@ -182,7 +242,11 @@ const Home = (props) => {
   let [latitudeDelta, setLatitudeDelta] = useState(0.0922);
   let [longitudeDelta, setLongitudeDelta] = useState(0.0421);
 
-  useEffect(() => {}, []);
+
+
+  useEffect(() => {
+
+  }, []);
 
   return (
     <LinearGradient
@@ -208,12 +272,24 @@ const Home = (props) => {
         <View style={{ marginTop: 30 }}>
           <LocationTab />
         </View>
+        {/* <GooglePlacesAutocomplete
+          placeholder='Search'
+          onPress={(data, details = null) => {
+            // 'details' is provided when fetchDetails = true
+            console.log(data, details);
+          }}
+          query={{
+            key: 'AIzaSyCI4_jhTZcxnYHla6xmzgatq4s_blaURno',
+            language: 'en',
+          }}
+        /> */}
         <View style={styles.mapContainer}>
           {/* <Image
             style={{height: 400, width: '80%'}}
             resizeMode="contain"
             source={require('../../assets/images/map.png')}
           /> */}
+
           <MapHome />
         </View>
         {/* <View style={{ marginBottom: 80 }}>
@@ -241,6 +317,7 @@ const styles = StyleSheet.create({
   },
   map: {
     ...StyleSheet.absoluteFillObject,
+    height: 300
   },
   bubble: {
     flex: 1,
