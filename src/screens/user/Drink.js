@@ -53,7 +53,7 @@ const data = [
   },
 ];
 
-const Drink = ({ navigation }) => {
+const Drink = ({ ...props }) => {
   return (
     <LinearGradient
       colors={["#FFC1DD", "#ffffff"]}
@@ -73,7 +73,16 @@ const Drink = ({ navigation }) => {
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <TouchableOpacity
-                onPress={() => navigation.navigate("AchatUser")}
+                onPress={() =>
+                  props.navigation.navigate("UsersListPlace", {
+                    id: item.id,
+                    title: item.title,
+                    place: item.place,
+                    location: item.location,
+                    code: item.code,
+                    img: item.img,
+                  })
+                }
               >
                 <ListContainer
                   title={item.title}

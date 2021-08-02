@@ -12,21 +12,6 @@ import EvilIcons from "react-native-vector-icons/EvilIcons";
 import Icon from "react-native-vector-icons/Ionicons";
 import SearchFlatList from "./SearchFlatList";
 
-const data = [
-  {
-    id: "1",
-    content: "Malir, Saudabad",
-  },
-  {
-    id: "123",
-    content: "Kara, Saudabad",
-  },
-  {
-    id: "421",
-    content: "Pakistan, Saudabad",
-  },
-];
-
 const SearchBar = ({ ...props }) => {
   const [search, onSearch] = React.useState(null);
 
@@ -38,7 +23,9 @@ const SearchBar = ({ ...props }) => {
           onPress={(data, details = null) => {
             // 'details' is provided when fetchDetails = true
             console.log(data, details);
+            props.navigation.navigate("UsersListPlace");
           }}
+          fetchDetails
           styles={{
             textInput: styles.inputField,
           }}
