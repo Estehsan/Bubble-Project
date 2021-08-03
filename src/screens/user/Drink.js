@@ -65,9 +65,10 @@ const Drink = ({ navigation }) => {
         address: doc.data().address,
         description: doc.data().description,
         schedules: doc.data().schedules,
-        photo: doc.data().photo,
+        img: doc.data().photo,
       }));
       useLocationData(docs);
+      console.log(locationData);
     });
 
     // let gud = firestore.collection("location").doc("6sFYCoO5eIjYqIxxTtt8").get({

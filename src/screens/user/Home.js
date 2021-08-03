@@ -23,7 +23,8 @@ import TopBar from "../../component/TopBar";
 import LinearGradient from "react-native-linear-gradient";
 navigator.geolocation = require("@react-native-community/geolocation");
 import Geolocation from "@react-native-community/geolocation";
-import { auth } from "../../db/firebase";
+import { auth, firestore } from "../../db/firebase";
+import Entypo from "react-native-vector-icons/Entypo";
 
 import MapView, {
   Marker,
@@ -36,8 +37,8 @@ import MapView, {
 
 // import haversine from "haversine";
 
-const LATITUDE_DELTA = 0.100;
-const LONGITUDE_DELTA = 0.100;
+const LATITUDE_DELTA = 0.1;
+const LONGITUDE_DELTA = 0.1;
 const LATITUDE = 37.78825;
 const LONGITUDE = -122.4324;
 
@@ -51,21 +52,23 @@ class MapHome extends Component {
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA,
       },
-      markers: ([{
-        title: 'hello',
-        coordinates: {
-          latitude: 24.9401511,
-          longitude: 67.0424337
+      markers: [
+        {
+          title: "hello",
+          coordinates: {
+            latitude: 24.9401511,
+            longitude: 67.0424337,
+          },
         },
-      },
-      {
-        title: 'hello',
-        coordinates: {
-          latitude: 24.9401517,
-          longitude: 67.0424339
+        {
+          title: "hello",
+          coordinates: {
+            latitude: 24.9401517,
+            longitude: 67.0424339,
+          },
         },
-      }]),
-      restaurantList: []
+      ],
+      restaurantList: [],
     };
   }
 
@@ -175,8 +178,6 @@ class MapHome extends Component {
     //   handleRestaurantSearch()
 
     // }, 5000);
-
-
   }
 
   componentWillUnmount() {
@@ -194,17 +195,23 @@ class MapHome extends Component {
       <MapView
         provider={PROVIDER_GOOGLE} // remove if not using Google Maps
         style={styles.map}
-        loadingEnabled
-        showsUserLocation
+        // loadingEnabled
+        // showsUserLocation
         region={this.state.region}
-        followUserLocation={true}
-        zoomEnabled={false}
-        scrollEnabled={false}
+        // followUserLocation={true}
+        // zoomEnabled={false}
+        // scrollEnabled={false}
       >
-
-
-       
-
+        <Marker
+          coordinate={{
+            latitude: 37.7236043984344,
+            longitude: -122.44177813774748,
+          }}
+        >
+          <View>
+            <Entypo color="red" name="flower" size={50} />
+          </View>
+        </Marker>
         {/* {
           this.state.restaurantList.results &&
           Object.keys(this.state.restaurantList.results).map((item, index) => {
@@ -220,15 +227,28 @@ class MapHome extends Component {
             </View>
           })
         } */}
-
       </MapView>
     );
   }
 }
 
 const Home = (props) => {
+  const [marker, setMarker] = useState([]);
   useEffect(() => {
-
+    firestore.collection("location").onSnapshot((querySnapshot) => {
+      let docs = querySnapshot.docs.map((doc) => ({
+        key: doc.id,
+        title: doc.data().title,
+        address: doc.data().address,
+        description: doc.data().description,
+        schedules: doc.data().schedules,
+        img: doc.data().photo,
+        longitude: doc.data().longitude,
+        latitude: doc.data().latitude,
+      }));
+      setMarker(docs);
+      console.log(marker);
+    });
   }, []);
 
   return (
@@ -275,7 +295,7 @@ const styles = StyleSheet.create({
   },
   map: {
     ...StyleSheet.absoluteFillObject,
-    height: 300,
+    height: 400,
   },
   bubble: {
     flex: 1,
