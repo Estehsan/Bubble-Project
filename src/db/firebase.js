@@ -28,6 +28,8 @@ const firestore = firebase.firestore();
 const auth = firebase.auth();
 const storage = firebase.storage();
 
+firestore.settings({ experimentalForceLongPolling: true });
+
 const signUp = (userDetails) => {
 
   const { email, password, userProfileImage, gender, FirstName, LastName, UserProfileImageConfig, contentType, navigation } = userDetails;

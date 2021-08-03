@@ -2,12 +2,15 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import Colors from "../assets/colors/Colors";
 
-const ListContainer = ({ title, location, place, code, img , navigation}) => {
+const ListContainer = ({ title, location, place, code, img, navigation }) => {
   return (
     <View style={styles.Container}>
       <View style={styles.main}>
         <View style={styles.lContainer}>
-          <Image style={{ height: 100, width: 110 }} source={{ uri: img }} />
+          {img ?
+            <Image style={{ height: 100, width: 110 }} source={{ uri: img }} />
+            : <Image style={{ height: 100, width: 110 }} source={require("../assets/images/description.png")} />
+          }
         </View>
         <View style={styles.rContainer}>
           <Text>{title}</Text>
@@ -15,7 +18,7 @@ const ListContainer = ({ title, location, place, code, img , navigation}) => {
           <Text>{place}</Text>
           <Text>{code}</Text>
           <TouchableOpacity onPress={() => {
-            navigation.navigate('UsersListPlace');
+            // navigation.navigate('UsersListPlace');
           }}>
             <View style={styles.btn}>
               <Text>Hello</Text>

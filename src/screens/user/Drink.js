@@ -91,7 +91,7 @@ const Drink = ({ navigation }) => {
         </View>
         <SearchBar />
         <View style={{ marginTop: 10 }}>
-          {locationData && (
+          {/* {locationData && (
             <FlatList
               data={data}
               keyExtractor={(item) => item.id}
@@ -118,14 +118,23 @@ const Drink = ({ navigation }) => {
                 </TouchableOpacity>
               )}
             />
-          )}
+          )} */}
           {locationData && (
             <FlatList
               data={locationData}
               keyExtractor={(item) => item.key}
               renderItem={({ item }) => (
                 <TouchableOpacity
-                  onPress={() => navigation.navigate("AchatUser")}
+                  onPress={() =>
+                    navigation.navigate("UsersListPlace", {
+                      id: item.key,
+                      title: item.title,
+                      place: item.place,
+                      location: item.location,
+                      code: item.code,
+                      img: item.img,
+                    })
+                  }
                 >
                   <ListContainer
                     title={item.title}
