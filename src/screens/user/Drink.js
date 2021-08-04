@@ -75,7 +75,7 @@ const Drink = ({ navigation }) => {
     // })
   }, []);
 
-  console.log(locationData);
+  // console.log(locationData);
   return (
     <LinearGradient
       colors={["#FFC1DD", "#ffffff"]}
@@ -128,10 +128,10 @@ const Drink = ({ navigation }) => {
                     navigation.navigate("UsersListPlace", {
                       id: item.key,
                       title: item.title,
-                      place: item.place,
-                      location: item.location,
-                      code: item.code,
-                      img: item.img,
+                      place: item.address,
+                      location: item.description,
+                      code: item.schedules,
+                      img: item.photo,
                     })
                   }
                 >

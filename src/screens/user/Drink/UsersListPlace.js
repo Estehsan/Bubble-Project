@@ -38,10 +38,11 @@ const users = [
 const UsersListPlace = ({ route, ...props }) => {
   const { id, title, place, location, code, img } = route.params;
   const [userData, setUserData] = useState([])
-
+  const [currentUserId, setCurrentUserId] = useState("")
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if (user) {
+        setCurrentUserId(user.uid)
         firestore.collection("users").onSnapshot((querySnapshot) => {
           let docs = querySnapshot.docs.filter((datam) => datam.id != user.uid).map((doc) => ({
             id: doc.id,
@@ -50,6 +51,7 @@ const UsersListPlace = ({ route, ...props }) => {
             userImg: doc.data().userProfileImageUrl,
           }));
           setUserData(docs);
+          // console.log(docs)
         });
       } else {
         // User is signed out
@@ -59,7 +61,7 @@ const UsersListPlace = ({ route, ...props }) => {
 
   }, [])
 
-  // console.log(userData[1].userImg)
+  console.log("gettinguserid =>",currentUserId)
   return (
     <LinearGradient
       colors={["#FFC1DD", "#ffffff"]}
@@ -92,7 +94,18 @@ const UsersListPlace = ({ route, ...props }) => {
               data={userData}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
-                <TouchableOpacity style={styles.ListOfUsers}>
+                <TouchableOpacity
+                  style={styles.ListOfUsers}
+                  onPress={() => {
+                    props.navigation.navigate("Message", {
+                      currentUserId : currentUserId,
+                      messageId: item.id,
+                      name: item.name,
+                      gender: item.gender,
+                      messageImg: item.userImg
+                    })
+                  }}
+                >
                   <UserChatInfo
                     id={item.id}
                     name={item.name}
