@@ -180,17 +180,9 @@ class MapHome extends Component {
     // }, 5000);
   }
 
-  componentWillUnmount() {
-    // used only when "providerListener" is enabled
-    LocationServicesDialogBox.stopListener(); // Stop the "locationProviderStatusChange" listener
-  }
-
-  onRegionChange = (region) => {
-    this.setState({ region });
-  };
-
   render() {
     // console.log(this.state.restaurantList.results)
+
     return (
       <MapView
         provider={PROVIDER_GOOGLE} // remove if not using Google Maps
@@ -202,16 +194,19 @@ class MapHome extends Component {
         // zoomEnabled={false}
         // scrollEnabled={false}
       >
-        <Marker
-          coordinate={{
-            latitude: 37.7236043984344,
-            longitude: -122.44177813774748,
-          }}
-        >
-          <View>
-            <Entypo color="red" name="flower" size={50} />
-          </View>
-        </Marker>
+        {marker.map((marker) => (
+          <Marker
+            coordinate={{
+              latitude: this.props.latitude,
+              longitude: this.props.logitude,
+            }}
+          >
+            <View>
+              <Entypo color="red" name="flower" size={50} />
+            </View>
+          </Marker>
+        ))}
+
         {/* {
           this.state.restaurantList.results &&
           Object.keys(this.state.restaurantList.results).map((item, index) => {
@@ -247,10 +242,9 @@ const Home = (props) => {
         latitude: doc.data().latitude,
       }));
       setMarker(docs);
-      console.log(marker);
     });
   }, []);
-
+  console.log(marker);
   return (
     <LinearGradient
       colors={["#FFC1DD", "#ffffff"]}
@@ -268,7 +262,7 @@ const Home = (props) => {
             source={require('../../assets/images/map.png')}
           /> */}
 
-          <MapHome />
+          <MapHome logitude={longitude} latitude={latitude} key={key} />
         </View>
         {/* <View style={{ marginBottom: 80 }}>
           <ListContainer />
