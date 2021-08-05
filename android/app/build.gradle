@@ -127,6 +127,8 @@ def jscFlavor = 'org.webkit:android-jsc:+'
 def enableHermes = project.ext.react.get("enableHermes", false);
 
 android {
+     compileSdkVersion 27
+    buildToolsVersion "27.0.3"
     ndkVersion rootProject.ext.ndkVersion
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -142,8 +144,11 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-         playServicesVersion = "17.0.0" // or find latest version
-    androidMapsUtilsVersion = "2.2.0"
+        targetSdkVersion 27
+        vectorDrawables.useSupportLibrary = true
+
+        // playServicesVersion = "17.2.1" // or find latest version
+        // androidMapsUtilsVersion = "2.2.0"
     }
     splits {
         abi {
@@ -195,8 +200,10 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
-
+    // compile "com.google.android.gms:play-services:10.0.1"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+    implementation project(':react-native-splash-screen')
+
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'

@@ -11,10 +11,17 @@ import {
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "./../../component/TopBar";
 
-// This is Login SCREEN
+// This is signUp SCREEN
+
+
+// let handlecheck = (email, password) => {
+
+// }
 
 const FlowA = ({ ...props }) => {
-  const [number, setNumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   return (
     <LinearGradient colors={["#DD488C", "#000"]} style={styles.linearGradient}>
       <SafeAreaView style={styles.main}>
@@ -25,20 +32,23 @@ const FlowA = ({ ...props }) => {
         <View style={styles.Form}>
           <TextInput
             style={styles.input}
-            onChangeText={setNumber}
-            value={number}
-            placeholder="pseudo "
-            keyboardType="numeric"
+            onChangeText={setEmail}
+            value={email}
+            placeholder="pseudo"
+            keyboardType="default"
           />
           <TextInput
             style={styles.input}
-            onChangeText={setNumber}
-            value={number}
+            onChangeText={setPassword}
+            value={password}
             placeholder="date de naissance"
-            keyboardType="numeric"
+            keyboardType="default"
           />
 
-          <TouchableOpacity onPress={() => props.navigation.push("MonProfil")}>
+          <TouchableOpacity onPress={() => {
+            if (email != "" && password != "")
+              props.navigation.push("MonProfil", { email, password })
+          }}>
             <View style={styles.btnopacity}>
               <Text style={styles.f}>VALIDER</Text>
             </View>
@@ -48,6 +58,7 @@ const FlowA = ({ ...props }) => {
     </LinearGradient>
   );
 };
+
 
 export default FlowA;
 

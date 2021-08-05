@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import ImagePicker from "react-native-image-crop-picker";
+
+import { AsyncStorage } from "@react-native-async-storage/async-storage";
 import {
   StyleSheet,
   Text,
@@ -7,15 +10,46 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  Touchable,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "./../../component/TopBar";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { auth, storage, firestore, signUp } from "../../db/firebase";
+
+const handleSignUp = async (
+  email,
+  password,
+  userProfileImage,
+  gender,
+  FirstName
+) => { };
 
 // This is register screen II
 
-const MonProfil = ({ ...props }) => {
+const MonProfil = ({ route, ...props }) => {
+  const { email, password } = route.params;
   const [number, setNumber] = useState("");
+  const [userProfileImage, setUserProfileImage] = useState(null);
+  const [gender, setGender] = useState("");
+  const [FirstName, setFirstName] = useState(null);
+  const [LastName, setLastName] = useState(null);
+  const [UserProfileImageConfig, setUserProfileImageConfig] = useState(null);
+  const[contentType,setcontentType] = useState(null)
+
+  const TakeImgFromGallery = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true,
+    }).then((image) => {
+      console.log(image);
+      setUserProfileImage(image.path);
+      setUserProfileImageConfig(image);
+      setcontentType(image.mime)
+    });
+  };
+
   return (
     <LinearGradient colors={["#DD488C", "#000"]} style={styles.linearGradient}>
       <SafeAreaView style={styles.main}>
@@ -26,31 +60,107 @@ const MonProfil = ({ ...props }) => {
         <View style={styles.Form}>
           <TextInput
             style={styles.input}
-            onChangeText={setNumber}
-            value={number}
+            onChangeText={setFirstName}
+            value={FirstName}
             placeholder="pseudo "
-            keyboardType="numeric"
+            keyboardType="default"
           />
 
           <TextInput
             style={styles.input}
-            onChangeText={setNumber}
-            value={number}
+            onChangeText={setLastName}
+            value={LastName}
             placeholder="date de naissance"
-            keyboardType="numeric"
+            keyboardType="default"
           />
 
           <View style={styles.SelectGender}>
-            <Ionicons style={styles.position} name="male-female" size={60} />
+            <TouchableOpacity onPress={() => setGender("mix")}>
+              <View>
+                <Ionicons
+                  style={styles.position}
+                  name="male-female"
+                  size={60}
+                  color={gender === "mix" ? "pink" : "#000"}
+                />
+              </View>
+            </TouchableOpacity>
 
-            <Ionicons style={styles.position} name="female" size={60} />
-            <Ionicons style={styles.position} name="male" size={60} />
-          </View>
-          <View style={styles.uploadImg}>
-            <Ionicons style={styles.position} name="md-camera" size={60} />
+            <TouchableOpacity onPress={() => setGender("male")}>
+              <View>
+                <Ionicons
+                  style={styles.position}
+                  name="female"
+                  size={60}
+                  color={gender === "male" ? "pink" : "#000"}
+                />
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setGender("female")}>
+              <View>
+                <Ionicons
+                  style={styles.position}
+                  name="male"
+                  size={60}
+                  color={gender === "female" ? "pink" : "#000"}
+                />
+              </View>
+            </TouchableOpacity>
           </View>
 
-          <TouchableOpacity onPress={() => props.navigation.push("Home")}>
+          {userProfileImage === null ? (
+            <TouchableOpacity
+              onPress={TakeImgFromGallery}
+              style={styles.uploadImg}
+            >
+              <Ionicons style={styles.position} name="md-camera" size={60} />
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.uploadImg}>
+              <Image
+                style={{ height: 80, width: 80, borderRadius: 50 }}
+                resizeMode="contain"
+                source={{
+                  uri: userProfileImage,
+                }}
+              />
+            </View>
+          )}
+
+          <TouchableOpacity
+            onPress={async () => {
+              if (
+                email != "" &&
+                password != "" &&
+                userProfileImage != null &&
+                gender != "" &&
+                FirstName != "" &&
+                LastName != ""
+              ) {
+                var userDetails = {
+                  email: email,
+                  password: password,
+                  userProfileImage: userProfileImage,
+                  gender: gender,
+                  FirstName: FirstName,
+                  LastName: LastName,
+                  UserProfileImageConfig : UserProfileImageConfig,
+                  contentType : contentType,
+                  navigation : props.navigation
+                };
+
+                try {
+                  const SignUpReturn = await signUp(userDetails);
+                  props.navigation.push("Home")
+                  console.log(userDetails);
+                }
+                catch(err){
+                  console.log(err)
+                }
+               
+              }
+            }}
+          >
             <View style={styles.btn}>
               <Text style={styles.f}>MODIFIER</Text>
             </View>

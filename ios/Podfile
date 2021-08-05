@@ -18,6 +18,8 @@ pod 'react-native-google-maps', :path => rn_maps_path
     :hermes_enabled => false
   )
 
+  pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
+
   target 'BubbleCodeTests' do
     inherit! :complete
     # Pods for testing

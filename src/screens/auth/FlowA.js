@@ -8,12 +8,19 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
+import { auth } from '../../db/firebase';
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "./../../component/TopBar";
 
-// This is REGISTER SCREEN
+
+
+// const handleLogIn = async (email, password) => {
+
+// }
+// This is Login SCREEN
 const FlowA = ({ ...props }) => {
-  const [number, setNumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   return (
     <LinearGradient colors={["#DD488C", "#000"]} style={styles.linearGradient}>
@@ -25,20 +32,48 @@ const FlowA = ({ ...props }) => {
         <View style={styles.Form}>
           <TextInput
             style={styles.input}
-            onChangeText={setNumber}
-            value={number}
-            placeholder="pseudo "
-            keyboardType="numeric"
+            onChangeText={setEmail}
+            value={email}
+            placeholder="pseudo"
+            keyboardType="default"
           />
           <TextInput
             style={styles.input}
-            onChangeText={setNumber}
-            value={number}
+            onChangeText={setPassword}
+            value={password}
             placeholder="date de naissance"
-            keyboardType="numeric"
+            keyboardType="default"
           />
 
-          <TouchableOpacity onPress={() => props.navigation.replace("Home")}>
+          <TouchableOpacity onPress={() => {
+            if (email != "" && password != "") {
+
+              // console.log(userDetails)
+              try {
+                auth.signInWithEmailAndPassword(email, password)
+                  .then((userCredential) => {
+                    // Signed in 
+                    var user = userCredential.user;
+                    props.navigation.replace("Home")
+                    console.log(user)
+                    // ...
+                  })
+                  .catch((error) => {
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    console.log(error)
+                    // ..
+                  });
+              }
+              catch (error) {
+                console.log(error)
+              }
+            }
+            else {
+              console.log("email password empty")
+            }
+
+          }}>
             <View style={styles.btnopacity}>
               <Text style={styles.f}>VALIDER</Text>
             </View>
