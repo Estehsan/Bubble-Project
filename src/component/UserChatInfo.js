@@ -9,10 +9,17 @@ const UserChatInfo = ({ id, gender, name, userImg }) => {
     <View style={styles.Container}>
       <View style={styles.main}>
         <View style={styles.lContainer}>
-          {userImg ?
-            <Image style={{ height: 50, width: 50 }} source={{ uri: userImg }} />
-            : <Image style={{ height: 50, width: 50 }} source={{ uri: "https://www.w3schools.com/howto/img_avatar.png" }} />
-          }
+          {userImg ? (
+            <Image
+              style={{ height: 50, width: 50, borderRadius: 50 }}
+              source={{ uri: userImg }}
+            />
+          ) : (
+            <Image
+              style={{ height: 50, width: 50, borderRadius: 50 }}
+              source={{ uri: "https://www.w3schools.com/howto/img_avatar.png" }}
+            />
+          )}
         </View>
 
         <View style={styles.center}>
