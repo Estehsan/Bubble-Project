@@ -25,7 +25,7 @@ const ChatUser = ({ route, ...props }) => {
 
     const { currentUserId, messageId, name, gender, messageImg } = route.params
     // let [chatUser, setChatUser] = useState({})
-    let [chats, setChats] = useState()
+    let [chats, setChats] = useState([])
     let [message, setMessage] = useState("")
     let [userRequest, setUserRequest] = useState("none")
     let [messageRequest, setMessageRequest] = useState("none")
@@ -34,20 +34,23 @@ const ChatUser = ({ route, ...props }) => {
         let merge = uid_merge(currentUserId, messageId)
         get_messages(merge)
 
-        firestore.collection(`message`).doc(merge).get().then((doc) => {
-            if (doc.exists) {
-                setUserRequest(doc.data().[currentUserId])
-                setMessageRequest(doc.data().[messageId])
-                
-                console.log(doc.data())
 
-            } else {
-                console.log("not getting")
-            }
-        }).catch((error) => {
-            console.log("Error getting document:", error);
-        });
+        {
+            chats.length > 0 &&
+                firestore.collection(`message`).doc(merge).get().then((doc) => {
+                    if (doc.exists) {
+                        setUserRequest(doc.data().[currentUserId])
+                        setMessageRequest(doc.data().[messageId])
 
+                        console.log(doc.data())
+
+                    } else {
+                        console.log("not getting")
+                    }
+                }).catch((error) => {
+                    console.log("Error getting document:", error);
+                });
+        }
 
     }, [])
 
@@ -83,21 +86,22 @@ const ChatUser = ({ route, ...props }) => {
     }
 
     let send_message = () => {
-        let merge = uid_merge(currentUserId, messageId)
 
+        if (message.length > 0) {
+            let merge = uid_merge(currentUserId, messageId)
+            setUserRequest("accept")
+            firestore.collection(`message`).doc(merge).set({
+                [currentUserId]: userRequest,
+                [messageId]: messageRequest
 
-        firestore.collection(`message`).doc(merge).set({
-            [currentUserId]: userRequest,
-            [messageId]: messageRequest
-
-        })
-        firestore.collection(`message`).doc(merge).collection(`chat`).add({
-            message: message,
-            id: currentUserId,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        })
-        setMessage("")
-        setUserRequest("accept")
+            })
+            firestore.collection(`message`).doc(merge).collection(`chat`).add({
+                message: message,
+                id: currentUserId,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            setMessage("")
+        }
     }
     return (
         <LinearGradient
@@ -143,9 +147,9 @@ const ChatUser = ({ route, ...props }) => {
                         (userRequest == "none" || userRequest == "decline") &&
                         <View>
                             <Button title="accept"
-                                onPress={() => {
+                                onPress={async () => {
                                     setUserRequest("accept")
-                                    firestore.collection(`message`).doc(uid_merge(currentUserId, messageId)).update({
+                                    await firestore.collection(`message`).doc(uid_merge(currentUserId, messageId)).update({
                                         [currentUserId]: userRequest,
                                     })
                                 }}
