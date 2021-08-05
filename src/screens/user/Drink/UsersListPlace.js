@@ -97,7 +97,7 @@ const UsersListPlace = ({ route, ...props }) => {
                 <TouchableOpacity
                   style={styles.ListOfUsers}
                   onPress={() => {
-                    props.navigation.navigate("Message", {
+                    props.navigation.navigate("ChatUser", {
                       currentUserId : currentUserId,
                       messageId: item.id,
                       name: item.name,
