@@ -66,7 +66,7 @@ const Home = (props) => {
     flatlist.current.scrollToIndex({ index });
   }, [selectedPlaceId]);
 
-  console.log(marker);
+  // console.log(marker);
 
   return (
     <LinearGradient

@@ -7,6 +7,7 @@ import {
     TextInput,
     FlatList,
     Image,
+    Alert,
     TouchableOpacity,
     Button,
     ScrollView,
@@ -18,6 +19,7 @@ import ListContainer from "./ListContainer";
 import SearchBar from "./SearchBar";
 import { auth, firestore } from "../db/firebase"
 import firebase from "firebase/app"
+import { set } from "react-native-reanimated";
 
 // linear-gradient(0deg, #FFFFFF 0%, #FFC1DD 78.9%)
 const ChatUser = ({ route, ...props }) => {
@@ -27,30 +29,52 @@ const ChatUser = ({ route, ...props }) => {
     // let [chatUser, setChatUser] = useState({})
     let [chats, setChats] = useState([])
     let [message, setMessage] = useState("")
-    let [userRequest, setUserRequest] = useState("none")
-    let [messageRequest, setMessageRequest] = useState("none")
 
-    useEffect(() => {
+    let [currentName, setcurrentName] = useState("")
+    let [currentGender, setcurrentGender] = useState("")
+    let [currentImage, setcurrentImage] = useState("")
+
+
+    let [request, setRequest] = useState("")
+    let [getRequest, setGetRequest] = useState("")
+    let [checker, setChecker] = useState(false)
+
+
+    useEffect(async () => {
         let merge = uid_merge(currentUserId, messageId)
         get_messages(merge)
 
+        console.log(messageImg)
+        let datum = await firestore.collection("users").doc(currentUserId).get().then((doc) => {
+            setcurrentName(doc.data().userName)
+            setcurrentGender(doc.data().userGender)
+            setcurrentImage(doc.data().userProfileImageUrl)
+            console.log(doc.data().userProfileImageUrl)
+        })
+        .catch((error) => {
+            console.log("Error getting documents: ", error);
+        });
 
-        {
-            chats.length > 0 &&
-                firestore.collection(`message`).doc(merge).get().then((doc) => {
-                    if (doc.exists) {
-                        setUserRequest(doc.data().[currentUserId])
-                        setMessageRequest(doc.data().[messageId])
+        let dataMessenger = await firestore.collection("users").doc(messageId).collection("friends").doc(currentUserId).get()
+            .then((doc) => {
+                setGetRequest(doc.data().status)
+                // console.log(doc.data())
+            })
+            .catch((error) => {
+                console.log("Error getting documents: ", error);
+            });
 
-                        console.log(doc.data())
+        let dataUser = await firestore.collection("users").doc(currentUserId).collection("friends").doc(messageId).get()
+            .then(async (doc) => {
+                await setRequest(doc.data().status)
+                await setChecker(doc.data().requestGetter)
+                console.log(doc.data())
 
-                    } else {
-                        console.log("not getting")
-                    }
-                }).catch((error) => {
-                    console.log("Error getting document:", error);
-                });
-        }
+            })
+            .catch((error) => {
+                console.log("Error getting documents: ", error);
+            });
+        console.log(checker)
 
     }, [])
 
@@ -89,12 +113,7 @@ const ChatUser = ({ route, ...props }) => {
 
         if (message.length > 0) {
             let merge = uid_merge(currentUserId, messageId)
-            setUserRequest("accept")
-            firestore.collection(`message`).doc(merge).set({
-                [currentUserId]: userRequest,
-                [messageId]: messageRequest
 
-            })
             firestore.collection(`message`).doc(merge).collection(`chat`).add({
                 message: message,
                 id: currentUserId,
@@ -144,21 +163,74 @@ const ChatUser = ({ route, ...props }) => {
                     }
 
                     {
-                        (userRequest == "none" || userRequest == "decline") &&
+                        (request == "") &&
+                        <View>
+                            <Button title="Send Friend Request"
+                                onPress={() => {
+                                    firestore.collection("users").doc(messageId).collection("friends").doc(currentUserId).set({
+                                        friendId: currentUserId,
+                                        status: "pending",
+                                        requestGetter: true,
+                                        name : currentName,
+                                        gender : currentGender,
+                                        image : currentImage
+
+                                    })
+
+                                    firestore.collection("users").doc(currentUserId).collection("friends").doc(messageId).set({
+                                        friendId: messageId,
+                                        status: "accept",
+                                        requestGetter: false,
+                                        name : name,
+                                        gender : gender,
+                                        image : messageImg
+
+                                    })
+                                    setGetRequest("pending")
+                                    setRequest("accept")
+                                    Alert.alert("Request has been send")
+                                }}
+                            >
+                            </Button>
+                        </View>
+                    }
+
+                    {/* {
+                        (request == "pending") &&
+                        <View>
+                            <Text>Request has been send</Text>
+                        </View>
+                    } */}
+
+
+                    {
+                        checker &&
                         <View>
                             <Button title="accept"
                                 onPress={async () => {
-                                    setUserRequest("accept")
-                                    await firestore.collection(`message`).doc(uid_merge(currentUserId, messageId)).update({
-                                        [currentUserId]: userRequest,
+                                    await firestore.collection("users").doc(currentUserId).collection("friends").doc(messageId).update({
+                                        friendId: messageId,
+                                        status: "accept",
+                                        requestGetter: false,
+
                                     })
+                                        .then(() => {
+                                            setGetRequest("accept")
+                                            setChecker(false)
+                                        })
+
                                 }}
                             >
                             </Button>
 
                             <Button title="decline"
                                 onPress={() => {
-                                    setUserRequest("decline")
+                                    firestore.collection("users").doc(currentUserId).collection("friends").doc(messageId).update({
+                                        friendId: messageId,
+                                        status: "decline",
+                                    })
+                                    Alert.alert("user declined")
+                                    setGetRequest("decline")
 
                                 }}
                             >
@@ -167,7 +239,7 @@ const ChatUser = ({ route, ...props }) => {
                     }
 
                     {
-                        (messageRequest != "decline" || userRequest != "decline") ?
+                        (getRequest != "decline" || request != "decline") ?
                             <View>
                                 <TextInput
                                     style={{
@@ -188,7 +260,9 @@ const ChatUser = ({ route, ...props }) => {
                                 ></Button>
                             </View>
 
-                            : <Text>Request declined</Text>
+                            :
+
+                            <Text>Request declined</Text>
                     }
                 </ScrollView>
                 : <View />}
