@@ -51,9 +51,9 @@ const ChatUser = ({ route, ...props }) => {
             setcurrentImage(doc.data().userProfileImageUrl)
             console.log(doc.data().userProfileImageUrl)
         })
-        .catch((error) => {
-            console.log("Error getting documents: ", error);
-        });
+            .catch((error) => {
+                console.log("Error getting documents: ", error);
+            });
 
         let dataMessenger = await firestore.collection("users").doc(messageId).collection("friends").doc(currentUserId).get()
             .then((doc) => {
@@ -171,9 +171,9 @@ const ChatUser = ({ route, ...props }) => {
                                         friendId: currentUserId,
                                         status: "pending",
                                         requestGetter: true,
-                                        name : currentName,
-                                        gender : currentGender,
-                                        image : currentImage
+                                        name: currentName,
+                                        gender: currentGender,
+                                        image: currentImage
 
                                     })
 
@@ -181,9 +181,9 @@ const ChatUser = ({ route, ...props }) => {
                                         friendId: messageId,
                                         status: "accept",
                                         requestGetter: false,
-                                        name : name,
-                                        gender : gender,
-                                        image : messageImg
+                                        name: name,
+                                        gender: gender,
+                                        image: messageImg
 
                                     })
                                     setGetRequest("pending")

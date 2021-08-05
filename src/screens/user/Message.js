@@ -30,7 +30,7 @@ const Message = ({ props }) => {
               // setcurrentImage(doc.data().image)
               // setcurrentStatus(doc.data().status)
               setData(doc.data())
-              // console.log(data)
+              console.log(data)
             });
           })
           .catch((error) => {
@@ -57,31 +57,31 @@ const Message = ({ props }) => {
             data={data}
             keyExtractor={(item) => item.friendId}
             renderItem={({ item }) => (
-              // console.log(item)
-              <View>
-                <View>
-                  {
-                    item.image ? (
-                      <Image
-                        style={{ height: 50, width: 50, borderRadius: 50 }}
-                        source={{ uri: userImg }}
-                      />
-                    ) : (
-                      <Image
-                        style={{ height: 50, width: 50, borderRadius: 50 }}
-                        source={{
-                          uri: "https://www.w3schools.com/howto/img_avatar.png",
-                        }}
-                      />
-                    )}
+              console.log(item)
+              // <View>
+              //   <View>
+              //     {
+              //       item.image ? (
+              //         <Image
+              //           style={{ height: 50, width: 50, borderRadius: 50 }}
+              //           source={{ uri: userImg }}
+              //         />
+              //       ) : (
+              //         <Image
+              //           style={{ height: 50, width: 50, borderRadius: 50 }}
+              //           source={{
+              //             uri: "https://www.w3schools.com/howto/img_avatar.png",
+              //           }}
+              //         />
+              //       )}
 
-                </View>
-                <View style={styles.HeadingView}>
-                  <Text style={styles.heading}>{item.name }</Text>
-                  <Text style={styles.heading}>{item.status }</Text>
+              //   </View>
+              //   <View style={styles.HeadingView}>
+              //     <Text style={styles.heading}>{item.name }</Text>
+              //     <Text style={styles.heading}>{item.status }</Text>
 
-                </View>
-              </View>
+              //   </View>
+              // </View>
             )}
           />
 
