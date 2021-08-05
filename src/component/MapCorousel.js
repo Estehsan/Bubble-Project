@@ -90,6 +90,6 @@ const styles = StyleSheet.create({
     height: "100%",
     width: 110,
     resizeMode: "cover",
-    borderBottomStartRadius: 40,
+    // borderBottomStartRadius: 40,
   },
 });

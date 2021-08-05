@@ -17,6 +17,7 @@ import TopBar from "../../component/TopBar";
 import ListContainer from "./../../component/ListContainer";
 import SearchBar from "./../../component/SearchBar";
 import { auth, firestore } from "../../db/firebase"
+import ChatList from "../../component/ChatList";
 import firebase from "firebase/app"
 
 // linear-gradient(0deg, #FFFFFF 0%, #FFC1DD 78.9%)
@@ -27,10 +28,28 @@ const Message = ({ route, ...props }) => {
   // let [chatUser, setChatUser] = useState({})
   let [chats, setChats] = useState()
   let [message, setMessage] = useState("")
+  let [userRequest, setUserRequest] = useState("none")
+  let [messageRequest, setMessageRequest] = useState("none")
+  let [oneId, setoneId] = useState("")
 
   useEffect(() => {
     let merge = uid_merge(currentUserId, messageId)
     get_messages(merge)
+    setoneId(merge)
+    firestore.collection(`message`).doc(merge).get().then((doc) => {
+      if (doc.exists) {
+        setUserRequest(doc.data().[currentUserId])
+        setMessageRequest(doc.data().[messageId])
+        console.log(doc.data())
+
+      } else {
+        console.log("not getting")
+      }
+    }).catch((error) => {
+      console.log("Error getting document:", error);
+    });
+
+
   }, [])
 
 
@@ -55,15 +74,10 @@ const Message = ({ route, ...props }) => {
           message: doc.data().message
 
         }));
-
-
-
       {
         docs &&
           setChats(docs)
-
         // console.log(docs)
-
       }
       // console.log(docs)
     });
@@ -71,6 +85,12 @@ const Message = ({ route, ...props }) => {
 
   let send_message = () => {
     let merge = uid_merge(currentUserId, messageId)
+
+    firestore.collection(`message`).doc(merge).set({
+      [currentUserId]: "accept",
+      [messageId]: messageRequest
+
+    })
     firestore.collection(`message`).doc(merge).collection(`chat`).add({
       message: message,
       id: currentUserId,
@@ -117,26 +137,59 @@ const Message = ({ route, ...props }) => {
               )}
             />
           }
-          <TextInput
-            style={{
-              position: "fixed",
-              bottom: 0
-            }}
-            style={styles.input}
-            onChangeText={setMessage}
-            value={message}
-            placeholder="date de naissance"
-            keyboardType="default"
-          />
-          <Button
-            title="send"
-            onPress={() => {
-              send_message()
-            }}
-          ></Button>
 
+          {
+            (userRequest == "none" || userRequest == "decline") &&
+            <View>
+              <Button title="accept"
+                onPress={() => {
+                  setUserRequest("accept")
+                  firestore.collection(`message`).doc(oneId).set({
+                    [currentUserId]: userRequest,
+                  })
+
+                }}
+              >
+              </Button>
+
+              <Button title="decline"
+                onPress={() => {
+                  setUserRequest("decline")
+                  firestore.collection(`message`).doc(oneId).set({
+                    [currentUserId]: userRequest,
+                  })
+                }}
+              >
+              </Button>
+            </View>
+          }
+
+          {
+            messageRequest != "decline" && userRequest != "decline" ?
+              <View>
+                <TextInput
+                  style={{
+                    position: "fixed",
+                    bottom: 0
+                  }}
+                  style={styles.input}
+                  onChangeText={setMessage}
+                  value={message}
+                  placeholder="date de naissance"
+                  keyboardType="default"
+                />
+                <Button
+                  title="send"
+                  onPress={() => {
+                    send_message()
+                  }}
+                ></Button>
+              </View>
+
+              : <Text>Request declined</Text>
+          }
         </ScrollView>
-        : <View></View>}
+        : <ChatList />}
     </LinearGradient>
   );
 };
