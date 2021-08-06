@@ -23,6 +23,7 @@ import FlowA from "./../screens/auth/FlowA";
 import FlowB from "./../screens/auth/FlowB";
 import Fiche from "../screens/extra/Fiche";
 import UsersListPlace from "../screens/user/Drink/UsersListPlace";
+import ChatUser from "../component/ChatUser"
 
 
 
@@ -128,6 +129,7 @@ function Tabs() {
       <All.Screen name="Drink" component={Drink} />
       <All.Screen name="Message" component={Message} />
       <All.Screen name="UsersListPlace" component={UsersListPlace} />
+      <All.Screen name="ChatUser" component={ChatUser} />
       <All.Screen name="Fiche" component={Fiche} />
       <All.Screen name="Profile" component={Profile} />
       <All.Screen name="AchatUser" component={AchatUser} />

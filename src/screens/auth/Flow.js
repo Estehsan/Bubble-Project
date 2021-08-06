@@ -13,29 +13,20 @@ import TopBar from "../../component/TopBar";
 
 import { auth } from "../../db/firebase";
 
-
 //  Login or Register Button
 
-
-
 function Flow(props) {
-
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if (user) {
-        props.navigation.push("Home")
+        props.navigation.push("Home");
       } else {
-
       }
-
-    })
-
+    });
   }, []);
 
-
   return (
-
-    < LinearGradient colors={["#000", "#DD488C"]} style={styles.linearGradient} >
+    <LinearGradient colors={["#000", "#DD488C"]} style={styles.linearGradient}>
       <SafeAreaView style={styles.main}>
         <TopBar />
 
@@ -53,10 +44,9 @@ function Flow(props) {
           </TouchableOpacity>
         </View>
       </SafeAreaView>
-    </LinearGradient >
+    </LinearGradient>
   );
 }
-
 
 export default Flow;
 
@@ -67,10 +57,10 @@ const styles = StyleSheet.create({
   },
   h1: {
     fontFamily: "FredokaOne-Regular",
+    fontSize: 30,
 
     color: "#fff",
     marginBottom: 15,
-    fontSize: 30,
   },
   h2: {
     fontFamily: "FredokaOne-Regular",

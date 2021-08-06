@@ -11,6 +11,7 @@ import {
   Button,
   BackHandler,
   DeviceEventEmitter,
+  ActivityIndicator,
   FlatList,
   useWindowDimensions,
 } from "react-native";
@@ -37,6 +38,7 @@ const LONGITUDE = -122.4324;
 const Home = (props) => {
   const [marker, setMarker] = useState([]);
   const [selectedPlaceId, setSelectedPlaceId] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const width = useWindowDimensions().width;
 
@@ -57,6 +59,7 @@ const Home = (props) => {
         },
       }));
       setMarker(docs);
+      setLoading(false);
     });
 
     if (!selectedPlaceId || !flatlist) {
@@ -66,7 +69,7 @@ const Home = (props) => {
     flatlist.current.scrollToIndex({ index });
   }, [selectedPlaceId]);
 
-  console.log(marker);
+  // console.log(marker);
 
   return (
     <LinearGradient
@@ -104,26 +107,36 @@ const Home = (props) => {
             </Marker>
           ))}
         </MapView>
-
-        <View style={styles.Corousel}>
-          <FlatList
-            ref={flatlist}
-            data={marker}
-            showsHorizontalScrollIndicator={false}
-            snapToInterval={width - 60}
-            horizontal
-            snapToAlignment={"center"}
-            decelerationRate={"fast"}
-            renderItem={({ item }) => (
-              <MapCorousel
-                title={item.title}
-                place={item.description}
-                location={item.location}
-                code={item.code}
-              />
-            )}
+        {loading ? (
+          <ActivityIndicator
+            //visibility of Overlay Loading Spinner
+            visible={loading}
+            //Text with the Spinner
+            textContent={"Loading..."}
+            //Text style of the Spinner Text
+            textStyle={styles.spinnerTextStyle}
           />
-        </View>
+        ) : (
+          <View style={styles.Corousel}>
+            <FlatList
+              ref={flatlist}
+              data={marker}
+              showsHorizontalScrollIndicator={false}
+              snapToInterval={width - 60}
+              horizontal
+              snapToAlignment={"center"}
+              decelerationRate={"fast"}
+              renderItem={({ item }) => (
+                <MapCorousel
+                  title={item.title}
+                  place={item.description}
+                  location={item.location}
+                  code={item.code}
+                />
+              )}
+            />
+          </View>
+        )}
       </SafeAreaView>
     </LinearGradient>
   );
