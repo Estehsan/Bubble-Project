@@ -239,7 +239,7 @@ const ChatUser = ({ route, ...props }) => {
                     }
 
                     {
-                        (getRequest != "decline" || request != "decline") ?
+                        (getRequest != "decline" && request != "decline") ?
                             <View>
                                 <TextInput
                                     style={{
