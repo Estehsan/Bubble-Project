@@ -14,7 +14,7 @@ import TopBar from "./../../../component/TopBar";
 import ListContainer from "./../../../component/ListContainer";
 import SearchBar from "./../../../component/SearchBar";
 import UserChatInfo from "../../../component/UserChatInfo";
-import { auth, firestore } from "../../../db/firebase"
+import { auth, firestore } from "../../../db/firebase";
 
 // linear-gradient(0deg, #FFFFFF 0%, #FFC1DD 78.9%)
 
@@ -37,19 +37,21 @@ const users = [
 
 const UsersListPlace = ({ route, ...props }) => {
   const { id, title, place, location, code, img } = route.params;
-  const [userData, setUserData] = useState([])
-  const [currentUserId, setCurrentUserId] = useState("")
+  const [userData, setUserData] = useState([]);
+  const [currentUserId, setCurrentUserId] = useState("");
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if (user) {
-        setCurrentUserId(user.uid)
+        setCurrentUserId(user.uid);
         firestore.collection("users").onSnapshot((querySnapshot) => {
-          let docs = querySnapshot.docs.filter((datam) => datam.id != user.uid).map((doc) => ({
-            id: doc.id,
-            name: doc.data().userName,
-            gender: doc.data().userGender,
-            userImg: doc.data().userProfileImageUrl,
-          }));
+          let docs = querySnapshot.docs
+            .filter((datam) => datam.id != user.uid)
+            .map((doc) => ({
+              id: doc.id,
+              name: doc.data().userName,
+              gender: doc.data().userGender,
+              userImg: doc.data().userProfileImageUrl,
+            }));
           setUserData(docs);
           // console.log(docs)
         });
@@ -58,10 +60,9 @@ const UsersListPlace = ({ route, ...props }) => {
         // ...
       }
     });
+  }, []);
 
-  }, [])
-
-  console.log("gettinguserid =>",currentUserId)
+  console.log("gettinguserid =>", currentUserId);
   return (
     <LinearGradient
       colors={["#FFC1DD", "#ffffff"]}
@@ -89,7 +90,7 @@ const UsersListPlace = ({ route, ...props }) => {
             />
           </TouchableOpacity>
 
-          {userData &&
+          {userData && (
             <FlatList
               data={userData}
               keyExtractor={(item) => item.id}
@@ -98,12 +99,12 @@ const UsersListPlace = ({ route, ...props }) => {
                   style={styles.ListOfUsers}
                   onPress={() => {
                     props.navigation.navigate("ChatUser", {
-                      currentUserId : currentUserId,
+                      currentUserId: currentUserId,
                       messageId: item.id,
                       name: item.name,
                       gender: item.gender,
-                      messageImg: item.userImg
-                    })
+                      messageImg: item.userImg,
+                    });
                   }}
                 >
                   <UserChatInfo
@@ -115,7 +116,7 @@ const UsersListPlace = ({ route, ...props }) => {
                 </TouchableOpacity>
               )}
             />
-          }
+          )}
         </View>
       </SafeAreaView>
     </LinearGradient>
