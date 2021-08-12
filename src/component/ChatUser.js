@@ -152,13 +152,14 @@ const ChatUser = ({ navigation, route, ...props }) => {
                     <TouchableWithoutFeedback>
                         {route.params ? (
                             <>
-                                <ScrollView style={{ marginTop: 0 }}>
+                                <View style={{ marginTop: 0 }}>
                                     {chats && (
                                         // console.log(chats)
                                         <FlatList
+                                            style={{marginBottom : 65}}
                                             data={chats}
-                                            keyExtractor={(item) => {
-                                                item.id;
+                                            keyExtractor={(item, index) => {
+                                                return item.id;
                                             }}
                                             renderItem={({ item }) => (
                                                 // console.log(item)
@@ -335,7 +336,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
                                     ) : (
                                         <Text style={{ textAlign: "center" }}>Request declined</Text>
                                     )}
-                                </ScrollView>
+                                </View>
 
                             </>
                         ) : (
@@ -362,15 +363,17 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
     },
     footer: {
+        position : "absolute",
+        bottom : 0 ,
         display: "flex",
         flexDirection: "row",
         marginHorizontal: 20,
         marginBottom: 10,
+        marginTop: 10,
         paddingVertical: 10,
         paddingHorizontal: 10,
         borderRadius: 50,
         backgroundColor: "#fff",
-        bottom: 0,
         justifyContent: "space-between",
         ...Colors.customShadow,
     },
