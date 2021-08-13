@@ -13,7 +13,7 @@ import LocationTab from "../../component/LocationTab";
 import TopBar from "../../component/TopBar";
 import ListContainer from "./../../component/ListContainer";
 import SearchBar from "./../../component/SearchBar";
-import { firestore } from "../../db/firebase";
+import { auth, firestore } from "../../db/firebase";
 import { getDistance } from 'geolib';
 
 // linear-gradient(0deg, #FFFFFF 0%, #FFC1DD 78.9%)
@@ -59,6 +59,7 @@ const Drink = ({ navigation }) => {
   let [locationData, setLocationData] = useState([]);
   const [userMarker, setUserMarker] = useState({});
 
+  
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if (user) {
@@ -88,8 +89,8 @@ const Drink = ({ navigation }) => {
     });
   }, [])
 
-  useEffect(() => {
-    firestore.collection("location").onSnapshot((querySnapshot) => {
+  useEffect(async () => {
+    firestore.collection("location").onSnapshot(async (querySnapshot) => {
       let docs = querySnapshot.docs.map((doc) => ({
         key: doc.id,
         title: doc.data().title,
@@ -102,9 +103,14 @@ const Drink = ({ navigation }) => {
           latitude: doc.data().latitude,
         },
       }));
+
+      // setLocationData(docs);
+      // console.log(docs);
+
+      // if (userMarker.length) {
       var data = [];
       for (var i = 0; i < docs.length; i++) {
-        var dis = getDistance(
+        var dis = await getDistance(
           userMarker.latlng,
           docs[i].latlng,
         )
@@ -120,6 +126,7 @@ const Drink = ({ navigation }) => {
       }
       setLocationData(data);
       // console.log(data);
+      // }
     });
 
   }, [userMarker]);
