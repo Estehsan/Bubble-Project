@@ -39,12 +39,49 @@ const Home = (props) => {
   const [marker, setMarker] = useState([]);
   const [selectedPlaceId, setSelectedPlaceId] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [userMarker, setUserMarker] = useState(
+    {
+      latlng: {
+        longitude: 38.71899780347724,
+        latitude: -122.46168731600267,
+      },
+
+    }
+  );
 
   const width = useWindowDimensions().width;
 
   const flatlist = useRef();
 
   useEffect(() => {
+
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        var uid = user.uid;
+        // console.log(uid)
+        firestore.collection("users").doc(uid)
+          .onSnapshot((doc) => {
+
+            let docs = {
+              key: user.uid,
+              title: doc.data().userName,
+              latlng: {
+                longitude: doc.data().longitude,
+                latitude: doc.data().latitude,
+              },
+            }
+
+            setUserMarker(docs)
+            console.log(docs)
+
+          })
+
+      } else {
+        // User is signed out
+        // ...
+      }
+    });
+
     firestore.collection("location").onSnapshot((querySnapshot) => {
       let docs = querySnapshot.docs.map((doc) => ({
         key: doc.id,
@@ -106,6 +143,13 @@ const Home = (props) => {
               />
             </Marker>
           ))}
+
+          {userMarker &&
+            <Marker
+              coordinate={userMarker.latlng}
+            >
+            </Marker>
+          }
         </MapView>
         {loading ? (
           <ActivityIndicator

@@ -14,6 +14,7 @@ import TopBar from "../../component/TopBar";
 import ListContainer from "./../../component/ListContainer";
 import SearchBar from "./../../component/SearchBar";
 import { firestore } from "../../db/firebase";
+import { getDistance } from 'geolib';
 
 // linear-gradient(0deg, #FFFFFF 0%, #FFC1DD 78.9%)
 
@@ -56,6 +57,36 @@ const data = [
 
 const Drink = ({ navigation }) => {
   let [locationData, useLocationData] = useState([]);
+  const [userMarker, setUserMarker] = useState({});
+
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        var uid = user.uid;
+        // console.log(uid)
+        firestore.collection("users").doc(uid)
+          .onSnapshot(async (doc) => {
+
+            let docs = {
+              key: user.uid,
+              title: doc.data().userName,
+              latlng: {
+                longitude: doc.data().longitude,
+                latitude: doc.data().latitude,
+              },
+            }
+
+            await setUserMarker(docs)
+            // console.log(docs)
+
+          })
+
+      } else {
+        // User is signed out
+        // ...
+      }
+    });
+  }, [])
 
   useEffect(() => {
     firestore.collection("location").onSnapshot((querySnapshot) => {
@@ -66,15 +97,32 @@ const Drink = ({ navigation }) => {
         description: doc.data().description,
         schedules: doc.data().schedules,
         img: doc.data().photo,
+        latlng: {
+          longitude: doc.data().longitude,
+          latitude: doc.data().latitude,
+        },
       }));
-      useLocationData(docs);
-      console.log(locationData);
+      var data = [];
+      for (var i = 0; i < docs.length; i++) {
+        var dis = await getDistance(
+          userMarker.latlng,
+          docs[i].latlng,
+        )
+
+        dis = dis / 1000
+
+        // console.log(dis)
+
+        if (dis < 10000) {
+          data.push(docs[i])
+        }
+
+      }
+      setLocationData(data);
+      // console.log(data);
     });
 
-    // let gud = firestore.collection("location").doc("6sFYCoO5eIjYqIxxTtt8").get({
-    //   setLocationData
-    // })
-  }, []);
+  }, [userMarker]);
 
   // console.log(locationData);
   return (
