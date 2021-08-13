@@ -8,6 +8,8 @@ import {
   useWindowDimensions,
 } from "react-native";
 import Colors from "../assets/colors/Colors";
+import H2 from "./basic/H2";
+import P from "./basic/P";
 
 const MapCorousel = ({
   title,
@@ -35,10 +37,10 @@ const MapCorousel = ({
           )}
         </View>
         <View style={styles.rContainer}>
-          <Text numberOfLines={2}>{title}</Text>
-          <Text style={{ flexWrap: "wrap" }}>{location}</Text>
-          <Text>{place}</Text>
-          <Text>{code}</Text>
+          <H2 numberOfLines={2}>{title}</H2>
+          <P style={{ flexWrap: "wrap" }}>{location}</P>
+          <P>{place}</P>
+          <P>{code}</P>
           <TouchableOpacity
             onPress={() => {
               // navigation.navigate('UsersListPlace');
@@ -67,8 +69,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     width: "90%",
     marginBottom: 20,
-    height: 145,
-    borderRadius: 20,
+    height: 100,
+    borderRadius: 50,
     flex: 1,
 
     justifyContent: "space-around",

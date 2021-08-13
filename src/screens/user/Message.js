@@ -1,44 +1,52 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  FlatList,
+  TouchableOpacity,
+  SafeAreaView,
+} from "react-native";
 import Colors from "../../assets/colors/Colors";
 import Entypo from "react-native-vector-icons/Entypo";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { auth, firestore } from "../../db/firebase"
+import { auth, firestore } from "../../db/firebase";
+import LinearGradient from "react-native-linear-gradient";
+import TopBar from "../../component/TopBar";
 
 const Message = ({ ...props }) => {
-  let [currentId, setcurrentId] = useState("")
-  let [currentName, setcurrentName] = useState("")
-  let [currentGender, setcurrentGender] = useState("")
-  let [currentImage, setcurrentImage] = useState("")
-  let [status, setstatus] = useState("")
+  let [currentId, setcurrentId] = useState("");
+  let [currentName, setcurrentName] = useState("");
+  let [currentGender, setcurrentGender] = useState("");
+  let [currentImage, setcurrentImage] = useState("");
+  let [status, setstatus] = useState("");
 
-
-  let [data, setData] = useState([])
-  let [userId, setuserId] = useState([])
+  let [data, setData] = useState([]);
+  let [userId, setuserId] = useState([]);
 
   useEffect(async () => {
-
     auth.onAuthStateChanged(async (user) => {
       if (user) {
-
         var uid = user.uid;
-        setuserId(user.uid)
+        setuserId(user.uid);
 
         // console.log(uid)
-        await firestore.collection("users").doc(uid).collection("friends")
+        await firestore
+          .collection("users")
+          .doc(uid)
+          .collection("friends")
           .onSnapshot(async (querySnapshot) => {
-            let docs = querySnapshot.docs
-              .map((doc) => ({
-                id: doc.id,
-                name: doc.data().name,
-                gender: doc.data().gender,
-                image: doc.data().image,
-                // status: doc.data().status
-              }));
+            let docs = querySnapshot.docs.map((doc) => ({
+              id: doc.id,
+              name: doc.data().name,
+              gender: doc.data().gender,
+              image: doc.data().image,
+              // status: doc.data().status
+            }));
 
-            await setData(docs)
-            console.log(data)
-
+            await setData(docs);
+            console.log(data);
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
@@ -49,81 +57,81 @@ const Message = ({ ...props }) => {
         // ...
       }
     });
-
-
-
-
-  }, [])
+  }, []);
   return (
+    <LinearGradient
+      colors={["#FFC1DD", "#ffffff"]}
+      style={styles.linearGradient}
+    >
+      <SafeAreaView>
+        <TopBar />
+        <View>
+          <FlatList
+            data={data}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              // console.log(item)
+              <View style={styles.Container}>
+                <View style={styles.main}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      props.navigation.navigate("ChatUser", {
+                        currentUserId: userId,
+                        messageId: item.id,
+                        name: item.name,
+                        gender: item.gender,
+                        messageImg: item.image,
+                      });
+                    }}
+                  >
+                    <View style={styles.lContainer}>
+                      {item.image ? (
+                        <Image
+                          style={{ height: 50, width: 50, borderRadius: 50 }}
+                          source={{ uri: item.image }}
+                        />
+                      ) : (
+                        <Image
+                          style={{ height: 50, width: 50, borderRadius: 50 }}
+                          source={{
+                            uri: "https://www.w3schools.com/howto/img_avatar.png",
+                          }}
+                        />
+                      )}
 
-
-
-    <FlatList
-      data={data}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }) => (
-        // console.log(item)
-        <View style={styles.Container}>
-
-          <View style={styles.main}>
-
-            <TouchableOpacity
-              onPress={() => {
-                props.navigation.navigate("ChatUser", {
-                  currentUserId: userId,
-                  messageId: item.id,
-                  name: item.name,
-                  gender: item.gender,
-                  messageImg: item.image,
-                });
-              }}
-            >
-              <View style={styles.lContainer}>
-
-                {
-                  item.image ? (
-                    <Image
-                      style={{ height: 50, width: 50, borderRadius: 50 }}
-                      source={{ uri: item.image }}
-                    />
-                  ) : (
-                    <Image
-                      style={{ height: 50, width: 50, borderRadius: 50 }}
-                      source={{
-                        uri: "https://www.w3schools.com/howto/img_avatar.png",
-                      }}
-                    />
-                  )}
-
-                <View style={styles.HeadingView}>
-                  <Text style={styles.heading}>{item.name}</Text>
-                  <Text style={styles.heading}>{item.gender}</Text>
-                </View>
-                <View style={styles.rContainer}>
-                  <View style={styles.btn}>
-
-                    <Text>Content</Text>
-                  </View>
+                      <View style={styles.HeadingView}>
+                        <Text
+                          style={styles.heading}
+                          numberOfLines={1}
+                          ellipsizeMode={"tail"}
+                        >
+                          {item.name}
+                        </Text>
+                        <Text style={styles.heading}>{item.gender}</Text>
+                      </View>
+                      <View style={styles.rContainer}>
+                        <View style={styles.btn}>
+                          <Text>Content</Text>
+                        </View>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
                 </View>
               </View>
-            </TouchableOpacity>
-
-          </View>
+            )}
+          />
         </View>
-      )}
-    />
-
-
-
-
-
-
+      </SafeAreaView>
+    </LinearGradient>
   );
 };
 
 export default Message;
 
 const styles = StyleSheet.create({
+  linearGradient: {
+    flex: 1,
+  },
   Container: {
     alignItems: "center",
     ...Colors.customShadow,
@@ -157,6 +165,7 @@ const styles = StyleSheet.create({
   lContainer: { display: "flex", flexDirection: "row", flex: 1 },
   HeadingView: {
     justifyContent: "center",
+    width: "60%",
     paddingHorizontal: 30,
   },
 });

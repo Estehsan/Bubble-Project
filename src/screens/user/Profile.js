@@ -12,7 +12,6 @@ import LinearGradient from "react-native-linear-gradient";
 import TopBar from "./../../component/TopBar";
 import { auth } from "../../db/firebase";
 
-
 const Profile = (props) => {
   const [number, setNumber] = useState("");
   return (
@@ -79,7 +78,7 @@ const Profile = (props) => {
                   .signOut()
                   .then(() => {
                     // Sign-out successful.
-                    props.navigation.push("Flow");
+                    props.navigation.replace("Flow");
                   })
                   .catch(() => {
                     // An error happened.

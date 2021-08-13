@@ -16,15 +16,6 @@ import { auth } from "../../db/firebase";
 //  Login or Register Button
 
 function Flow(props) {
-  useEffect(() => {
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        props.navigation.push("Home");
-      } else {
-      }
-    });
-  }, []);
-
   return (
     <LinearGradient colors={["#000", "#DD488C"]} style={styles.linearGradient}>
       <SafeAreaView style={styles.main}>
