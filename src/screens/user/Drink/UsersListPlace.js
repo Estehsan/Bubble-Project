@@ -37,7 +37,7 @@ const users = [
 ];
 
 const UsersListPlace = ({ route, ...props }) => {
-  const { id, title, place, location, code, img } = route.params;
+  const { id, title, place, location, code, img, latlng } = route.params;
   const [userData, setUserData] = useState([]);
   const [currentUserId, setCurrentUserId] = useState("");
   useEffect(() => {
@@ -52,10 +52,14 @@ const UsersListPlace = ({ route, ...props }) => {
               name: doc.data().userName,
               gender: doc.data().userGender,
               userImg: doc.data().userProfileImageUrl,
+              latlng: {
+                longitude: doc.data().longitude,
+                latitude: doc.data().latitude,
+              },
             }));
           var data = [];
           for (var i = 0; i < docs.length; i++) {
-            var dis = await getDistance(
+            var dis = getDistance(
               latlng,
               docs[i].latlng,
             )

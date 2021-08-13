@@ -56,7 +56,7 @@ const data = [
 ];
 
 const Drink = ({ navigation }) => {
-  let [locationData, useLocationData] = useState([]);
+  let [locationData, setLocationData] = useState([]);
   const [userMarker, setUserMarker] = useState({});
 
   useEffect(() => {
@@ -104,7 +104,7 @@ const Drink = ({ navigation }) => {
       }));
       var data = [];
       for (var i = 0; i < docs.length; i++) {
-        var dis = await getDistance(
+        var dis = getDistance(
           userMarker.latlng,
           docs[i].latlng,
         )
@@ -181,6 +181,7 @@ const Drink = ({ navigation }) => {
                       location: item.description,
                       code: item.schedules,
                       img: item.photo,
+                      latlng : item.latlng
                     })
                   }
                 >
