@@ -53,7 +53,10 @@ const Home = (props) => {
 
   const flatlist = useRef();
 
+
+
   useEffect(() => {
+    let isMounted = true;
 
     auth.onAuthStateChanged((user) => {
       if (user) {
@@ -71,7 +74,9 @@ const Home = (props) => {
               },
             }
 
-            setUserMarker(docs)
+            if (isMounted) {
+              setUserMarker(docs)
+            }
             console.log(docs)
 
           })
@@ -95,15 +100,21 @@ const Home = (props) => {
           latitude: doc.data().latitude,
         },
       }));
-      setMarker(docs);
-      setLoading(false);
+
+      if (isMounted) {
+        setMarker(docs);
+        setLoading(false);
+      }
     });
+
 
     if (!selectedPlaceId || !flatlist) {
       return;
     }
     const index = marker.findIndex((marker) => marker.key == selectedPlaceId);
     flatlist.current.scrollToIndex({ index });
+
+    return () => { isMounted = false };
   }, [selectedPlaceId]);
 
   // console.log(marker);
