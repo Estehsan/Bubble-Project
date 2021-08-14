@@ -120,7 +120,6 @@ function Tabs() {
         component={Flow}
         options={{ headerShown: false }}
       />
-
       <All.Screen
         name="FlowA"
         component={FlowA}
@@ -132,12 +131,15 @@ function Tabs() {
         options={{ headerShown: false }}
       />
       <All.Screen name="Home" component={BottomTabNavigator} />
-
       <All.Screen name="MonProfil" component={MonProfil} />
       <All.Screen name="Drink" component={Drink} />
       <All.Screen name="Message" component={Message} />
       <All.Screen name="UsersListPlace" component={UsersListPlace} />
-      <All.Screen name="ChatUser" component={ChatUser} />
+      <All.Screen
+        options={{ headerShown: true }}
+        name="ChatUser"
+        component={ChatUser}
+      />
       <All.Screen name="Fiche" component={Fiche} />
       <All.Screen name="Profile" component={Profile} />
       <All.Screen name="AchatUser" component={AchatUser} />

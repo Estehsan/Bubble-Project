@@ -109,11 +109,11 @@ const Message = ({ ...props }) => {
                         </Text>
                         <Text style={styles.heading}>{item.gender}</Text>
                       </View>
-                      <View style={styles.rContainer}>
+                      {/* <View style={styles.rContainer}>
                         <View style={styles.btn}>
                           <Text>Content</Text>
                         </View>
-                      </View>
+                      </View> */}
                     </View>
                   </TouchableOpacity>
                 </View>
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     width: "80%",
     padding: 20,
     marginBottom: 20,
-    height: 70,
+    height: 80,
     borderRadius: 100,
     justifyContent: "space-between",
     display: "flex",
@@ -162,7 +162,11 @@ const styles = StyleSheet.create({
     fontSize: 40,
     fontWeight: "bold",
   },
-  lContainer: { display: "flex", flexDirection: "row", flex: 1 },
+  lContainer: {
+    display: "flex",
+    flexDirection: "row",
+    flex: 1,
+  },
   HeadingView: {
     justifyContent: "center",
     width: "60%",

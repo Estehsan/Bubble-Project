@@ -10,21 +10,20 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "./../../component/TopBar";
-import { auth } from "../../db/firebase";
-import firebase from "firebase/app"
+import { auth, firestore } from "../../db/firebase";
+import firebase from "firebase/app";
 
 const Profile = (props) => {
   var unsubscribeUserAuthStateChangedListener = null;
 
-
   useEffect(() => {
-
+    console.log();
     return () => {
       if (unsubscribeUserAuthStateChangedListener) {
         unsubscribeUserAuthStateChangedListener();
       }
-    }
-  })
+    };
+  });
 
   const [number, setNumber] = useState("");
   return (

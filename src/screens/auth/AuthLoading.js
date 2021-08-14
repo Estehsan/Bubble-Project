@@ -3,14 +3,17 @@ import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "../../component/TopBar";
 import { auth } from "../../db/firebase";
+
 const AuthLoading = ({ navigation }) => {
-  auth.onAuthStateChanged((user) => {
-    if (user) {
-      navigation.reset({ routes: [{ name: "Home" }] });
-    } else {
-      navigation.reset({ routes: [{ name: "Flow" }] });
-    }
-  });
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        navigation.reset({ routes: [{ name: "Home" }] });
+      } else {
+        navigation.reset({ routes: [{ name: "Flow" }] });
+      }
+    });
+  }, []);
 
   return (
     <LinearGradient colors={["#000", "#DD488C"]} style={styles.linearGradient}>
