@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -10,10 +10,21 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "./../../component/TopBar";
-import { auth } from "../../db/firebase";
-
+import { auth, firestore } from "../../db/firebase";
+import firebase from "firebase/app";
 
 const Profile = (props) => {
+  var unsubscribeUserAuthStateChangedListener = null;
+
+  useEffect(() => {
+    console.log();
+    return () => {
+      if (unsubscribeUserAuthStateChangedListener) {
+        unsubscribeUserAuthStateChangedListener();
+      }
+    };
+  });
+
   const [number, setNumber] = useState("");
   return (
     <LinearGradient colors={["#DD488C", "#000"]} style={styles.linearGradient}>
@@ -75,11 +86,11 @@ const Profile = (props) => {
             <TouchableOpacity
               style={styles.btnopacity}
               onPress={() => {
-                auth
+                unsubscribeUserAuthStateChangedListener = auth
                   .signOut()
                   .then(() => {
                     // Sign-out successful.
-                    props.navigation.push("Flow");
+                    props.navigation.replace("Flow");
                   })
                   .catch(() => {
                     // An error happened.

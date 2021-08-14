@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import Colors from "../assets/colors/Colors";
+import H2 from "./basic/H2";
+import P from "./basic/P";
 
 const ListContainer = ({ title, location, place, code, img, navigation }) => {
   return (
@@ -17,10 +19,18 @@ const ListContainer = ({ title, location, place, code, img, navigation }) => {
           )}
         </View>
         <View style={styles.rContainer}>
-          <Text>{title}</Text>
-          <Text>{location}</Text>
-          <Text>{place}</Text>
-          <Text>{code}</Text>
+          <H2 ellipsizeMode="tail" numberOfLines={1}>
+            {title}
+          </H2>
+          <P ellipsizeMode="tail" numberOfLines={1}>
+            {location}
+          </P>
+          <P ellipsizeMode="tail" numberOfLines={1}>
+            {place}
+          </P>
+          <P ellipsizeMode="tail" numberOfLines={1}>
+            {code}
+          </P>
           <TouchableOpacity
             onPress={() => {
               // navigation.navigate('UsersListPlace');
@@ -46,9 +56,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     height: 145,
     borderRadius: 100,
-    justifyContent: "space-around",
     display: "flex",
-    alignContent: "center",
     flexDirection: "row",
   },
   btn: {
@@ -60,5 +68,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 60,
     alignItems: "center",
+  },
+  rContainer: {
+    paddingHorizontal: 15,
+    width: "70%",
   },
 });

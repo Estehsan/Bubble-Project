@@ -11,6 +11,11 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
+import AuthLoading from "./../screens/auth/AuthLoading";
+import Flow from "./../screens/auth/Flow";
+import FlowA from "./../screens/auth/FlowA";
+import FlowB from "./../screens/auth/FlowB";
+
 import Home from "../screens/user/Home";
 import Message from "../screens/user/Message";
 import Profile from "../screens/user/Profile";
@@ -18,17 +23,12 @@ import { MaterialIcon } from "./components/Icon";
 import Drink from "../screens/user/Drink";
 import MonProfil from "../screens/auth/MonProfil";
 import AchatUser from "../screens/extra/AchatUser";
-import Flow from "./../screens/auth/Flow";
-import FlowA from "./../screens/auth/FlowA";
-import FlowB from "./../screens/auth/FlowB";
+
 import Fiche from "../screens/extra/Fiche";
 import UsersListPlace from "../screens/user/Drink/UsersListPlace";
-import ChatUser from "../component/ChatUser"
-
-
+import ChatUser from "../component/ChatUser";
 
 import { connect } from "react-redux";
-
 
 const Stack = createBottomTabNavigator();
 
@@ -106,13 +106,20 @@ const screenOptionStyle = {
 };
 function Tabs() {
   return (
-    <All.Navigator screenOptions={screenOptionStyle}>
+    <All.Navigator
+      screenOptions={screenOptionStyle}
+      initialRouteName="AuthLoading"
+    >
+      <All.Screen
+        name="AuthLoading"
+        component={AuthLoading}
+        options={{ headerShown: false }}
+      />
       <All.Screen
         name="Flow"
         component={Flow}
         options={{ headerShown: false }}
       />
-     
       <All.Screen
         name="FlowA"
         component={FlowA}
@@ -123,13 +130,16 @@ function Tabs() {
         component={FlowB}
         options={{ headerShown: false }}
       />
-
       <All.Screen name="Home" component={BottomTabNavigator} />
       <All.Screen name="MonProfil" component={MonProfil} />
       <All.Screen name="Drink" component={Drink} />
       <All.Screen name="Message" component={Message} />
       <All.Screen name="UsersListPlace" component={UsersListPlace} />
-      <All.Screen name="ChatUser" component={ChatUser} />
+      <All.Screen
+        options={{ headerShown: true }}
+        name="ChatUser"
+        component={ChatUser}
+      />
       <All.Screen name="Fiche" component={Fiche} />
       <All.Screen name="Profile" component={Profile} />
       <All.Screen name="AchatUser" component={AchatUser} />
@@ -137,11 +147,7 @@ function Tabs() {
   );
 }
 
-
-
-
-export default Tabs
-
+export default Tabs;
 
 const styles = StyleSheet.create({
   shadow: {

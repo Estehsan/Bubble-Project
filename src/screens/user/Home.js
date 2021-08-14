@@ -39,12 +39,54 @@ const Home = (props) => {
   const [marker, setMarker] = useState([]);
   const [selectedPlaceId, setSelectedPlaceId] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [userMarker, setUserMarker] = useState(
+    {
+      latlng: {
+        longitude: 38.71899780347724,
+        latitude: -122.46168731600267,
+      },
+
+    }
+  );
 
   const width = useWindowDimensions().width;
 
   const flatlist = useRef();
 
+
+
   useEffect(() => {
+    let isMounted = true;
+
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        var uid = user.uid;
+        // console.log(uid)
+        firestore.collection("users").doc(uid)
+          .onSnapshot((doc) => {
+
+            let docs = {
+              key: user.uid,
+              title: doc.data().userName,
+              latlng: {
+                longitude: doc.data().longitude,
+                latitude: doc.data().latitude,
+              },
+            }
+
+            if (isMounted) {
+              setUserMarker(docs)
+            }
+            console.log(docs)
+
+          })
+
+      } else {
+        // User is signed out
+        // ...
+      }
+    });
+
     firestore.collection("location").onSnapshot((querySnapshot) => {
       let docs = querySnapshot.docs.map((doc) => ({
         key: doc.id,
@@ -58,15 +100,21 @@ const Home = (props) => {
           latitude: doc.data().latitude,
         },
       }));
-      setMarker(docs);
-      setLoading(false);
+
+      if (isMounted) {
+        setMarker(docs);
+        setLoading(false);
+      }
     });
+
 
     if (!selectedPlaceId || !flatlist) {
       return;
     }
     const index = marker.findIndex((marker) => marker.key == selectedPlaceId);
     flatlist.current.scrollToIndex({ index });
+
+    return () => { isMounted = false };
   }, [selectedPlaceId]);
 
   // console.log(marker);
@@ -106,6 +154,13 @@ const Home = (props) => {
               />
             </Marker>
           ))}
+
+          {userMarker &&
+            <Marker
+              coordinate={userMarker.latlng}
+            >
+            </Marker>
+          }
         </MapView>
         {loading ? (
           <ActivityIndicator

@@ -15,6 +15,7 @@ import ListContainer from "./../../../component/ListContainer";
 import SearchBar from "./../../../component/SearchBar";
 import UserChatInfo from "../../../component/UserChatInfo";
 import { auth, firestore } from "../../../db/firebase";
+import { getDistance } from 'geolib';
 
 // linear-gradient(0deg, #FFFFFF 0%, #FFC1DD 78.9%)
 
@@ -36,7 +37,7 @@ const users = [
 ];
 
 const UsersListPlace = ({ route, ...props }) => {
-  const { id, title, place, location, code, img } = route.params;
+  const { id, title, place, location, code, img, latlng } = route.params;
   const [userData, setUserData] = useState([]);
   const [currentUserId, setCurrentUserId] = useState("");
   useEffect(() => {
@@ -51,9 +52,30 @@ const UsersListPlace = ({ route, ...props }) => {
               name: doc.data().userName,
               gender: doc.data().userGender,
               userImg: doc.data().userProfileImageUrl,
+              latlng: {
+                longitude: doc.data().longitude,
+                latitude: doc.data().latitude,
+              },
             }));
-          setUserData(docs);
-          // console.log(docs)
+          var data = [];
+          for (var i = 0; i < docs.length; i++) {
+            var dis = getDistance(
+              latlng,
+              docs[i].latlng,
+            )
+
+            dis = dis / 1000
+
+            // console.log(dis)
+
+            if (dis < 10000) {
+              data.push(docs[i])
+            }
+          }
+
+          setUserData(data);
+          // console.log(data)
+
         });
       } else {
         // User is signed out
@@ -62,7 +84,7 @@ const UsersListPlace = ({ route, ...props }) => {
     });
   }, []);
 
-  console.log("gettinguserid =>", currentUserId);
+  // console.log("gettinguserid =>", currentUserId);
   return (
     <LinearGradient
       colors={["#FFC1DD", "#ffffff"]}
