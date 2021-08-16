@@ -16,6 +16,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import { getDistance } from 'geolib';
 
 import Colors from "../../assets/colors/Colors";
 import MapCorousel from "../../component/MapCorousel";
@@ -30,10 +31,13 @@ import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 
 // import haversine from "haversine";
 
-const LATITUDE_DELTA = 0.1;
-const LONGITUDE_DELTA = 0.1;
-const LATITUDE = 37.78825;
-const LONGITUDE = -122.4324;
+const { width, height } = Dimensions.get('window')
+
+const SCREEN_HEIGHT = height
+const SCREEN_WIDTH = width
+const ASPECT_RATIO = width / height
+const LATITUDE_DELTA = 0.0922
+const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
 const Home = (props) => {
   const [marker, setMarker] = useState([]);
@@ -42,8 +46,10 @@ const Home = (props) => {
   const [userMarker, setUserMarker] = useState(
     {
       latlng: {
-        longitude: 38.71899780347724,
-        latitude: -122.46168731600267,
+        latitude: null,
+        longitude: null,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
       },
 
     }
@@ -63,21 +69,71 @@ const Home = (props) => {
         var uid = user.uid;
         // console.log(uid)
         firestore.collection("users").doc(uid)
-          .onSnapshot((doc) => {
+          .onSnapshot(async (doc) => {
 
-            let docs = {
+            var docs = {
               key: user.uid,
               title: doc.data().userName,
               latlng: {
                 longitude: doc.data().longitude,
                 latitude: doc.data().latitude,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
               },
             }
 
-            if (isMounted) {
-              setUserMarker(docs)
-            }
-            console.log(docs)
+            await setTimeout(() => {
+              let location = Geolocation.getCurrentPosition((position) => {
+                var lat = parseFloat(position.coords.latitude)
+                var long = parseFloat(position.coords.longitude)
+
+                var initialRegion = {
+                  latlng: {
+                    latitude: lat,
+                    longitude: long,
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421,
+                  },
+                }
+                console.log("initial region=> ", initialRegion.latlng.latitude)
+                console.log("docs=> ", docs.latlng.latitude)
+
+
+                // var hos = {
+                //   latitude: 24.931407349950064,
+                //   longitude: 67.03798921789368,
+                // }
+                // var dis = getDistance(
+                //   initialRegion.latlng,
+                //   hos
+                // )
+                // dis = dis / 1000
+                // console.log(dis, "Km")
+
+                if (docs.latlng.latitude != initialRegion.latlng.latitude ||
+                  docs.latlng.longitude != initialRegion.latlng.longitude) {
+                  setUserMarker(initialRegion)
+
+                  firestore.collection("users").doc(uid).update({
+                   latitude : initialRegion.latlng.latitude,
+                   longitude : initialRegion.latlng.longitude
+                  })
+                    .then(() => {
+                      console.log("Document successfully written!");
+                    })
+                    .catch((error) => {
+                      console.error("Error writing document: ", error);
+                    });
+                }
+                else {
+                  setUserMarker(docs)
+                }
+              },
+                (error) => alert(JSON.stringify(error)),
+                { enableHighAccuracy: false, timeout: 5000 });
+            }, 1000)
+
+
 
           })
 
@@ -85,6 +141,7 @@ const Home = (props) => {
         // User is signed out
         // ...
       }
+
     });
 
     firestore.collection("location").onSnapshot((querySnapshot) => {
@@ -100,6 +157,8 @@ const Home = (props) => {
           latitude: doc.data().latitude,
         },
       }));
+
+      // 24.93986404097375, 67.04325282594995
 
       if (isMounted) {
         setMarker(docs);
@@ -117,6 +176,12 @@ const Home = (props) => {
     return () => { isMounted = false };
   }, [selectedPlaceId]);
 
+
+  useEffect(() => {
+
+
+  }, [])
+
   // console.log(marker);
 
   return (
@@ -129,39 +194,37 @@ const Home = (props) => {
         <View style={{ marginTop: 30 }}>
           <LocationTab />
         </View>
-        <MapView
-          style={styles.mapContainer}
-          provider={PROVIDER_GOOGLE}
-          initialRegion={{
-            latitude: 37.78825,
-            longitude: -122.4324,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-        >
-          {marker.map((marker, key) => (
-            <Marker
-              key={key}
-              coordinate={marker.latlng}
-              title={marker.title}
-              description={marker.description}
-              onPress={() => setSelectedPlaceId(marker.key)}
-            >
-              <Entypo
-                color={marker.key == selectedPlaceId ? "black" : "red"}
-                name="drink"
-                size={40}
-              />
-            </Marker>
-          ))}
 
-          {userMarker &&
-            <Marker
-              coordinate={userMarker.latlng}
-            >
-            </Marker>
-          }
-        </MapView>
+        {userMarker.latlng.latitude &&
+          <MapView
+            style={styles.mapContainer}
+            provider={PROVIDER_GOOGLE}
+            initialRegion={userMarker.latlng}
+          >
+            {marker.map((marker, key) => (
+              <Marker
+                key={key}
+                coordinate={marker.latlng}
+                title={marker.title}
+                description={marker.description}
+                onPress={() => setSelectedPlaceId(marker.key)}
+              >
+                <Entypo
+                  color={marker.key == selectedPlaceId ? "black" : "red"}
+                  name="drink"
+                  size={40}
+                />
+              </Marker>
+            ))}
+
+            {userMarker &&
+              <Marker
+                coordinate={userMarker.latlng}
+              >
+              </Marker>
+            }
+          </MapView>
+        }
         {loading ? (
           <ActivityIndicator
             //visibility of Overlay Loading Spinner
@@ -193,7 +256,7 @@ const Home = (props) => {
           </View>
         )}
       </SafeAreaView>
-    </LinearGradient>
+    </LinearGradient >
   );
 };
 

@@ -14,14 +14,14 @@ var firebaseConfig = {
   measurementId: "G-4YC4STKFS9",
 };
 
-// let app;
-// if (firebase.apps.length === 0) {
-//   app = firebase.initializeApp(firebaseConfig);
-// } else {
-//   app = firebase.app();
-// }
+let app;
+if (firebase.apps.length === 0) {
+  app = firebase.initializeApp(firebaseConfig);
+} else {
+  app = firebase.app();
+}
 
-firebase.initializeApp(firebaseConfig);
+// firebase.initializeApp(firebaseConfig);
 
 // const db = app.firestore();
 const firestore = firebase.firestore();
@@ -82,6 +82,8 @@ const signUp = (userDetails) => {
                   userGender: gender,
                   userUid: uid,
                   userProfileImageUrl: userProfileImageUrl,
+                  latitude : 0,
+                  longitude : 0
                 }
                 let user = firestore
                   .collection("users")
