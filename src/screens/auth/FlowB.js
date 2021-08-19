@@ -10,9 +10,7 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "./../../component/TopBar";
-
 // This is signUp SCREEN
-
 
 // let handlecheck = (email, password) => {
 
@@ -45,10 +43,12 @@ const FlowA = ({ ...props }) => {
             keyboardType="default"
           />
 
-          <TouchableOpacity onPress={() => {
-            if (email != "" && password != "")
-              props.navigation.push("MonProfil", { email, password })
-          }}>
+          <TouchableOpacity
+            onPress={() => {
+              if (email != "" && password != "")
+                props.navigation.push("MonProfil", { email, password });
+            }}
+          >
             <View style={styles.btnopacity}>
               <Text style={styles.f}>VALIDER</Text>
             </View>
@@ -58,7 +58,6 @@ const FlowA = ({ ...props }) => {
     </LinearGradient>
   );
 };
-
 
 export default FlowA;
 

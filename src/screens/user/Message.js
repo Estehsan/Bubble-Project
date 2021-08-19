@@ -7,6 +7,7 @@ import {
   FlatList,
   TouchableOpacity,
   SafeAreaView,
+  ActivityIndicator,
 } from "react-native";
 import Colors from "../../assets/colors/Colors";
 import Entypo from "react-native-vector-icons/Entypo";
@@ -24,6 +25,7 @@ const Message = ({ ...props }) => {
 
   let [data, setData] = useState([]);
   let [userId, setuserId] = useState([]);
+  let [loading, setLoading] = useState(true);
 
   useEffect(async () => {
     auth.onAuthStateChanged(async (user) => {
@@ -47,6 +49,7 @@ const Message = ({ ...props }) => {
 
             await setData(docs);
             console.log(data);
+            setLoading(false);
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
@@ -66,60 +69,68 @@ const Message = ({ ...props }) => {
       <SafeAreaView>
         <TopBar />
         <View>
-          <FlatList
-            data={data}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              // console.log(item)
-              <View style={styles.Container}>
-                <View style={styles.main}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      props.navigation.navigate("ChatUser", {
-                        currentUserId: userId,
-                        messageId: item.id,
-                        name: item.name,
-                        gender: item.gender,
-                        messageImg: item.image,
-                      });
-                    }}
-                  >
-                    <View style={styles.lContainer}>
-                      {item.image ? (
-                        <Image
-                          style={{ height: 50, width: 50, borderRadius: 50 }}
-                          source={{ uri: item.image }}
-                        />
-                      ) : (
-                        <Image
-                          style={{ height: 50, width: 50, borderRadius: 50 }}
-                          source={{
-                            uri: "https://www.w3schools.com/howto/img_avatar.png",
-                          }}
-                        />
-                      )}
+          {loading ? (
+            <ActivityIndicator
+              style={{ alignItems: "center" }}
+              size="large"
+              color="#000"
+            />
+          ) : (
+            <FlatList
+              data={data}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                // console.log(item)
+                <View style={styles.Container}>
+                  <View style={styles.main}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        props.navigation.navigate("ChatUser", {
+                          currentUserId: userId,
+                          messageId: item.id,
+                          name: item.name,
+                          gender: item.gender,
+                          messageImg: item.image,
+                        });
+                      }}
+                    >
+                      <View style={styles.lContainer}>
+                        {item.image ? (
+                          <Image
+                            style={{ height: 50, width: 50, borderRadius: 50 }}
+                            source={{ uri: item.image }}
+                          />
+                        ) : (
+                          <Image
+                            style={{ height: 50, width: 50, borderRadius: 50 }}
+                            source={{
+                              uri: "https://www.w3schools.com/howto/img_avatar.png",
+                            }}
+                          />
+                        )}
 
-                      <View style={styles.HeadingView}>
-                        <Text
-                          style={styles.heading}
-                          numberOfLines={1}
-                          ellipsizeMode={"tail"}
-                        >
-                          {item.name}
-                        </Text>
-                        <Text style={styles.heading}>{item.gender}</Text>
-                      </View>
-                      {/* <View style={styles.rContainer}>
+                        <View style={styles.HeadingView}>
+                          <Text
+                            style={styles.heading}
+                            numberOfLines={1}
+                            ellipsizeMode={"tail"}
+                          >
+                            {item.name}
+                          </Text>
+                          <Text style={styles.heading}>{item.gender}</Text>
+                        </View>
+                        {/* <View style={styles.rContainer}>
                         <View style={styles.btn}>
                           <Text>Content</Text>
                         </View>
                       </View> */}
-                    </View>
-                  </TouchableOpacity>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
-            )}
-          />
+              )}
+            />
+          )}
         </View>
       </SafeAreaView>
     </LinearGradient>

@@ -11,11 +11,17 @@ import {
   TextInput,
   TouchableOpacity,
   Touchable,
+  FlatList,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "./../../component/TopBar";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import SelectBox from "react-native-multi-selectbox";
+import H2 from "./../../component/basic/H2";
+import { xorBy } from "lodash";
 import { auth, storage, firestore, signUp } from "../../db/firebase";
+import Modal from "react-native-modal";
+import P from "../../component/basic/P";
 
 const handleSignUp = async (
   email,
@@ -23,7 +29,7 @@ const handleSignUp = async (
   userProfileImage,
   gender,
   FirstName
-) => { };
+) => {};
 
 // This is register screen II
 
@@ -35,7 +41,70 @@ const MonProfil = ({ route, ...props }) => {
   const [FirstName, setFirstName] = useState(null);
   const [LastName, setLastName] = useState(null);
   const [UserProfileImageConfig, setUserProfileImageConfig] = useState(null);
-  const[contentType,setcontentType] = useState(null)
+  const [contentType, setcontentType] = useState(null);
+  const [selectedTeams, setSelectedTeams] = useState([]);
+
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+
+  const K_OPTIONS = [
+    {
+      item: "Juventus",
+      id: "JUVE",
+    },
+    {
+      item: "Real Madrid",
+      id: "RM",
+    },
+    {
+      item: "Barcelona",
+      id: "BR",
+    },
+    {
+      item: "PSG",
+      id: "PSG",
+    },
+    {
+      item: "FC Bayern Munich",
+      id: "FBM",
+    },
+    {
+      item: "Manchester United FC",
+      id: "MUN",
+    },
+    {
+      item: "Manchester City FC",
+      id: "MCI",
+    },
+    {
+      item: "Everton FC",
+      id: "EVE",
+    },
+    {
+      item: "Tottenham Hotspur FC",
+      id: "TOT",
+    },
+    {
+      item: "Chelsea FC",
+      id: "CHE",
+    },
+    {
+      item: "Liverpool FC",
+      id: "LIV",
+    },
+    {
+      item: "Arsenal FC",
+      id: "ARS",
+    },
+
+    {
+      item: "Leicester City FC",
+      id: "LEI",
+    },
+  ];
 
   const TakeImgFromGallery = () => {
     ImagePicker.openPicker({
@@ -46,13 +115,13 @@ const MonProfil = ({ route, ...props }) => {
       console.log(image);
       setUserProfileImage(image.path);
       setUserProfileImageConfig(image);
-      setcontentType(image.mime)
+      setcontentType(image.mime);
     });
   };
 
   return (
     <LinearGradient colors={["#DD488C", "#000"]} style={styles.linearGradient}>
-      <SafeAreaView style={styles.main}>
+      <View style={styles.main}>
         <TopBar />
         <View style={styles.Profile}>
           <Text style={styles.h1}>MON PROFIL</Text>
@@ -73,6 +142,39 @@ const MonProfil = ({ route, ...props }) => {
             placeholder="date de naissance"
             keyboardType="default"
           />
+          <TouchableOpacity style={styles.input} onPress={toggleModal}>
+            <P>Selecte Interest</P>
+            {/* <FlatList
+              data="selectedTeams"
+              keyExtractor={(item) => item.id}
+              horizontal
+              renderItem={({ item }) => <H2 key={item}>{console.log(item)}</H2>}
+            /> */}
+            {/* {selectedTeams.map((item) => (
+              <Text key={id}>{item}</Text>
+            ))} */}
+          </TouchableOpacity>
+          <Modal isVisible={isModalVisible}>
+            <View
+              style={{
+                paddingHorizontal: 10,
+                paddingVertical: 50,
+                backgroundColor: "#fff",
+              }}
+            >
+              <SelectBox
+                label="Select multiple"
+                options={K_OPTIONS}
+                selectedValues={selectedTeams}
+                onMultiSelect={onMultiChange()}
+                onTapClose={onMultiChange()}
+                isMulti
+              />
+              <TouchableOpacity onPress={toggleModal}>
+                <Text>close</Text>
+              </TouchableOpacity>
+            </View>
+          </Modal>
 
           <View style={styles.SelectGender}>
             <TouchableOpacity onPress={() => setGender("mix")}>
@@ -144,20 +246,18 @@ const MonProfil = ({ route, ...props }) => {
                   gender: gender,
                   FirstName: FirstName,
                   LastName: LastName,
-                  UserProfileImageConfig : UserProfileImageConfig,
-                  contentType : contentType,
-                  navigation : props.navigation
+                  UserProfileImageConfig: UserProfileImageConfig,
+                  contentType: contentType,
+                  navigation: props.navigation,
                 };
 
                 try {
                   const SignUpReturn = await signUp(userDetails);
-                  props.navigation.push("Home")
+                  props.navigation.push("Home");
                   console.log(userDetails);
+                } catch (err) {
+                  console.log(err);
                 }
-                catch(err){
-                  console.log(err)
-                }
-               
               }
             }}
           >
@@ -171,9 +271,16 @@ const MonProfil = ({ route, ...props }) => {
             </View>
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
+      </View>
     </LinearGradient>
   );
+  function onMultiChange() {
+    return (item) => setSelectedTeams(xorBy(selectedTeams, [item], "id"));
+  }
+
+  function onChange() {
+    return (val) => setSelectedTeam(val);
+  }
 };
 
 export default MonProfil;
