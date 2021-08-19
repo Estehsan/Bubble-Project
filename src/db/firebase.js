@@ -32,7 +32,7 @@ firestore.settings({ experimentalForceLongPolling: true });
 
 const signUp = (userDetails) => {
 
-  const { email, password, userProfileImage, gender, FirstName, LastName, UserProfileImageConfig, contentType, navigation } = userDetails;
+  const { email, password, userProfileImage, gender, FirstName, LastName, UserProfileImageConfig, contentType, selectedTeams, navigation } = userDetails;
   const metadata = {
     contentType: contentType
   }
@@ -80,10 +80,11 @@ const signUp = (userDetails) => {
                   userEmail: email,
                   userPassword: password,
                   userGender: gender,
+                  selectedTeams: selectedTeams,
                   userUid: uid,
                   userProfileImageUrl: userProfileImageUrl,
-                  latitude : 0,
-                  longitude : 0
+                  latitude: 0,
+                  longitude: 0
                 }
                 let user = firestore
                   .collection("users")

@@ -28,11 +28,15 @@ const Message = ({ ...props }) => {
   let [loading, setLoading] = useState(true);
 
   useEffect(async () => {
+
+    let isMounted = true
     auth.onAuthStateChanged(async (user) => {
       if (user) {
         var uid = user.uid;
-        setuserId(user.uid);
 
+        if (isMounted) {
+          setuserId(user.uid);
+        }
         // console.log(uid)
         await firestore
           .collection("users")
@@ -47,20 +51,26 @@ const Message = ({ ...props }) => {
               // status: doc.data().status
             }));
 
-            await setData(docs);
-            console.log(data);
-            setLoading(false);
+            if (isMounted) {
+              await setData(docs);
+              console.log(data);
+              setLoading(false);
+            }
           })
-          .catch((error) => {
-            console.log("Error getting documents: ", error);
-          });
+         
         // ...
       } else {
         // User is signed out
         // ...
       }
     });
+
+    return () => { 
+      isMounted = false
+    }
   }, []);
+
+
   return (
     <LinearGradient
       colors={["#FFC1DD", "#ffffff"]}

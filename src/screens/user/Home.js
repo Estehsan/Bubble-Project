@@ -68,7 +68,7 @@ const Home = (props) => {
       if (user) {
         var uid = user.uid;
         // console.log(uid)
-        firestore.collection("users").doc(uid)
+        let subscribe = firestore.collection("users").doc(uid)
           .onSnapshot(async (doc) => {
 
             var docs = {
@@ -112,8 +112,8 @@ const Home = (props) => {
 
                 if (docs.latlng.latitude != initialRegion.latlng.latitude ||
                   docs.latlng.longitude != initialRegion.latlng.longitude) {
-                  setUserMarker(initialRegion)
 
+                  setUserMarker(initialRegion)
                   firestore.collection("users").doc(uid).update({
                    latitude : initialRegion.latlng.latitude,
                    longitude : initialRegion.latlng.longitude
@@ -144,7 +144,7 @@ const Home = (props) => {
 
     });
 
-    firestore.collection("location").onSnapshot((querySnapshot) => {
+    let subscribeLoc = firestore.collection("location").onSnapshot((querySnapshot) => {
       let docs = querySnapshot.docs.map((doc) => ({
         key: doc.id,
         title: doc.data().title,
@@ -173,14 +173,11 @@ const Home = (props) => {
     const index = marker.findIndex((marker) => marker.key == selectedPlaceId);
     flatlist.current.scrollToIndex({ index });
 
-    return () => { isMounted = false };
+    return () => { isMounted = false 
+      subscribe();
+      subscribeLoc();
+    };
   }, [selectedPlaceId]);
-
-
-  useEffect(() => {
-
-
-  }, [])
 
   // console.log(marker);
 

@@ -15,7 +15,9 @@ import { auth, firestore } from "../../db/firebase";
 import firebase from "firebase/app";
 
 const Profile = (props) => {
-  let [info, setInfo] = useState({})
+  let [image, setImage] = useState(null)
+  let [selectedTeams, setSelectedTeams] = useState([])
+
   const [gender, setGender] = useState("");
   const [FirstName, setFirstName] = useState(null);
   const [LastName, setLastName] = useState(null);
@@ -24,6 +26,7 @@ const Profile = (props) => {
 
 
   useEffect(() => {
+    let isMounted = true
     auth.onAuthStateChanged((user) => {
       if (user) {
         var uid = user.uid;
@@ -33,8 +36,10 @@ const Profile = (props) => {
 
         firestore.collection("users").doc(uid)
           .get().then((doc) => {
-            if (doc.exists) {
-              setInfo(doc.data().userProfileImageUrl)
+            if (doc.exists && isMounted) {
+              setImage(doc.data().userProfileImageUrl)
+              setSelectedTeams(doc.data().selectedTeams)
+
               // console.log(info)
 
             } else {
@@ -48,6 +53,8 @@ const Profile = (props) => {
 
       }
     })
+
+    return () => { isMounted = false }
   }, []);
 
 
@@ -86,10 +93,17 @@ const Profile = (props) => {
         <View style={styles.Profile}>
           <Text style={styles.h1}>MON PROFIL </Text>
 
-          {info ? <Image
+
+          {
+
+            selectedTeams &&
+            selectedTeams.length > 0 &&
+            <Text>+{selectedTeams.length}</Text>
+          }
+          {image ? <Image
             style={{ height: 70, width: 70, borderRadius: 70 }}
             resizeMode="contain"
-            source={{ uri: info }}
+            source={{ uri: image }}
           />
             :
             <Image

@@ -39,6 +39,7 @@ const FlowA = ({ ...props }) => {
           />
           <TextInput
             style={styles.input}
+            secureTextEntry={true}
             onChangeText={setPassword}
             value={password}
             placeholder="date de naissance"
@@ -118,6 +119,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 60,
     backgroundColor: "#fff",
+    color: "black",
   },
   btn: {
     paddingHorizontal: 20,

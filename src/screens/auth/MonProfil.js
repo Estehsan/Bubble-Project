@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   Touchable,
   FlatList,
+  Alert,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "./../../component/TopBar";
@@ -237,7 +238,8 @@ const MonProfil = ({ route, ...props }) => {
                 userProfileImage != null &&
                 gender != "" &&
                 FirstName != "" &&
-                LastName != ""
+                LastName != "" &&
+                selectedTeams.length > 0
               ) {
                 var userDetails = {
                   email: email,
@@ -248,6 +250,7 @@ const MonProfil = ({ route, ...props }) => {
                   LastName: LastName,
                   UserProfileImageConfig: UserProfileImageConfig,
                   contentType: contentType,
+                  selectedTeams : selectedTeams,
                   navigation: props.navigation,
                 };
 
@@ -258,6 +261,10 @@ const MonProfil = ({ route, ...props }) => {
                 } catch (err) {
                   console.log(err);
                 }
+              }
+
+              else {
+                Alert.alert("fields can not be empty")
               }
             }}
           >
@@ -275,6 +282,7 @@ const MonProfil = ({ route, ...props }) => {
     </LinearGradient>
   );
   function onMultiChange() {
+    console.log(selectedTeams.length)
     return (item) => setSelectedTeams(xorBy(selectedTeams, [item], "id"));
   }
 
@@ -317,6 +325,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 60,
     backgroundColor: "#fff",
+    color : "black"
   },
   btn: {
     paddingHorizontal: 20,
