@@ -37,7 +37,8 @@ function BottomTabNavigator() {
     <Stack.Navigator
       initialRouteName="Home"
       tabBarOptions={{
-        activeTintColor: "blue",
+        activeTintColor: "#DD488C",
+        inactiveTintColor: "black",
         showLabel: false,
         style: {
           position: "absolute",
@@ -56,8 +57,13 @@ function BottomTabNavigator() {
         name="Home"
         component={Home}
         options={{
-          tabBarIcon: ({ focused }) => (
-            <MIcon style={styles.position} name="home" size={30} />
+          tabBarIcon: ({ color }) => (
+            <MIcon
+              style={styles.position}
+              name="home"
+              size={38}
+              color={color}
+            />
           ),
         }}
       />
@@ -65,8 +71,8 @@ function BottomTabNavigator() {
         name="AchatUser"
         component={AchatUser}
         options={{
-          tabBarIcon: ({focused}) => (
-            <MIcon style={styles.position} name="home" size={30} />
+          tabBarIcon: ({color}) => (
+            <MIcon style={styles.position} name="home" size={30} color={color} />
           ),
         }}
       /> */}
@@ -74,8 +80,13 @@ function BottomTabNavigator() {
         name="Message"
         component={Message}
         options={{
-          tabBarIcon: ({ focused }) => (
-            <Ionicons style={styles.position} name="chatbubbles" size={30} />
+          tabBarIcon: ({ color }) => (
+            <Ionicons
+              style={styles.position}
+              name="chatbubbles"
+              size={35}
+              color={color}
+            />
           ),
         }}
       />
@@ -83,8 +94,13 @@ function BottomTabNavigator() {
         name="Drink"
         component={Drink}
         options={{
-          tabBarIcon: ({ focused }) => (
-            <McIcon style={styles.position} name="glass-cocktail" size={30} />
+          tabBarIcon: ({ color }) => (
+            <McIcon
+              style={styles.position}
+              name="glass-cocktail"
+              size={35}
+              color={color}
+            />
           ),
         }}
       />
@@ -92,8 +108,13 @@ function BottomTabNavigator() {
         name="Profile"
         component={Profile}
         options={{
-          tabBarIcon: ({ focused }) => (
-            <FaIcon style={styles.position} name="user-alt" size={30} />
+          tabBarIcon: ({ color }) => (
+            <FaIcon
+              style={styles.position}
+              name="user-alt"
+              size={30}
+              color={color}
+            />
           ),
         }}
       />

@@ -127,8 +127,8 @@ def jscFlavor = 'org.webkit:android-jsc:+'
 def enableHermes = project.ext.react.get("enableHermes", false);
 
 android {
-     compileSdkVersion 27
-    buildToolsVersion "27.0.3"
+     compileSdkVersion 30
+    buildToolsVersion "29.0.3"
     ndkVersion rootProject.ext.ndkVersion
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -144,7 +144,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-        targetSdkVersion 27
+        targetSdkVersion 30
         vectorDrawables.useSupportLibrary = true
 
         // playServicesVersion = "17.2.1" // or find latest version
