@@ -7,6 +7,7 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "./../../component/TopBar";
@@ -14,16 +15,68 @@ import { auth, firestore } from "../../db/firebase";
 import firebase from "firebase/app";
 
 const Profile = (props) => {
-  var unsubscribeUserAuthStateChangedListener = null;
+  let [info, setInfo] = useState({})
+  const [gender, setGender] = useState("");
+  const [FirstName, setFirstName] = useState(null);
+  const [LastName, setLastName] = useState(null);
+  const [id, setId] = useState("");
+
+
 
   useEffect(() => {
-    console.log();
-    return () => {
-      if (unsubscribeUserAuthStateChangedListener) {
-        unsubscribeUserAuthStateChangedListener();
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        var uid = user.uid;
+        setId(uid)
+
+        console.log(id)
+
+        firestore.collection("users").doc(uid)
+          .get().then((doc) => {
+            if (doc.exists) {
+              setInfo(doc.data().userProfileImageUrl)
+              // console.log(info)
+
+            } else {
+              // doc.data() will be undefined in this case
+              console.log("No such document!");
+            }
+          })
       }
-    };
-  });
+
+      else {
+
+      }
+    })
+  }, []);
+
+
+  let updateInfo = () => {
+    if (
+      gender != "" &&
+      FirstName != "" &&
+      LastName != ""
+    ) {
+
+      if (id)
+        firestore.collection("users").doc(id).update({
+          userName: FirstName + LastName,
+          userGender: gender
+        }).then(() => {
+          console.log("Document successfully written!");
+          Alert.alert("record has been successfully changed")
+          setGender("")
+          setFirstName("")
+          setLastName("")
+        })
+          .catch((error) => {
+            console.error("Error writing document: ", error);
+          });
+    }
+    else {
+      Alert.alert("All fields must been filled")
+    }
+  }
 
   const [number, setNumber] = useState("");
   return (
@@ -32,35 +85,48 @@ const Profile = (props) => {
         <TopBar />
         <View style={styles.Profile}>
           <Text style={styles.h1}>MON PROFIL </Text>
-          <Image
+
+          {info ? <Image
             style={{ height: 70, width: 70, borderRadius: 70 }}
             resizeMode="contain"
-            source={{ uri: "https://www.w3schools.com/howto/img_avatar.png" }}
+            source={{ uri: info }}
           />
+            :
+            <Image
+              style={{ height: 70, width: 70, borderRadius: 70 }}
+              resizeMode="contain"
+              source={{ uri: "https://www.w3schools.com/howto/img_avatar.png" }}
+            />
+          }
+
         </View>
         <View style={styles.Form}>
           <TextInput
             style={styles.input}
-            onChangeText={setNumber}
-            value={number}
+            onChangeText={setFirstName}
+            value={FirstName}
             placeholder="pseudo "
-            keyboardType="numeric"
+            keyboardType="default"
           />
           <TextInput
             style={styles.input}
-            onChangeText={setNumber}
-            value={number}
+            onChangeText={setLastName}
+            value={LastName}
             placeholder="date de naissance"
-            keyboardType="numeric"
+            keyboardType="default"
           />
           <TextInput
             style={styles.input}
-            onChangeText={setNumber}
-            value={number}
+            onChangeText={setGender}
+            value={gender}
             placeholder="genre"
-            keyboardType="numeric"
+            keyboardType="default"
           />
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              updateInfo()
+            }}
+          >
             <View style={styles.btn}>
               <Text style={styles.f}>MODIFIER</Text>
             </View>
@@ -86,7 +152,7 @@ const Profile = (props) => {
             <TouchableOpacity
               style={styles.btnopacity}
               onPress={() => {
-                unsubscribeUserAuthStateChangedListener = auth
+                auth
                   .signOut()
                   .then(() => {
                     // Sign-out successful.
@@ -140,6 +206,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 60,
     backgroundColor: "#fff",
+    color: "black",
   },
   btn: {
     paddingHorizontal: 20,
