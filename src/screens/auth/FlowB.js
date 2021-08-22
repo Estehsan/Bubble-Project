@@ -9,6 +9,9 @@ import {
   TouchableOpacity,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
+import InputF from "../../component/InputF";
+import { emailValidator } from "../../helpers/emailValidator";
+import { passwordValidator } from "../../helpers/passwordValidator";
 import TopBar from "./../../component/TopBar";
 // This is signUp SCREEN
 
@@ -17,8 +20,8 @@ import TopBar from "./../../component/TopBar";
 // }
 
 const FlowA = ({ ...props }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState({ value: '', error: '' });
+  const [password, setPassword] = useState({ value: '', error: '' });
 
   return (
     <LinearGradient colors={["#DD488C", "#000"]} style={styles.linearGradient}>
@@ -28,25 +31,36 @@ const FlowA = ({ ...props }) => {
           <Text style={styles.h1}>SE CONNECTER </Text>
         </View>
         <View style={styles.Form}>
-          <TextInput
-            style={styles.input}
-            onChangeText={setEmail}
-            value={email}
+
+
+          <InputF onChangeText={(e) => setEmail({ value: e, error: '' })}
+            value={email.value}
+            error={email.error}
+            errorText={email.error}
             placeholder="pseudo"
-            keyboardType="default"
-          />
-          <TextInput
-            style={styles.input}
+            keyboardType="default" />
+
+          <InputF onChangeText={(e) => setEmail({ value: e, error: '' })}
             secureTextEntry={true}
-            onChangeText={setPassword}
-            value={password}
+            onChangeText={(e) => setPassword({ value: e, error: '' })}
+            value={password.value}
+            error={password.error}
+            errorText={password.error}
             placeholder="date de naissance"
-            keyboardType="default"
-          />
+            keyboardType="default" />
+
 
           <TouchableOpacity
             onPress={() => {
-              if (email != "" && password != "")
+              const emailError = emailValidator(email.value)
+              const passwordError = passwordValidator(password.value)
+
+              if (emailError || passwordError) {
+                setEmail({ ...email, error: emailError })
+                setPassword({ ...password, error: passwordError })
+              }
+
+              if (!emailError || !passwordError)
                 props.navigation.push("MonProfil", { email, password });
             }}
           >
@@ -94,7 +108,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 60,
     backgroundColor: "#fff",
-    color : "black"
+    color: "black"
   },
   btn: {
     paddingHorizontal: 20,

@@ -23,6 +23,9 @@ import { xorBy } from "lodash";
 import { auth, storage, firestore, signUp } from "../../db/firebase";
 import Modal from "react-native-modal";
 import P from "../../component/basic/P";
+import InputF from "../../component/InputF";
+import { nameValidator } from "../../helpers/nameValidator";
+
 
 const handleSignUp = async (
   email,
@@ -30,7 +33,7 @@ const handleSignUp = async (
   userProfileImage,
   gender,
   FirstName
-) => {};
+) => { };
 
 // This is register screen II
 
@@ -39,8 +42,8 @@ const MonProfil = ({ route, ...props }) => {
   const [number, setNumber] = useState("");
   const [userProfileImage, setUserProfileImage] = useState(null);
   const [gender, setGender] = useState("");
-  const [FirstName, setFirstName] = useState(null);
-  const [LastName, setLastName] = useState(null);
+  const [FirstName, setFirstName] = useState({ value: '', error: '' });
+  const [LastName, setLastName] = useState({ value: '', error: '' });
   const [UserProfileImageConfig, setUserProfileImageConfig] = useState(null);
   const [contentType, setcontentType] = useState(null);
   const [selectedTeams, setSelectedTeams] = useState([]);
@@ -128,21 +131,22 @@ const MonProfil = ({ route, ...props }) => {
           <Text style={styles.h1}>MON PROFIL</Text>
         </View>
         <View style={styles.Form}>
-          <TextInput
-            style={styles.input}
-            onChangeText={setFirstName}
-            value={FirstName}
-            placeholder="pseudo "
-            keyboardType="default"
-          />
 
-          <TextInput
-            style={styles.input}
-            onChangeText={setLastName}
-            value={LastName}
+
+          <InputF onChangeText={(e) => setFirstName({ value: e, error: '' })}
+            value={FirstName.value}
+            error={FirstName.error}
+            errorText={FirstName.error}
+            placeholder="pseudo"
+            keyboardType="default" />
+
+          <InputF onChangeText={(e) => setLastName({ value: e, error: '' })}
+            value={LastName.value}
+            error={LastName.error}
+            errorText={LastName.error}
             placeholder="date de naissance"
-            keyboardType="default"
-          />
+
+            keyboardType="default" />
           <TouchableOpacity style={styles.input} onPress={toggleModal}>
             <P>Selecte Interest</P>
             {/* <FlatList
@@ -232,6 +236,17 @@ const MonProfil = ({ route, ...props }) => {
 
           <TouchableOpacity
             onPress={async () => {
+
+
+              const firstNameError = nameValidator(FirstName.value)
+              const lastNameError = nameValidator(LastName.value)
+
+              if (firstNameError || lastNameError) {
+                setFirstName({ ...FirstName, error: firstNameError })
+                setLastName({ ...LastName, error: lastNameError })
+              }
+
+
               if (
                 email != "" &&
                 password != "" &&
@@ -250,7 +265,7 @@ const MonProfil = ({ route, ...props }) => {
                   LastName: LastName,
                   UserProfileImageConfig: UserProfileImageConfig,
                   contentType: contentType,
-                  selectedTeams : selectedTeams,
+                  selectedTeams: selectedTeams,
                   navigation: props.navigation,
                 };
 
@@ -325,7 +340,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 60,
     backgroundColor: "#fff",
-    color : "black"
+    color: "black"
   },
   btn: {
     paddingHorizontal: 20,

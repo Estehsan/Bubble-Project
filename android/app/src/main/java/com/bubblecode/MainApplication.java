@@ -1,4 +1,5 @@
 package com.bubblecode;
+import com.showlocationservicesdialogbox.LocationServicesDialogBoxPackage;
 
 import android.app.Application;
 import android.content.Context;
@@ -7,7 +8,6 @@ import com.facebook.react.ReactApplication;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
-import com.showlocationservicesdialogbox.LocationServicesDialogBoxPackage;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;

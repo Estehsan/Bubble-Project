@@ -11,16 +11,17 @@ import {
 import { auth } from '../../db/firebase';
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "./../../component/TopBar";
-
-
+import InputF from './../../component/InputF'
+import { emailValidator } from './../../helpers/emailValidator'
+import { passwordValidator } from './../../helpers/passwordValidator'
 
 // const handleLogIn = async (email, password) => {
 
 // }
 // This is Login SCREEN
 const FlowA = ({ ...props }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState({ value: '', error: '' });
+  const [password, setPassword] = useState({ value: '', error: '' });
 
   return (
     <LinearGradient colors={["#DD488C", "#000"]} style={styles.linearGradient}>
@@ -30,23 +31,38 @@ const FlowA = ({ ...props }) => {
           <Text style={styles.h1}>S’INSCRIRE </Text>
         </View>
         <View style={styles.Form}>
-          <TextInput
-            style={styles.input}
-            onChangeText={setEmail}
-            value={email}
+
+
+          <InputF onChangeText={(e) => setEmail({ value: e, error: '' })}
+            value={email.value}
+            error={email.error}
+            errorText={email.error}
             placeholder="pseudo"
-            keyboardType="default"
-          />
-          <TextInput
-            style={styles.input}
+            keyboardType="default" />
+          <InputF onChangeText={(e) => setEmail({ value: e, error: '' })}
             secureTextEntry={true}
-            onChangeText={setPassword}
-            value={password}
+            onChangeText={(e) => setPassword({ value: e, error: '' })}
+            value={password.value}
+            error={password.error}
+            errorText={password.error}
             placeholder="date de naissance"
-            keyboardType="default"
-          />
+            keyboardType="default" />
+
+
 
           <TouchableOpacity onPress={() => {
+
+
+            const emailError = emailValidator(email.value)
+            const passwordError = passwordValidator(password.value)
+
+            if (emailError || passwordError) {
+              setEmail({ ...email, error: emailError })
+              setPassword({ ...password, error: passwordError })
+            }
+
+
+
             if (email != "" && password != "") {
 
               // console.log(userDetails)
