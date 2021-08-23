@@ -47,6 +47,7 @@ const MonProfil = ({ route, ...props }) => {
   const [UserProfileImageConfig, setUserProfileImageConfig] = useState(null);
   const [contentType, setcontentType] = useState(null);
   const [selectedTeams, setSelectedTeams] = useState([]);
+  const [isLoading, setLoading] = useState(false);
 
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -252,8 +253,8 @@ const MonProfil = ({ route, ...props }) => {
                 password != "" &&
                 userProfileImage != null &&
                 gender != "" &&
-                FirstName != "" &&
-                LastName != "" &&
+                FirstName.value != "" &&
+                LastName.value != "" &&
                 selectedTeams.length > 0
               ) {
                 var userDetails = {
@@ -261,8 +262,8 @@ const MonProfil = ({ route, ...props }) => {
                   password: password,
                   userProfileImage: userProfileImage,
                   gender: gender,
-                  FirstName: FirstName,
-                  LastName: LastName,
+                  FirstName: FirstName.value,
+                  LastName: LastName.value,
                   UserProfileImageConfig: UserProfileImageConfig,
                   contentType: contentType,
                   selectedTeams: selectedTeams,
@@ -270,9 +271,12 @@ const MonProfil = ({ route, ...props }) => {
                 };
 
                 try {
+                  setLoading(true);
                   const SignUpReturn = await signUp(userDetails);
                   props.navigation.push("Home");
                   console.log(userDetails);
+                  setLoading(false);
+
                 } catch (err) {
                   console.log(err);
                 }

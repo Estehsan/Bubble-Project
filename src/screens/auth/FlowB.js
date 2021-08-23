@@ -7,6 +7,7 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import InputF from "../../component/InputF";
@@ -27,6 +28,7 @@ const FlowA = ({ ...props }) => {
     <LinearGradient colors={["#DD488C", "#000"]} style={styles.linearGradient}>
       <SafeAreaView style={styles.main}>
         <TopBar />
+
         <View style={styles.Profile}>
           <Text style={styles.h1}>SE CONNECTER </Text>
         </View>
@@ -61,16 +63,20 @@ const FlowA = ({ ...props }) => {
               }
 
               if (!emailError || !passwordError)
-                props.navigation.push("MonProfil", { email, password });
+
+                props.navigation.push("MonProfil", { email: email.value, password: password.value });
             }}
           >
+
             <View style={styles.btnopacity}>
+
               <Text style={styles.f}>VALIDER</Text>
             </View>
+
           </TouchableOpacity>
         </View>
       </SafeAreaView>
-    </LinearGradient>
+    </LinearGradient >
   );
 };
 
