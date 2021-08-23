@@ -7,58 +7,78 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
+import InputF from "../../component/InputF";
+import { emailValidator } from "../../helpers/emailValidator";
+import { passwordValidator } from "../../helpers/passwordValidator";
 import TopBar from "./../../component/TopBar";
-
 // This is signUp SCREEN
-
 
 // let handlecheck = (email, password) => {
 
 // }
 
 const FlowA = ({ ...props }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState({ value: '', error: '' });
+  const [password, setPassword] = useState({ value: '', error: '' });
 
   return (
     <LinearGradient colors={["#DD488C", "#000"]} style={styles.linearGradient}>
       <SafeAreaView style={styles.main}>
         <TopBar />
+
         <View style={styles.Profile}>
           <Text style={styles.h1}>SE CONNECTER </Text>
         </View>
         <View style={styles.Form}>
-          <TextInput
-            style={styles.input}
-            onChangeText={setEmail}
-            value={email}
-            placeholder="pseudo"
-            keyboardType="default"
-          />
-          <TextInput
-            style={styles.input}
-            onChangeText={setPassword}
-            value={password}
-            placeholder="date de naissance"
-            keyboardType="default"
-          />
 
-          <TouchableOpacity onPress={() => {
-            if (email != "" && password != "")
-              props.navigation.push("MonProfil", { email, password })
-          }}>
+
+          <InputF onChangeText={(e) => setEmail({ value: e, error: '' })}
+            value={email.value}
+            error={email.error}
+            errorText={email.error}
+            placeholder="pseudo"
+            keyboardType="default" />
+
+          <InputF onChangeText={(e) => setEmail({ value: e, error: '' })}
+            secureTextEntry={true}
+            onChangeText={(e) => setPassword({ value: e, error: '' })}
+            value={password.value}
+            error={password.error}
+            errorText={password.error}
+            placeholder="date de naissance"
+            keyboardType="default" />
+
+
+          <TouchableOpacity
+            onPress={() => {
+              const emailError = emailValidator(email.value)
+              const passwordError = passwordValidator(password.value)
+
+              if (emailError || passwordError) {
+                setEmail({ ...email, error: emailError })
+                setPassword({ ...password, error: passwordError })
+              }
+
+              if (!emailError || !passwordError)
+
+                props.navigation.push("MonProfil", { email: email.value, password: password.value });
+            }}
+          >
+
             <View style={styles.btnopacity}>
+
               <Text style={styles.f}>VALIDER</Text>
             </View>
+
           </TouchableOpacity>
         </View>
       </SafeAreaView>
-    </LinearGradient>
+    </LinearGradient >
   );
 };
-
 
 export default FlowA;
 
@@ -94,6 +114,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 60,
     backgroundColor: "#fff",
+    color: "black"
   },
   btn: {
     paddingHorizontal: 20,

@@ -7,20 +7,31 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  Button,
+  ActivityIndicator,
 } from "react-native";
 import { auth } from '../../db/firebase';
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "./../../component/TopBar";
-
-
+import InputF from './../../component/InputF'
+import { emailValidator } from './../../helpers/emailValidator'
+import { passwordValidator } from './../../helpers/passwordValidator'
+import CustomModal from "../../component/basic/CustomModal";
+import Modal from 'react-native-modal';
 
 // const handleLogIn = async (email, password) => {
 
 // }
 // This is Login SCREEN
 const FlowA = ({ ...props }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState({ value: '', error: '' });
+  const [password, setPassword] = useState({ value: '', error: '' });
+  const [error, setError] = useState()
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
 
   return (
     <LinearGradient colors={["#DD488C", "#000"]} style={styles.linearGradient}>
@@ -30,27 +41,43 @@ const FlowA = ({ ...props }) => {
           <Text style={styles.h1}>S’INSCRIRE </Text>
         </View>
         <View style={styles.Form}>
-          <TextInput
-            style={styles.input}
-            onChangeText={setEmail}
-            value={email}
+
+
+          <InputF onChangeText={(e) => setEmail({ value: e, error: '' })}
+            value={email.value}
+            error={email.error}
+            errorText={email.error}
             placeholder="pseudo"
-            keyboardType="default"
-          />
-          <TextInput
-            style={styles.input}
-            onChangeText={setPassword}
-            value={password}
+            keyboardType="default" />
+          <InputF onChangeText={(e) => setEmail({ value: e, error: '' })}
+            secureTextEntry={true}
+            onChangeText={(e) => setPassword({ value: e, error: '' })}
+            value={password.value}
+            error={password.error}
+            errorText={password.error}
             placeholder="date de naissance"
-            keyboardType="default"
-          />
+            keyboardType="default" />
+
+
 
           <TouchableOpacity onPress={() => {
+
+
+            const emailError = emailValidator(email.value)
+            const passwordError = passwordValidator(password.value)
+
+            if (emailError || passwordError) {
+              setEmail({ ...email, error: emailError })
+              setPassword({ ...password, error: passwordError })
+            }
+
+
+
             if (email != "" && password != "") {
 
               // console.log(userDetails)
               try {
-                auth.signInWithEmailAndPassword(email, password)
+                auth.signInWithEmailAndPassword(email.value, password.value)
                   .then((userCredential) => {
                     // Signed in 
                     var user = userCredential.user;
@@ -61,11 +88,15 @@ const FlowA = ({ ...props }) => {
                   .catch((error) => {
                     var errorCode = error.code;
                     var errorMessage = error.message;
+                    setError(errorMessage)
+
+
                     console.log(error)
                     // ..
                   });
               }
               catch (error) {
+
                 console.log(error)
               }
             }
@@ -77,10 +108,23 @@ const FlowA = ({ ...props }) => {
             <View style={styles.btnopacity}>
               <Text style={styles.f}>VALIDER</Text>
             </View>
+
           </TouchableOpacity>
         </View>
+        {error === null ?
+          <Modal onBackdropPress={toggleModal} isVisible={isModalVisible}>
+            <CustomModal title="Error" content={error} />
+          </Modal> : <Text>hailo</Text>}
+
+        <Button title="Show modal" onPress={toggleModal} />
+        <ActivityIndicator size="large" />
+
+
+
+
+
       </SafeAreaView>
-    </LinearGradient>
+    </LinearGradient >
   );
 };
 
@@ -118,6 +162,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 60,
     backgroundColor: "#fff",
+    color: "black",
   },
   btn: {
     paddingHorizontal: 20,

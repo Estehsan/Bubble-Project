@@ -7,6 +7,7 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "../../component/TopBar";
@@ -31,6 +32,8 @@ function Flow(props) {
           <TouchableOpacity onPress={() => props.navigation.navigate("FlowB")}>
             <View style={styles.btn}>
               <Text style={styles.f}>INSCRIPTION</Text>
+
+
             </View>
           </TouchableOpacity>
         </View>

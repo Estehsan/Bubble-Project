@@ -68,7 +68,7 @@ const UsersListPlace = ({ route, ...props }) => {
 
             // console.log(dis)
 
-            if (dis < 10000) {
+            if (dis < 10) {
               data.push(docs[i])
             }
           }

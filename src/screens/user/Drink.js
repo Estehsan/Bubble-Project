@@ -59,8 +59,10 @@ const Drink = ({ navigation }) => {
   let [locationData, setLocationData] = useState([]);
   const [userMarker, setUserMarker] = useState({});
 
-  
+
   useEffect(() => {
+
+    let isMounted = true;
     auth.onAuthStateChanged((user) => {
       if (user) {
         var uid = user.uid;
@@ -77,7 +79,9 @@ const Drink = ({ navigation }) => {
               },
             }
 
-            await setUserMarker(docs)
+
+            if (isMounted)
+              await setUserMarker(docs)
             // console.log(docs)
 
           })
@@ -87,9 +91,16 @@ const Drink = ({ navigation }) => {
         // ...
       }
     });
+
+    return () => {
+      isMounted = false;
+    }
   }, [])
 
   useEffect(async () => {
+
+    let isMounted = true;
+
     firestore.collection("location").onSnapshot(async (querySnapshot) => {
       let docs = querySnapshot.docs.map((doc) => ({
         key: doc.id,
@@ -119,16 +130,21 @@ const Drink = ({ navigation }) => {
 
         // console.log(dis)
 
-        if (dis < 10000) {
+        if (dis < 10) {
           data.push(docs[i])
         }
 
       }
-      setLocationData(data);
+
+      if (isMounted)
+
+        setLocationData(data);
       // console.log(data);
       // }
     });
-
+    return () => {
+      isMounted = false;
+    }
   }, [userMarker]);
 
   // console.log(locationData);
@@ -188,7 +204,7 @@ const Drink = ({ navigation }) => {
                       location: item.description,
                       code: item.schedules,
                       img: item.photo,
-                      latlng : item.latlng
+                      latlng: item.latlng
                     })
                   }
                 >

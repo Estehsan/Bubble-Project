@@ -14,14 +14,14 @@ var firebaseConfig = {
   measurementId: "G-4YC4STKFS9",
 };
 
-// let app;
-// if (firebase.apps.length === 0) {
-//   app = firebase.initializeApp(firebaseConfig);
-// } else {
-//   app = firebase.app();
-// }
+let app;
+if (firebase.apps.length === 0) {
+  app = firebase.initializeApp(firebaseConfig);
+} else {
+  app = firebase.app();
+}
 
-firebase.initializeApp(firebaseConfig);
+// firebase.initializeApp(firebaseConfig);
 
 // const db = app.firestore();
 const firestore = firebase.firestore();
@@ -32,7 +32,7 @@ firestore.settings({ experimentalForceLongPolling: true });
 
 const signUp = (userDetails) => {
 
-  const { email, password, userProfileImage, gender, FirstName, LastName, UserProfileImageConfig, contentType, navigation } = userDetails;
+  const { email, password, userProfileImage, gender, FirstName, LastName, UserProfileImageConfig, contentType, selectedTeams, navigation } = userDetails;
   const metadata = {
     contentType: contentType
   }
@@ -80,8 +80,11 @@ const signUp = (userDetails) => {
                   userEmail: email,
                   userPassword: password,
                   userGender: gender,
+                  selectedTeams: selectedTeams,
                   userUid: uid,
                   userProfileImageUrl: userProfileImageUrl,
+                  latitude: 0,
+                  longitude: 0
                 }
                 let user = firestore
                   .collection("users")
