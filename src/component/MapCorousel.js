@@ -72,6 +72,7 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
     flex: 1,
+    ...Colors.customShadow,
 
     justifyContent: "space-around",
     display: "flex",

@@ -23,12 +23,16 @@ const UserChatInfo = ({ id, gender, name, userImg }) => {
         </View>
 
         <View style={styles.center}>
-          <Text>{name}</Text>
-          <Ionicons
-            style={styles.position}
-            name={gender === "male" ? "male" : "female"}
-            size={20}
-          />
+
+          <View style={{ display: 'flex', flexDirection: 'row' }}>
+
+            <Text>{name}</Text>
+            <Ionicons
+              style={styles.position}
+              name={gender === "male" ? "male" : "female"}
+              size={20}
+            />
+          </View>
           <Text>{gender}</Text>
         </View>
         <View style={styles.rContainer}>
@@ -69,4 +73,7 @@ const styles = StyleSheet.create({
     borderRadius: 60,
     alignItems: "center",
   },
+  lContainer: { flex: 1 },
+  center: { flex: 2 },
+  rContainer: { flex: 1, alignItems: 'flex-end' },
 });

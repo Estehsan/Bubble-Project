@@ -102,13 +102,14 @@ const Profile = (props) => {
           }
           {image ? <Image
             style={{ height: 70, width: 70, borderRadius: 70 }}
-            resizeMode="contain"
+            resizeMode='cover'
             source={{ uri: image }}
           />
             :
             <Image
               style={{ height: 70, width: 70, borderRadius: 70 }}
-              resizeMode="contain"
+              resizeMode='cover'
+
               source={{ uri: "https://www.w3schools.com/howto/img_avatar.png" }}
             />
           }
@@ -159,30 +160,44 @@ const Profile = (props) => {
             />
             <Text style={styles.h2}>3</Text>
           </View>
-          <TouchableOpacity>
-            <View style={styles.btnopacity}>
+          <TouchableOpacity
+
+            onPress={() => {
+              auth
+                .signOut()
+                .then(() => {
+                  // Sign-out successful.
+                  props.navigation.replace("Flow");
+                })
+                .catch(() => {
+                  // An error happened.
+                });
+            }}
+          >
+            <View style={styles.btnopacity}
+            >
               <Text style={styles.f}>ACHETAR</Text>
             </View>
-            <TouchableOpacity
-              style={styles.btnopacity}
-              onPress={() => {
-                auth
-                  .signOut()
-                  .then(() => {
-                    // Sign-out successful.
-                    props.navigation.replace("Flow");
-                  })
-                  .catch(() => {
-                    // An error happened.
-                  });
-              }}
-            >
-              <Text style={styles.f}>LOGOUT</Text>
-            </TouchableOpacity>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.btnopacity}
+            onPress={() => {
+              auth
+                .signOut()
+                .then(() => {
+                  // Sign-out successful.
+                  props.navigation.replace("Flow");
+                })
+                .catch(() => {
+                  // An error happened.
+                });
+            }}
+          >
+            <Text style={styles.f}>LOGOUT</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
-    </LinearGradient>
+    </LinearGradient >
   );
 };
 
