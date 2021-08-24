@@ -159,9 +159,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
       style={styles.linearGradient}
     >
       <SafeAreaView
-
         style={styles.container}
-
       >
         <KeyboardAvoidingView
           behavior={Platform.OS == "ios" ? "padding" : "height"}
@@ -382,7 +380,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     flex: 1,
 
-
   },
   input: {
     borderRadius: 20,
@@ -430,9 +427,5 @@ const styles = StyleSheet.create({
     fontFamily: "FredokaOne-Regular",
     fontSize: 25,
   },
-  Top: { flex: 1, backgroundColor: 'red', height: "100%" },
-  Footer: {
-    flex: 1,
-    marginBottom: 60
-  }
+
 });

@@ -93,7 +93,6 @@ const Profile = (props) => {
         <View style={styles.Profile}>
           <Text style={styles.h1}>MON PROFIL </Text>
 
-
           {
 
             selectedTeams &&
