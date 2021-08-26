@@ -75,6 +75,7 @@ const Drink = ({ navigation }) => {
             let docs = {
               key: user.uid,
               title: doc.data().userName,
+              // selectedTeams : doc.data().selectedTeams,
               latlng: {
                 longitude: doc.data().longitude,
                 latitude: doc.data().latitude,
