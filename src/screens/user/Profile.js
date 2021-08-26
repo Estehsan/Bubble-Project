@@ -19,6 +19,7 @@ const Profile = (props) => {
   let [selectedTeams, setSelectedTeams] = useState([])
 
   const [gender, setGender] = useState("");
+  const [candy, setCandy] = useState(0)
   const [FirstName, setFirstName] = useState(null);
   const [LastName, setLastName] = useState(null);
   const [id, setId] = useState("");
@@ -39,6 +40,7 @@ const Profile = (props) => {
             if (doc.exists && isMounted) {
               setImage(doc.data().userProfileImageUrl)
               setSelectedTeams(doc.data().selectedTeams)
+              setCandy(doc.data().candy)
 
               // console.log(info)
 
@@ -157,20 +159,23 @@ const Profile = (props) => {
               resizeMode="contain"
               source={require("./../../assets/images/rose.png")}
             />
-            <Text style={styles.h2}>3</Text>
+            <Text style={styles.h2}>{candy}</Text>
           </View>
           <TouchableOpacity
 
             onPress={() => {
-              auth
-                .signOut()
-                .then(() => {
-                  // Sign-out successful.
-                  props.navigation.replace("Flow");
-                })
-                .catch(() => {
-                  // An error happened.
-                });
+              // auth
+              //   .signOut()
+              //   .then(() => {
+              //     // Sign-out successful.
+              //     props.navigation.replace("Flow");
+              //   })
+              //   .catch(() => {
+              //     // An error happened.
+              //   });
+
+              props.navigation.navigate("AchatUser")
+
             }}
           >
             <View style={styles.btnopacity}

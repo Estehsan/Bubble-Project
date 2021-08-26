@@ -84,7 +84,8 @@ const signUp = (userDetails) => {
                   userUid: uid,
                   userProfileImageUrl: userProfileImageUrl,
                   latitude: 0,
-                  longitude: 0
+                  longitude: 0,
+                  candy : 3
                 }
                 let user = firestore
                   .collection("users")
