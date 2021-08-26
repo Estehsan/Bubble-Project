@@ -115,8 +115,8 @@ const Home = (props) => {
 
                   setUserMarker(initialRegion)
                   firestore.collection("users").doc(uid).update({
-                   latitude : initialRegion.latlng.latitude,
-                   longitude : initialRegion.latlng.longitude
+                    latitude: initialRegion.latlng.latitude,
+                    longitude: initialRegion.latlng.longitude
                   })
                     .then(() => {
                       console.log("Document successfully written!");
@@ -173,7 +173,8 @@ const Home = (props) => {
     const index = marker.findIndex((marker) => marker.key == selectedPlaceId);
     flatlist.current.scrollToIndex({ index });
 
-    return () => { isMounted = false 
+    return () => {
+      isMounted = false
       subscribe();
       subscribeLoc();
     };
@@ -310,6 +311,8 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginHorizontal: 15,
     borderRadius: 40,
+    zIndex: -1,
+    elevation: -1,
     ...Colors.customShadow,
   },
   Corousel: {
