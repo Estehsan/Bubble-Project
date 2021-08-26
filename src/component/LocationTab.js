@@ -4,22 +4,23 @@ import Colors from "./../assets/colors/Colors";
 import Entypo from "react-native-vector-icons/Entypo";
 import Fontisto from "react-native-vector-icons/Fontisto";
 
-const LocationTab = () => {
-  const [kilo, setKilo] = useState(true);
+const LocationTab = (props) => {
+  const [range, setRange] = useState(true);
+
   return (
     <View style={styles.container}>
       <View style={styles.lBox}>
         <View style={{ justifyContent: "center" }}>
-          <TouchableOpacity onPress={() => setKilo(true)}>
-            <View style={[kilo ? styles.highlight : styles.wow]}>
+          <TouchableOpacity onPress={() => { props.ChangeKilo(true); setRange(true); }}>
+            <View style={[range ? styles.highlight : styles.wow]}>
               <Text style={styles.fstyle}>MOINS DE 10 KM</Text>
             </View>
           </TouchableOpacity>
         </View>
 
         <View style={{ justifyContent: "center" }}>
-          <TouchableOpacity onPress={() => setKilo(false)}>
-            <View style={[!kilo ? styles.highlight : styles.wow]}>
+          <TouchableOpacity onPress={() => { props.ChangeKilo(false); setRange(false); }}>
+            <View style={[!range ? styles.highlight : styles.wow]}>
               <Text style={styles.fstyle}>MOINS DE 1 KM</Text>
             </View>
           </TouchableOpacity>
@@ -37,7 +38,7 @@ const LocationTab = () => {
           </View>
         </TouchableOpacity>
       </View>
-    </View>
+    </View >
   );
 };
 

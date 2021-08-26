@@ -111,6 +111,16 @@ const Profile = (props) => {
           >
             <Text style={styles.f}>LOGOUT</Text>
           </TouchableOpacity>
+
+          <View style={styles.Badge}>
+            <View style={styles.badgeIcon}>
+
+            </View>
+            <View style={styles.Image}>
+
+            </View>
+          </View>
+
           {
             selectedTeams &&
             selectedTeams.length > 0 &&
@@ -259,4 +269,7 @@ const styles = StyleSheet.create({
   f: {
     fontFamily: "FredokaOne-Regular",
   },
+  Badge: {},
+  badgeIcon: { top: 30 },
+  Image: { zIndex: -1, elevation: -1 }
 });

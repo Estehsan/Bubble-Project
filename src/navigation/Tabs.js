@@ -46,7 +46,7 @@ function BottomTabNavigator() {
           bottom: "5%",
           marginHorizontal: '10%',
           alignContent: "center",
-          elevation: 0,
+
           borderRadius: 30,
           ...styles.shadow,
         },

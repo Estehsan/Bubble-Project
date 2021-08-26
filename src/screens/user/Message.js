@@ -15,7 +15,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { auth, firestore } from "../../db/firebase";
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "../../component/TopBar";
-
+import H1 from './../../component/basic/H1'
 const Message = ({ ...props }) => {
   let [currentId, setcurrentId] = useState("");
   let [currentName, setcurrentName] = useState("");
@@ -24,6 +24,9 @@ const Message = ({ ...props }) => {
   let [status, setstatus] = useState("");
 
   let [data, setData] = useState([]);
+  let [accepted, setAccepted] = useState([]);
+
+
   let [userId, setuserId] = useState([]);
   let [loading, setLoading] = useState(true);
 
@@ -42,6 +45,9 @@ const Message = ({ ...props }) => {
           .collection("users")
           .doc(uid)
           .collection("friends")
+          .where("requestGetter", "==", true)
+          .where("status", "==", "decline")
+
           .onSnapshot(async (querySnapshot) => {
             let docs = querySnapshot.docs.map((doc) => ({
               id: doc.id,
@@ -57,7 +63,28 @@ const Message = ({ ...props }) => {
               setLoading(false);
             }
           })
-         
+
+        await firestore
+          .collection("users")
+          .doc(uid)
+          .collection("friends")
+          .where("status", "==", "accept")
+          .onSnapshot(async (querySnapshot) => {
+            let docs = querySnapshot.docs.map((doc) => ({
+              id: doc.id,
+              name: doc.data().name,
+              gender: doc.data().gender,
+              image: doc.data().image,
+              // status: doc.data().status
+            }));
+
+            if (isMounted) {
+              await setAccepted(docs);
+              console.log(data);
+              setLoading(false);
+            }
+          })
+
         // ...
       } else {
         // User is signed out
@@ -65,7 +92,7 @@ const Message = ({ ...props }) => {
       }
     });
 
-    return () => { 
+    return () => {
       isMounted = false
     }
   }, []);
@@ -79,6 +106,8 @@ const Message = ({ ...props }) => {
       <SafeAreaView>
         <TopBar />
         <View>
+
+          <H1>Users Requested you to connect</H1>
           {loading ? (
             <ActivityIndicator
               style={{ alignItems: "center" }}
@@ -88,6 +117,69 @@ const Message = ({ ...props }) => {
           ) : (
             <FlatList
               data={data}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                // console.log(item)
+                <View style={styles.Container}>
+                  <View style={styles.main}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        props.navigation.navigate("ChatUser", {
+                          currentUserId: userId,
+                          messageId: item.id,
+                          name: item.name,
+                          gender: item.gender,
+                          messageImg: item.image,
+                        });
+                      }}
+                    >
+                      <View style={styles.lContainer}>
+                        {item.image ? (
+                          <Image
+                            style={{ height: 50, width: 50, borderRadius: 50 }}
+                            source={{ uri: item.image }}
+                          />
+                        ) : (
+                          <Image
+                            style={{ height: 50, width: 50, borderRadius: 50 }}
+                            source={{
+                              uri: "https://www.w3schools.com/howto/img_avatar.png",
+                            }}
+                          />
+                        )}
+
+                        <View style={styles.HeadingView}>
+                          <Text
+                            style={styles.heading}
+                            numberOfLines={1}
+                            ellipsizeMode={"tail"}
+                          >
+                            {item.name}
+                          </Text>
+                          <Text style={styles.heading}>{item.gender}</Text>
+                        </View>
+                        {/* <View style={styles.rContainer}>
+                        <View style={styles.btn}>
+                          <Text>Content</Text>
+                        </View>
+                      </View> */}
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )}
+            />
+          )}
+          <H1>Accepted</H1>
+          {loading ? (
+            <ActivityIndicator
+              style={{ alignItems: "center" }}
+              size="large"
+              color="#000"
+            />
+          ) : (
+            <FlatList
+              data={accepted}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 // console.log(item)

@@ -58,6 +58,8 @@ const data = [
 const Drink = ({ navigation }) => {
   let [locationData, setLocationData] = useState([]);
   const [userMarker, setUserMarker] = useState({});
+  const [kilo, setKilo] = useState();
+
 
 
   useEffect(() => {
@@ -119,19 +121,39 @@ const Drink = ({ navigation }) => {
       // console.log(docs);
 
       // if (userMarker.length) {
+
       var data = [];
-      for (var i = 0; i < docs.length; i++) {
-        var dis = await getDistance(
-          userMarker.latlng,
-          docs[i].latlng,
-        )
+      if (kilo === true) {
+        for (var i = 0; i < docs.length; i++) {
+          var dis = await getDistance(
+            userMarker.latlng,
+            docs[i].latlng,
+          )
 
-        dis = dis / 1000
+          dis = dis / 1000
 
-        // console.log(dis)
+          // console.log(dis)
+          if (dis < 10) {
+            data.push(docs[i])
+          }
 
-        if (dis < 10) {
-          data.push(docs[i])
+
+        }
+      } else {
+        for (var i = 0; i < docs.length; i++) {
+          var dis = await getDistance(
+            userMarker.latlng,
+            docs[i].latlng,
+          )
+
+          dis = dis / 1000
+
+          // console.log(dis)
+          if (dis < 1) {
+            data.push(docs[i])
+          }
+
+
         }
 
       }
@@ -142,10 +164,11 @@ const Drink = ({ navigation }) => {
       // console.log(data);
       // }
     });
+
     return () => {
       isMounted = false;
     }
-  }, [userMarker]);
+  }, [userMarker, kilo]);
 
   // console.log(locationData);
   return (
@@ -158,7 +181,7 @@ const Drink = ({ navigation }) => {
           <TopBar />
         </View>
         <View style={{ marginTop: 30 }}>
-          <LocationTab />
+          <LocationTab ChangeKilo={e => setKilo(e)} />
         </View>
         <SearchBar />
         <View style={{ marginTop: 10 }}>
