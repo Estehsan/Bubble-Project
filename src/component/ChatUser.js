@@ -44,6 +44,8 @@ const ChatUser = ({ navigation, route, ...props }) => {
   let [getRequest, setGetRequest] = useState("");
   let [checker, setChecker] = useState(false);
 
+  let [check, setCheck] = useState(0)
+
   const scrollViewRef = useRef();
   const width = useWindowDimensions().width;
   useLayoutEffect(() => {
@@ -63,9 +65,9 @@ const ChatUser = ({ navigation, route, ...props }) => {
     let merge = uid_merge(currentUserId, messageId);
     get_messages(merge);
 
-    console.log(currentUserId, messageId, name, gender, messageImg);
+    // console.log(currentUserId, messageId, name, gender, messageImg);
 
-    console.log(messageImg);
+    // console.log(messageImg);
     let datum = await firestore
       .collection("users")
       .doc(currentUserId)
@@ -108,8 +110,12 @@ const ChatUser = ({ navigation, route, ...props }) => {
       .catch((error) => {
         console.log("Error getting documents: ", error);
       });
-    console.log(checker);
+    // console.log(checker);
   }, []);
+
+  useEffect(() => {
+
+  }, [check])
 
   let uid_merge = (uid1, uid2) => {
     if (uid1 < uid2) {
@@ -281,12 +287,12 @@ const ChatUser = ({ navigation, route, ...props }) => {
                     </View>
                   )}
 
-                  {/* {
-                        (request == "pending") &&
-                        <View>
-                            <Text>Request has been send</Text>
-                        </View>
-                    } */}
+                  {
+                    (getRequest == "pending") &&
+                    <View>
+                      <Text>Request has been send</Text>
+                    </View>
+                  }
 
                   {checker && (
                     <View>
@@ -306,6 +312,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
                             .then(() => {
                               setGetRequest("accept");
                               setChecker(false);
+                              setCheck(check + 1)
                             });
                         }}
                       ></Button>
@@ -323,6 +330,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
                               status: "decline",
                             });
                           Alert.alert("user declined");
+                          setCheck(check + 1)
                           setGetRequest("decline");
                         }}
                       ></Button>
@@ -337,7 +345,10 @@ const ChatUser = ({ navigation, route, ...props }) => {
           <View style={styles.Footer}>
 
             {getRequest != "decline" && request != "decline" ? (
-
+              request != "" &&
+              getRequest != "pending" &&
+              request != "pending" &&
+              // getRequest != "accept" &&
               <View style={styles.fieldContainer}>
                 <TextInput
                   style={styles.input}
@@ -359,7 +370,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
               </View>
 
             ) : (
-              <Text style={{ textAlign: "center" }}>Request declined</Text>
+              <Text style={{ textAlign: "center" }}>Request declined or Request Still pending</Text>
             )}
           </View>
 

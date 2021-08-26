@@ -35,7 +35,7 @@ const Profile = (props) => {
       if (user) {
         var uid = user.uid;
         setId(uid)
-        console.log(id)
+        // console.log(id)
         firestore.collection("users").doc(uid)
           .get().then((doc) => {
             if (doc.exists && isMounted) {
@@ -52,6 +52,7 @@ const Profile = (props) => {
       else {
 
       }
+
     })
 
     return () => { isMounted = false }
