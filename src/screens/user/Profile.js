@@ -96,7 +96,6 @@ const Profile = (props) => {
           <Text style={styles.h1}>MON PROFIL </Text>
 
           {
-
             selectedTeams &&
             selectedTeams.length > 0 &&
             <Text>+{selectedTeams.length}</Text>

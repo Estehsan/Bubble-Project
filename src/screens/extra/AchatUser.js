@@ -176,57 +176,48 @@ const AchatUser = ({ ...props }) => {
             <Text> {''}</Text>
 
             <View style={styles.BoxImage}>
-              <Icon
-                style={styles.position}
-                name="flower"
-                size={30}
-                color={Colors.darkPink}
+              <Image
+                style={{ height: 45, width: 45, borderRadius: 45, }}
+                resizeMode="contain"
+                source={require('./../../assets/images/rose.png')}
               />
             </View>
           </View>
           <View style={styles.boxes}>
             <Text style={styles.BoxText}>PACK DE 5 ROSES</Text>
             <View style={styles.BoxImage}>
-              <Icon
-                style={styles.position}
-                name="flower"
-                size={30}
-                color={Colors.darkPink}
-              />
-              <Icon
-                style={styles.position}
-                name="flower"
-                size={30}
-                color={Colors.darkPink}
-              />
-              <Icon
-                style={styles.position}
-                name="flower"
-                size={30}
-                color={Colors.darkPink}
+              <Image
+                style={{ height: 35, width: 35, borderRadius: 35, }}
+                resizeMode="contain"
+                source={require('./../../assets/images/rose.png')}
+              /><Image
+                style={{ height: 35, width: 35, borderRadius: 35, }}
+                resizeMode="contain"
+                source={require('./../../assets/images/rose.png')}
+              /><Image
+                style={{ height: 35, width: 35, borderRadius: 35, }}
+                resizeMode="contain"
+                source={require('./../../assets/images/rose.png')}
               />
             </View>
           </View>
           <View style={styles.boxes}>
             <Text style={styles.BoxText}>PACK DE 10 ROSES</Text>
             <View style={styles.BoxImage}>
-              <Icon
-                style={styles.position}
-                name="flower"
-                size={30}
-                color={Colors.darkPink}
+              <Image
+                style={{ height: 35, width: 35, borderRadius: 35, }}
+                resizeMode="contain"
+                source={require('./../../assets/images/rose.png')}
               />
-              <Icon
-                style={styles.position}
-                name="flower"
-                size={30}
-                color={Colors.darkPink}
+              <Image
+                style={{ height: 35, width: 35, borderRadius: 35, }}
+                resizeMode="contain"
+                source={require('./../../assets/images/rose.png')}
               />
-              <Icon
-                style={styles.position}
-                name="flower"
-                size={30}
-                color={Colors.darkPink}
+              <Image
+                style={{ height: 35, width: 35, borderRadius: 35, }}
+                resizeMode="contain"
+                source={require('./../../assets/images/rose.png')}
               />
             </View>
           </View>
