@@ -43,8 +43,9 @@ function BottomTabNavigator() {
         showLabel: false,
         style: {
           position: "absolute",
-          bottom: "5%",
           marginHorizontal: '10%',
+          marginVertical: '10%',
+          elevation: 0,
           alignContent: "center",
 
           borderRadius: 30,
@@ -183,8 +184,6 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   position: {
-    justifyContent: "center",
-    alignContent: "center",
-    top: 15,
+    top: '40%',
   },
 });
