@@ -58,7 +58,7 @@ const data = [
 const Drink = ({ navigation }) => {
   let [locationData, setLocationData] = useState([]);
   const [userMarker, setUserMarker] = useState({});
-  const [kilo, setKilo] = useState();
+  const [kilo, setKilo] = useState(true);
 
 
 
@@ -173,6 +173,7 @@ const Drink = ({ navigation }) => {
 
   // console.log(locationData);
   return (
+
     <LinearGradient
       colors={["#FFC1DD", "#ffffff"]}
       style={styles.linearGradient}
