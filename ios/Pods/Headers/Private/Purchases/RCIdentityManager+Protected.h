@@ -1,0 +1,1 @@
+../../../Purchases/Purchases/ProtectedExtensions/RCIdentityManager+Protected.h

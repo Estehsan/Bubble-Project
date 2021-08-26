@@ -1,0 +1,1 @@
+../../../Purchases/Purchases/ProtectedExtensions/RCPurchaserInfoManager+Protected.h
