@@ -1,6 +1,6 @@
 import React from "react";
 
-import { StyleSheet, Text, View } from "react-native";
+import { Platform, StyleSheet, Text, View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import FaIcon from "react-native-vector-icons/FontAwesome5";
 import MIcon from "react-native-vector-icons/MaterialIcons";
@@ -59,7 +59,7 @@ function BottomTabNavigator() {
         options={{
           tabBarIcon: ({ color }) => (
             <MIcon
-              style={styles.position}
+              style={Platform.OS == "ios" ? styles.position : styles.position2}
               name="home"
               size={38}
               color={color}
@@ -82,7 +82,7 @@ function BottomTabNavigator() {
         options={{
           tabBarIcon: ({ color }) => (
             <Ionicons
-              style={styles.position}
+              style={Platform.OS == "ios" ? styles.position : styles.position2}
               name="chatbubbles"
               size={35}
               color={color}
@@ -96,7 +96,7 @@ function BottomTabNavigator() {
         options={{
           tabBarIcon: ({ color }) => (
             <McIcon
-              style={styles.position}
+              style={Platform.OS == "ios" ? styles.position : styles.position2}
               name="glass-cocktail"
               size={35}
               color={color}
@@ -110,7 +110,7 @@ function BottomTabNavigator() {
         options={{
           tabBarIcon: ({ color }) => (
             <FaIcon
-              style={styles.position}
+              style={Platform.OS == "ios" ? styles.position : styles.position2}
               name="user-alt"
               size={30}
               color={color}
@@ -185,5 +185,8 @@ const styles = StyleSheet.create({
   },
   position: {
     top: '40%',
+  },
+  position2: {
+    top: '0%',
   },
 });

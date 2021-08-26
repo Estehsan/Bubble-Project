@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
   mapContainer: {
     alignItems: "center",
     flex: 4,
-    marginBottom: 100,
+    // marginBottom: 100,
     marginTop: 30,
     width: '100%',
     height: '100%',
@@ -318,10 +318,11 @@ const styles = StyleSheet.create({
     ...Colors.customShadow,
   },
   Corousel: {
-    position: "absolute",
-    bottom: 110,
-    zIndex: 2,
-    elevation: 2,
+    // position: "absolute",
+    // bottom: 110,
+    // zIndex: 2,
+    // elevation: 2,
+    marginBottom: 100
 
   },
 });
