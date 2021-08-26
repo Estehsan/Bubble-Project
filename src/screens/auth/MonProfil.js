@@ -25,6 +25,7 @@ import Modal from "react-native-modal";
 import P from "../../component/basic/P";
 import InputF from "../../component/InputF";
 import { nameValidator } from "../../helpers/nameValidator";
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
 
 const handleSignUp = async (
@@ -148,36 +149,67 @@ const MonProfil = ({ route, ...props }) => {
             placeholder="date de naissance"
 
             keyboardType="default" />
+
+
           <TouchableOpacity style={styles.input} onPress={toggleModal}>
             <P>Selecte Interest</P>
             {/* <FlatList
               data="selectedTeams"
-              keyExtractor={(item) => item.id}
-              horizontal
-              renderItem={({ item }) => <H2 key={item}>{console.log(item)}</H2>}
+              keyExtractor={(item) => selectedTeams.id}
+              renderItem={({ item }) => {
+                console.log(selectedTeams[i].item)
+                const all = [],
+                for (var i = 0; i < selectedTeams.length; i++) {
+
+                  all.push("Senior");
+
+                }
+              }}
             /> */}
-            {/* {selectedTeams.map((item) => (
-              <Text key={id}>{item}</Text>
-            ))} */}
+
+            {/* <FlatList
+              data={users}
+              renderItem={({ item }) => (
+                <View style={{ height: 50, flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                  <Text>User ID: {item.id}</Text>
+                  <Text>User Name: {item.name}</Text>
+                </View>
+              )
+                /> */}
+
+
           </TouchableOpacity>
           <Modal isVisible={isModalVisible}>
             <View
               style={{
                 paddingHorizontal: 10,
                 paddingVertical: 50,
-                backgroundColor: "#fff",
+                backgroundColor: "#DD488C",
               }}
             >
               <SelectBox
                 label="Select multiple"
                 options={K_OPTIONS}
+                labelStyle={{ color: 'white' }}
+                labelStylelabelStyle={{ color: 'white' }}
+                optionsLabelStyle={{ color: 'white' }}
+                multiOptionsLabelStyle={{ color: 'white' }}
+                multiListEmptyLabelStyle={{ color: 'white' }}
+                selectedItemStyle={{ color: 'white' }}
+                toggleIconColor="white"
+                toggleIconColor="white"
+                arrowIconColor="white"
+
+
+
+
                 selectedValues={selectedTeams}
                 onMultiSelect={onMultiChange()}
                 onTapClose={onMultiChange()}
                 isMulti
               />
-              <TouchableOpacity onPress={toggleModal}>
-                <Text>close</Text>
+              <TouchableOpacity style={{ padding: 10, marginTop: 10 }} onPress={toggleModal}>
+                <H2>close</H2>
               </TouchableOpacity>
             </View>
           </Modal>

@@ -309,6 +309,8 @@ const styles = StyleSheet.create({
     flex: 4,
     marginBottom: 100,
     marginTop: 30,
+    width: '100%',
+    height: '100%',
     marginHorizontal: 15,
     borderRadius: 40,
     zIndex: -1,
@@ -318,5 +320,8 @@ const styles = StyleSheet.create({
   Corousel: {
     position: "absolute",
     bottom: 110,
+    zIndex: 2,
+    elevation: 2,
+
   },
 });
