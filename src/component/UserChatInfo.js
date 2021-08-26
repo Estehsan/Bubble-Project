@@ -10,9 +10,8 @@ const UserChatInfo = ({ currentUserData, id, gender, name, userImg, selectedTeam
     let count = 0
     for (var i in selectedTeams) {
       if (currentUserData.selectedTeams[i].id === selectedTeams[i].id) {
-        count ++
+        count++
       }
-
       return count
     }
   }
@@ -21,6 +20,7 @@ const UserChatInfo = ({ currentUserData, id, gender, name, userImg, selectedTeam
       <View style={styles.main}>
         <View style={styles.lContainer}>
           {selectedTeams &&
+            mutualInterest() > 0 &&
             <Text>{mutualInterest()}</Text>
           }
           {userImg ? (
