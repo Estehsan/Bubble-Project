@@ -93,8 +93,24 @@ const Profile = (props) => {
       <SafeAreaView style={styles.main}>
         <TopBar />
         <View style={styles.Profile}>
+
           <Text style={styles.h1}>MON PROFIL </Text>
 
+          <TouchableOpacity
+            onPress={() => {
+              auth
+                .signOut()
+                .then(() => {
+                  // Sign-out successful.
+                  props.navigation.replace("Flow");
+                })
+                .catch(() => {
+                  // An error happened.
+                });
+            }}
+          >
+            <Text style={styles.f}>LOGOUT</Text>
+          </TouchableOpacity>
           {
             selectedTeams &&
             selectedTeams.length > 0 &&
@@ -182,22 +198,7 @@ const Profile = (props) => {
               <Text style={styles.f}>ACHETAR</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.btnopacity}
-            onPress={() => {
-              auth
-                .signOut()
-                .then(() => {
-                  // Sign-out successful.
-                  props.navigation.replace("Flow");
-                })
-                .catch(() => {
-                  // An error happened.
-                });
-            }}
-          >
-            <Text style={styles.f}>LOGOUT</Text>
-          </TouchableOpacity>
+
         </View>
       </SafeAreaView>
     </LinearGradient >
