@@ -317,6 +317,6 @@ const styles = StyleSheet.create({
   },
   Corousel: {
     position: "absolute",
-    bottom: 80,
+    bottom: 110,
   },
 });

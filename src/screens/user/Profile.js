@@ -91,9 +91,6 @@ const Profile = (props) => {
       <SafeAreaView style={styles.main}>
         <TopBar />
         <View style={styles.Profile}>
-
-          <Text style={styles.h1}>MON PROFIL </Text>
-
           <TouchableOpacity
             onPress={() => {
               auth
@@ -105,38 +102,41 @@ const Profile = (props) => {
                 .catch(() => {
                   // An error happened.
                 });
-            }}
-          >
-            <Text style={styles.f}>LOGOUT</Text>
+            }}>
+
+            <Text style={styles.h1}>MON PROFIL </Text>
+
           </TouchableOpacity>
+
+
 
           <View style={styles.Badge}>
             <View style={styles.badgeIcon}>
-
+              {
+                selectedTeams &&
+                selectedTeams.length > 0 &&
+                <Text>+{selectedTeams.length}</Text>
+              }
             </View>
             <View style={styles.Image}>
+              {image ? <Image
+                style={{ height: 70, width: 70, borderRadius: 70 }}
+                resizeMode='cover'
+                source={{ uri: image }}
+              />
+                :
+                <Image
+                  style={{ height: 70, width: 70, borderRadius: 70 }}
+                  resizeMode='cover'
 
+                  source={{ uri: "https://www.w3schools.com/howto/img_avatar.png" }}
+                />
+              }
             </View>
           </View>
 
-          {
-            selectedTeams &&
-            selectedTeams.length > 0 &&
-            <Text>+{selectedTeams.length}</Text>
-          }
-          {image ? <Image
-            style={{ height: 70, width: 70, borderRadius: 70 }}
-            resizeMode='cover'
-            source={{ uri: image }}
-          />
-            :
-            <Image
-              style={{ height: 70, width: 70, borderRadius: 70 }}
-              resizeMode='cover'
 
-              source={{ uri: "https://www.w3schools.com/howto/img_avatar.png" }}
-            />
-          }
+
 
         </View>
         <View style={styles.Form}>
@@ -224,7 +224,6 @@ const styles = StyleSheet.create({
     fontFamily: "FredokaOne-Regular",
 
     color: "#fff",
-    marginBottom: 15,
     fontSize: 30,
   },
   h2: {
@@ -268,6 +267,6 @@ const styles = StyleSheet.create({
     fontFamily: "FredokaOne-Regular",
   },
   Badge: {},
-  badgeIcon: { top: 30 },
+  badgeIcon: { top: 20, backgroundColor: 'red', width: 30, height: 30, borderRadius: 30, justifyContent: 'center', alignItems: 'center' },
   Image: { zIndex: -1, elevation: -1 }
 });

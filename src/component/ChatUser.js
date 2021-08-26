@@ -338,7 +338,6 @@ const ChatUser = ({ navigation, route, ...props }) => {
 
             {getRequest != "decline" && request != "decline" ? (
 
-
               <View style={styles.fieldContainer}>
                 <TextInput
                   style={styles.input}

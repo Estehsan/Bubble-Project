@@ -41,7 +41,7 @@ const UsersListPlace = ({ route, ...props }) => {
   const [userData, setUserData] = useState([]);
   const [currentUserId, setCurrentUserId] = useState("");
   const [currentUserData, setCurrentUserData] = useState("");
-  
+
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if (user) {
@@ -50,17 +50,17 @@ const UsersListPlace = ({ route, ...props }) => {
         setCurrentUserId(user.uid);
 
         firestore.collection("users").doc(uid)
-        .onSnapshot(async (doc) => {
+          .onSnapshot(async (doc) => {
 
-          let docs = {
-            id: uid,
-            userName: doc.data().userName,
-            selectedTeams : doc.data().selectedTeams,
-          }
+            let docs = {
+              id: uid,
+              userName: doc.data().userName,
+              selectedTeams: doc.data().selectedTeams,
+            }
             await setCurrentUserData(docs)
-          // console.log(docs)
+            // console.log(docs)
 
-        })
+          })
 
         firestore.collection("users").onSnapshot((querySnapshot) => {
           let docs = querySnapshot.docs
@@ -70,7 +70,7 @@ const UsersListPlace = ({ route, ...props }) => {
               name: doc.data().userName,
               gender: doc.data().userGender,
               userImg: doc.data().userProfileImageUrl,
-              selectedTeams : doc.data().selectedTeams,
+              selectedTeams: doc.data().selectedTeams,
               latlng: {
                 longitude: doc.data().longitude,
                 latitude: doc.data().latitude,
@@ -114,9 +114,7 @@ const UsersListPlace = ({ route, ...props }) => {
           <TopBar />
         </View>
         <View style={{ marginTop: 30 }}>
-          <LocationTab />
         </View>
-        <SearchBar />
         <View style={{ marginTop: 10 }}>
           <TouchableOpacity
             onPress={() => props.navigation.navigate("UsersListPlace")}

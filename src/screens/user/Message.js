@@ -68,7 +68,6 @@ const Message = ({ ...props }) => {
           .collection("users")
           .doc(uid)
           .collection("friends")
-          .where("status", "==", "accept")
           .onSnapshot(async (querySnapshot) => {
             let docs = querySnapshot.docs.map((doc) => ({
               id: doc.id,
@@ -170,7 +169,7 @@ const Message = ({ ...props }) => {
               )}
             />
           )}
-          <H1>Accepted</H1>
+          <H1>All Chats</H1>
           {loading ? (
             <ActivityIndicator
               style={{ alignItems: "center" }}

@@ -17,12 +17,18 @@ const UserChatInfo = ({ currentUserData, id, gender, name, userImg, selectedTeam
   }
   return (
     <View style={styles.Container}>
+      {selectedTeams &&
+        mutualInterest() > 0 &&
+        <View style={styles.Badge}>
+          <Text style={{ color: 'white' }}>{mutualInterest()}</Text>
+        </View>
+
+      }
       <View style={styles.main}>
         <View style={styles.lContainer}>
-          {selectedTeams &&
-            mutualInterest() > 0 &&
-            <Text>{mutualInterest()}</Text>
-          }
+
+
+
           {userImg ? (
             <Image
               style={{ height: 50, width: 50, borderRadius: 50 }}
@@ -61,10 +67,15 @@ export default UserChatInfo;
 
 const styles = StyleSheet.create({
   Container: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    color: 'red',
     alignItems: "center",
     ...Colors.customShadow,
   },
   main: {
+    zIndex: -1,
+    elevation: -1,
     backgroundColor: "#fff",
     width: "80%",
     padding: 20,
@@ -90,4 +101,8 @@ const styles = StyleSheet.create({
   lContainer: { flex: 1 },
   center: { flex: 2 },
   rContainer: { flex: 1, alignItems: 'flex-end' },
+  Badge: {
+    height: 30, width: 30, backgroundColor: Colors.darkPink, borderRadius: 30, justifyContent: 'center', alignItems: 'center', position: 'absolute', left: 25,
+    top: 3
+  },
 });
