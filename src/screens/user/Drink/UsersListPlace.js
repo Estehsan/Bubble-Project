@@ -40,10 +40,28 @@ const UsersListPlace = ({ route, ...props }) => {
   const { id, title, place, location, code, img, latlng } = route.params;
   const [userData, setUserData] = useState([]);
   const [currentUserId, setCurrentUserId] = useState("");
+  const [currentUserData, setCurrentUserData] = useState("");
+  
   useEffect(() => {
     auth.onAuthStateChanged((user) => {
       if (user) {
+
+        var uid = user.uid;
         setCurrentUserId(user.uid);
+
+        firestore.collection("users").doc(uid)
+        .onSnapshot(async (doc) => {
+
+          let docs = {
+            id: uid,
+            userName: doc.data().userName,
+            selectedTeams : doc.data().selectedTeams,
+          }
+            await setCurrentUserData(docs)
+          // console.log(docs)
+
+        })
+
         firestore.collection("users").onSnapshot((querySnapshot) => {
           let docs = querySnapshot.docs
             .filter((datam) => datam.id != user.uid)
@@ -52,6 +70,7 @@ const UsersListPlace = ({ route, ...props }) => {
               name: doc.data().userName,
               gender: doc.data().userGender,
               userImg: doc.data().userProfileImageUrl,
+              selectedTeams : doc.data().selectedTeams,
               latlng: {
                 longitude: doc.data().longitude,
                 latitude: doc.data().latitude,
@@ -130,10 +149,12 @@ const UsersListPlace = ({ route, ...props }) => {
                   }}
                 >
                   <UserChatInfo
+                    currentUserData={currentUserData}
                     id={item.id}
                     name={item.name}
                     gender={item.gender}
                     userImg={item.userImg}
+                    selectedTeams={item.selectedTeams}
                   />
                 </TouchableOpacity>
               )}

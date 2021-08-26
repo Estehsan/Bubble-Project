@@ -1,14 +1,28 @@
 import React from "react";
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, View, ScrollView, Image } from "react-native";
 import Colors from "./../assets/colors/Colors";
 import Entypo from "react-native-vector-icons/Entypo";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
-const UserChatInfo = ({ id, gender, name, userImg }) => {
+const UserChatInfo = ({ currentUserData, id, gender, name, userImg, selectedTeams }) => {
+
+  let mutualInterest = () => {
+    let count = 0
+    for (var i in selectedTeams) {
+      if (currentUserData.selectedTeams[i].id === selectedTeams[i].id) {
+        count ++
+      }
+
+      return count
+    }
+  }
   return (
     <View style={styles.Container}>
       <View style={styles.main}>
         <View style={styles.lContainer}>
+          {selectedTeams &&
+            <Text>{mutualInterest()}</Text>
+          }
           {userImg ? (
             <Image
               style={{ height: 50, width: 50, borderRadius: 50 }}

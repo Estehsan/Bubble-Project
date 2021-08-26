@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
+import { useIsFocused } from '@react-navigation/native';
+
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "./../../component/TopBar";
 import { auth, firestore } from "../../db/firebase";
@@ -22,6 +24,7 @@ const Profile = (props) => {
   const [candy, setCandy] = useState(0)
   const [FirstName, setFirstName] = useState(null);
   const [LastName, setLastName] = useState(null);
+  const isFocused = useIsFocused();
   const [id, setId] = useState("");
 
 
@@ -32,32 +35,27 @@ const Profile = (props) => {
       if (user) {
         var uid = user.uid;
         setId(uid)
-
         console.log(id)
-
         firestore.collection("users").doc(uid)
           .get().then((doc) => {
             if (doc.exists && isMounted) {
               setImage(doc.data().userProfileImageUrl)
               setSelectedTeams(doc.data().selectedTeams)
               setCandy(doc.data().candy)
-
               // console.log(info)
-
             } else {
               // doc.data() will be undefined in this case
               console.log("No such document!");
             }
           })
       }
-
       else {
 
       }
     })
 
     return () => { isMounted = false }
-  }, []);
+  }, [isFocused]);
 
 
   let updateInfo = () => {
