@@ -15,6 +15,7 @@ import AuthLoading from "./../screens/auth/AuthLoading";
 import Flow from "./../screens/auth/Flow";
 import FlowA from "./../screens/auth/FlowA";
 import FlowB from "./../screens/auth/FlowB";
+import Reset from "./../screens/auth/Reset";
 
 import Home from "../screens/user/Home";
 import Message from "../screens/user/Message";
@@ -147,6 +148,11 @@ function Tabs() {
       <All.Screen
         name="FlowB"
         component={FlowB}
+        options={{ headerShown: false }}
+      />
+      <All.Screen
+        name="Reset"
+        component={Reset}
         options={{ headerShown: false }}
       />
       <All.Screen name="Home" component={BottomTabNavigator} />

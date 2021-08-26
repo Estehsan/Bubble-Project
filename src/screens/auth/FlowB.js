@@ -62,7 +62,7 @@ const FlowA = ({ ...props }) => {
                 setPassword({ ...password, error: passwordError })
               }
 
-              if (!emailError || !passwordError)
+              if (!emailError & !passwordError)
 
                 props.navigation.push("MonProfil", { email: email.value, password: password.value });
             }}

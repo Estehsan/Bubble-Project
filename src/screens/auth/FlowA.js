@@ -17,6 +17,7 @@ import InputF from './../../component/InputF'
 import { emailValidator } from './../../helpers/emailValidator'
 import { passwordValidator } from './../../helpers/passwordValidator'
 import CustomModal from "../../component/basic/CustomModal";
+import WP from './../../component/basic/WP'
 import Modal from 'react-native-modal';
 
 // const handleLogIn = async (email, password) => {
@@ -108,7 +109,9 @@ const FlowA = ({ ...props }) => {
             placeholder="date de naissance"
             keyboardType="default" />
 
-
+          <TouchableOpacity onPress={() => props.navigation.push("Reset")}>
+            <WP>Reset Password</WP>
+          </TouchableOpacity>
 
           <TouchableOpacity onPress={onLoginPress}>
             < View style={styles.btnopacity}>
