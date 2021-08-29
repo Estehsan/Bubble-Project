@@ -33,66 +33,64 @@ const Message = ({ ...props }) => {
   useEffect(async () => {
 
     let isMounted = true
-    auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        var uid = user.uid;
 
-        if (isMounted) {
+    if (isMounted)
+      auth.onAuthStateChanged(async (user) => {
+        if (user) {
+          var uid = user.uid;
           setuserId(user.uid);
-        }
-        // console.log(uid)
-        await firestore
-          .collection("users")
-          .doc(uid)
-          .collection("friends")
-          .where("requestGetter", "==", true)
-          .where("status", "==", "decline")
 
-          .onSnapshot(async (querySnapshot) => {
-            let docs = querySnapshot.docs.map((doc) => ({
-              id: doc.id,
-              name: doc.data().name,
-              gender: doc.data().gender,
-              image: doc.data().image,
-              // status: doc.data().status
-            }));
+          // console.log(uid)
+          let data = await firestore
+            .collection("users")
+            .doc(uid)
+            .collection("friends")
+            .where("requestGetter", "==", true)
+            .where("status", "==", "decline")
 
-            if (isMounted) {
+            .onSnapshot(async (querySnapshot) => {
+              let docs = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                name: doc.data().name,
+                gender: doc.data().gender,
+                image: doc.data().image,
+                // status: doc.data().status
+              }));
+
               await setData(docs);
               console.log(data);
               setLoading(false);
-            }
-          })
+            })
 
-        await firestore
-          .collection("users")
-          .doc(uid)
-          .collection("friends")
-          .onSnapshot(async (querySnapshot) => {
-            let docs = querySnapshot.docs.map((doc) => ({
-              id: doc.id,
-              name: doc.data().name,
-              gender: doc.data().gender,
-              image: doc.data().image,
-              // status: doc.data().status
-            }));
+          let data2 = await firestore
+            .collection("users")
+            .doc(uid)
+            .collection("friends")
+            .onSnapshot(async (querySnapshot) => {
+              let docs = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                name: doc.data().name,
+                gender: doc.data().gender,
+                image: doc.data().image,
+                // status: doc.data().status
+              }));
 
-            if (isMounted) {
               await setAccepted(docs);
               console.log(data);
               setLoading(false);
-            }
-          })
+            })
 
-        // ...
-      } else {
-        // User is signed out
-        // ...
-      }
-    });
+          // ...
+        } else {
+          // User is signed out
+          // ...
+        }
+      });
 
     return () => {
       isMounted = false
+      data2()
+      data()
     }
   }, []);
 

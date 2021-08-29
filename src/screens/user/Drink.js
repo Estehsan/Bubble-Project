@@ -65,35 +65,36 @@ const Drink = ({ navigation }) => {
   useEffect(() => {
 
     let isMounted = true;
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        var uid = user.uid;
-        // console.log(uid)
-        firestore.collection("users").doc(uid)
-          .onSnapshot(async (doc) => {
+    if (isMounted)
 
-            let docs = {
-              key: user.uid,
-              title: doc.data().userName,
-              // selectedTeams : doc.data().selectedTeams,
-              latlng: {
-                longitude: doc.data().longitude,
-                latitude: doc.data().latitude,
-              },
-            }
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          var uid = user.uid;
+          // console.log(uid)
+          firestore.collection("users").doc(uid)
+            .onSnapshot(async (doc) => {
+
+              let docs = {
+                key: user.uid,
+                title: doc.data().userName,
+                // selectedTeams : doc.data().selectedTeams,
+                latlng: {
+                  longitude: doc.data().longitude,
+                  latitude: doc.data().latitude,
+                },
+              }
 
 
-            if (isMounted)
               await setUserMarker(docs)
-            // console.log(docs)
+              // console.log(docs)
 
-          })
+            })
 
-      } else {
-        // User is signed out
-        // ...
-      }
-    });
+        } else {
+          // User is signed out
+          // ...
+        }
+      });
 
     return () => {
       isMounted = false;
@@ -104,67 +105,67 @@ const Drink = ({ navigation }) => {
 
     let isMounted = true;
 
-    firestore.collection("location").onSnapshot(async (querySnapshot) => {
-      let docs = querySnapshot.docs.map((doc) => ({
-        key: doc.id,
-        title: doc.data().title,
-        address: doc.data().address,
-        description: doc.data().description,
-        schedules: doc.data().schedules,
-        img: doc.data().photo,
-        latlng: {
-          longitude: doc.data().longitude,
-          latitude: doc.data().latitude,
-        },
-      }));
+    if (isMounted)
+      firestore.collection("location").onSnapshot(async (querySnapshot) => {
+        let docs = querySnapshot.docs.map((doc) => ({
+          key: doc.id,
+          title: doc.data().title,
+          address: doc.data().address,
+          description: doc.data().description,
+          schedules: doc.data().schedules,
+          img: doc.data().photo,
+          latlng: {
+            longitude: doc.data().longitude,
+            latitude: doc.data().latitude,
+          },
+        }));
 
-      // setLocationData(docs);
-      // console.log(docs);
+        // setLocationData(docs);
+        // console.log(docs);
 
-      // if (userMarker.length) {
+        // if (userMarker.length) {
 
-      var data = [];
-      if (kilo === true) {
-        for (var i = 0; i < docs.length; i++) {
-          var dis = await getDistance(
-            userMarker.latlng,
-            docs[i].latlng,
-          )
+        var data = [];
+        if (kilo === true) {
+          for (var i = 0; i < docs.length; i++) {
+            var dis = await getDistance(
+              userMarker.latlng,
+              docs[i].latlng,
+            )
 
-          dis = dis / 1000
+            dis = dis / 1000
 
-          // console.log(dis)
-          if (dis < 1000) {
-            data.push(docs[i])
+            // console.log(dis)
+            if (dis < 10) {
+              data.push(docs[i])
+            }
+
+
+          }
+        } else {
+          for (var i = 0; i < docs.length; i++) {
+            var dis = await getDistance(
+              userMarker.latlng,
+              docs[i].latlng,
+            )
+
+            dis = dis / 1000
+
+            // console.log(dis)
+            if (dis < 1) {
+              data.push(docs[i])
+            }
+
+
           }
 
-
-        }
-      } else {
-        for (var i = 0; i < docs.length; i++) {
-          var dis = await getDistance(
-            userMarker.latlng,
-            docs[i].latlng,
-          )
-
-          dis = dis / 1000
-
-          // console.log(dis)
-          if (dis < 1) {
-            data.push(docs[i])
-          }
-
-
         }
 
-      }
-
-      if (isMounted)
 
         setLocationData(data);
-      // console.log(data);
-      // }
-    });
+        // console.log(data);
+        // }
+      });
 
     return () => {
       isMounted = false;

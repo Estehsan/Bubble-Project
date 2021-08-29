@@ -42,13 +42,11 @@ const AchatUser = ({ ...props }) => {
         var uid = user.uid;
         setId(uid)
 
-        console.log(id)
 
         firestore.collection("users").doc(uid)
           .get().then((doc) => {
             if (doc.exists && isMounted) {
               setCandy(doc.data().candy)
-              setCount(doc.data().candy)
               // console.log(info)
 
             } else {
@@ -61,8 +59,6 @@ const AchatUser = ({ ...props }) => {
       else {
 
       }
-
-      console.log(count)
     })
 
 
@@ -85,7 +81,7 @@ const AchatUser = ({ ...props }) => {
   let dummyBuy = async () => {
     if (total > 0)
       await firestore.collection("users").doc(id).update({
-        candy: count
+        candy: candy + count
       }).then(() => {
         Alert.alert("Purchase has been successful")
         props.navigation.goBack()
@@ -170,13 +166,14 @@ const AchatUser = ({ ...props }) => {
             source={require('./../../assets/images/rose.png')}
           />
           <Text style={styles.topFont}>
-            Mon solde de roses{'\n'} disponibles :
+            Mon solde de des sucreries
+            {'\n'} disponibles :
           </Text>
           <Text style={styles.threeFont}>{candy}</Text>
         </View>
         <View style={styles.mainBox}>
           <View style={styles.boxes}>
-            <Text style={styles.BoxText}>1 ROSE</Text>
+            <Text style={styles.BoxText}>1 DES BONBONS</Text>
             <Text> {''}</Text>
 
             <View style={styles.BoxImage}>
@@ -188,7 +185,8 @@ const AchatUser = ({ ...props }) => {
             </View>
           </View>
           <View style={styles.boxes}>
-            <Text style={styles.BoxText}>PACK DE 5 ROSES</Text>
+            <Text style={styles.BoxText}>PACK DE 5 DES SUCRERIES
+            </Text>
             <View style={styles.BoxImage}>
               <Image
                 style={{ height: 35, width: 35, borderRadius: 35, }}
@@ -209,7 +207,8 @@ const AchatUser = ({ ...props }) => {
             </View>
           </View>
           <View style={styles.boxes}>
-            <Text style={styles.BoxText}>PACK DE 10 ROSES</Text>
+            <Text style={styles.BoxText}>PACK DE 10 DES SUCRERIES
+            </Text>
             <View style={styles.BoxImage}>
               <Image
                 style={{ height: 35, width: 35, borderRadius: 35, }}
@@ -243,15 +242,31 @@ const AchatUser = ({ ...props }) => {
                   <Text>+</Text>
                 </View>
               </TouchableOpacity>
+
               <TouchableOpacity
                 onPress={() => {
+                  setTotal(() => {
+                    let num = total - (0.99)
 
-                  if (count && total < 0) {
-                    return;
-                  }
+                    if (num > 0) {
+                      return num
+                    }
 
-                  setTotal(total - (0.99))
-                  setCount(count - (-1))
+                    else {
+                      return 0
+                    }
+                  })
+                  setCount(() => {
+                    let num = count - 1
+
+                    if (num > 0) {
+                      return num
+                    }
+
+                    else {
+                      return 0
+                    }
+                  })
                 }}>
                 <View style={styles.priceBtn}>
                   <Text>-</Text>
@@ -264,7 +279,7 @@ const AchatUser = ({ ...props }) => {
             <View>
               <TouchableOpacity
                 onPress={() => {
-                  setTotal(total + (2.99))
+                  setTotal(total + (+2.99))
                   setCount(count + (+5))
 
                 }}>
@@ -272,14 +287,31 @@ const AchatUser = ({ ...props }) => {
                   <Text>+</Text>
                 </View>
               </TouchableOpacity>
+
               <TouchableOpacity
                 onPress={() => {
-                  if (count && total < 0) {
-                    return;
-                  }
+                  setTotal(() => {
+                    let num = total - (2.99)
 
-                  setTotal(total - (2.99))
-                  setCount(count - (-5))
+                    if (num > 0) {
+                      return num
+                    }
+
+                    else {
+                      return 0
+                    }
+                  })
+                  setCount(() => {
+                    let num = count - (5)
+
+                    if (num > 0) {
+                      return num
+                    }
+
+                    else {
+                      return 0
+                    }
+                  })
 
                 }}>
                 <View style={styles.priceBtn}>
@@ -292,12 +324,7 @@ const AchatUser = ({ ...props }) => {
             <Text style={styles.BoxText}>4,99 €</Text>
             <View>
               <TouchableOpacity onPress={() => {
-                if (count && total < 0) {
-                  return;
-                }
-
-
-                setTotal(total + (4.99))
+                setTotal(total + (+4.99))
                 setCount(count + (+10))
 
               }}>
@@ -305,9 +332,30 @@ const AchatUser = ({ ...props }) => {
                   <Text>+</Text>
                 </View>
               </TouchableOpacity>
+
               <TouchableOpacity onPress={() => {
-                setTotal(total - (4.99))
-                setCount(count - (-10))
+                setTotal(() => {
+                  let num = total - (4.99)
+
+                  if (num > 0) {
+                    return num
+                  }
+
+                  else {
+                    return 0
+                  }
+                })
+                setCount(() => {
+                  let num = count - (10)
+
+                  if (num > 0) {
+                    return num
+                  }
+
+                  else {
+                    return 0
+                  }
+                })
 
               }}>
                 <View style={styles.priceBtn}>

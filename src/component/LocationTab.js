@@ -6,6 +6,8 @@ import Fontisto from "react-native-vector-icons/Fontisto";
 
 const LocationTab = (props) => {
   const [range, setRange] = useState(true);
+  const [lightRange, setLightRange] = useState(true);
+
 
   return (
     <View style={styles.container}>
@@ -27,13 +29,13 @@ const LocationTab = (props) => {
         </View>
       </View>
       <View style={styles.rBox}>
-        <TouchableOpacity>
-          <View style={styles.shiglight}>
+        <TouchableOpacity onPress={() => { props.ChangeLight(true); setLightRange(true); }}>
+          <View style={lightRange ? styles.shiglight : { justifyContent: "center" }}>
             <Entypo color="#f9d71c" name="moon" size={20} />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity>
-          <View style={{ justifyContent: "center" }}>
+        <TouchableOpacity onPress={() => { props.ChangeLight(false); setLightRange(false); }}>
+          <View style={!lightRange ? styles.shiglight : { justifyContent: "center" }}>
             <Fontisto color="#f9d71c" name="sun" size={20} />
           </View>
         </TouchableOpacity>

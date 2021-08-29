@@ -22,6 +22,8 @@ pod 'react-native-google-maps', :path => rn_maps_path
 
   pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker'
 
+  pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
+
   target 'BubbleCodeTests' do
     inherit! :complete
     # Pods for testing
