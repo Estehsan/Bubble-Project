@@ -42,7 +42,7 @@ const ASPECT_RATIO = width / height
 const LATITUDE_DELTA = 0.0922
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
 
-const Home = (props) => {
+const Home = ({ navigation, props }) => {
   const [marker, setMarker] = useState([]);
   const [selectedPlaceId, setSelectedPlaceId] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -138,7 +138,7 @@ const Home = (props) => {
 
     return () => {
       isMounted = false
-      subscribe();
+      // subscribe();
       subscribeLoc();
     };
   }, [selectedPlaceId, kilo]);
@@ -300,10 +300,15 @@ const Home = (props) => {
               showsHorizontalScrollIndicator={false}
               snapToInterval={width - 60}
               horizontal
+              keyExtractor={(item) => item.key}
               snapToAlignment={"center"}
               decelerationRate={"fast"}
               renderItem={({ item }) => (
+
                 <MapCorousel
+                  onPress={() =>
+                    navigation.navigate("Message")
+                  }
                   title={item.title}
                   place={item.description}
                   location={item.location}

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import ImagePicker from "react-native-image-crop-picker";
-
 import { AsyncStorage } from "@react-native-async-storage/async-storage";
 import {
   StyleSheet,
@@ -25,8 +24,8 @@ import Modal from "react-native-modal";
 import P from "../../component/basic/P";
 import InputF from "../../component/InputF";
 import { nameValidator } from "../../helpers/nameValidator";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import { passwordValidator } from "../../helpers/passwordValidator";
+import Colors from "../../assets/colors/Colors";
 
 
 const handleSignUp = async (
@@ -125,6 +124,15 @@ const MonProfil = ({ route, ...props }) => {
       setcontentType(image.mime);
     });
   };
+  const TakeImgFromCamera = () => {
+    ImagePicker.openCamera({
+      width: 300,
+      height: 400,
+      cropping: true,
+    }).then(image => {
+      console.log(image);
+    });
+  }
 
   return (
     <LinearGradient colors={["#DD488C", "#000"]} style={styles.linearGradient}>
@@ -152,70 +160,25 @@ const MonProfil = ({ route, ...props }) => {
             placeholder="date de naissance"
             keyboardType="default" />
 
+          <View style={{ backgroundColor: 'white', width: "70%", borderRadius: 30, paddingHorizontal: 10, marginBottom: 10, paddingVertical: 0 }}>
 
-
-          <TouchableOpacity style={styles.input} onPress={toggleModal}>
-            <P>Selecte Interest</P>
-            {/* <FlatList
-              data="selectedTeams"
-              keyExtractor={(item) => selectedTeams.id}
-              renderItem={({ item }) => {
-                console.log(selectedTeams[i].item)
-                const all = [],
-                for (var i = 0; i < selectedTeams.length; i++) {
-
-                  all.push("Senior");
-
-                }
-              }}
-            /> */}
-
-            {/* <FlatList
-              data={users}
-              renderItem={({ item }) => (
-                <View style={{ height: 50, flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                  <Text>User ID: {item.id}</Text>
-                  <Text>User Name: {item.name}</Text>
-                </View>
-              )
-                /> */}
-
-
-          </TouchableOpacity>
-          <Modal isVisible={isModalVisible}>
-            <View
-              style={{
-                paddingHorizontal: 10,
-                paddingVertical: 50,
-                backgroundColor: "#DD488C",
-              }}
-            >
-              <SelectBox
-                label="Select multiple"
-                options={K_OPTIONS}
-                labelStyle={{ color: 'white' }}
-                labelStylelabelStyle={{ color: 'white' }}
-                optionsLabelStyle={{ color: 'white' }}
-                multiOptionsLabelStyle={{ color: 'white' }}
-                multiListEmptyLabelStyle={{ color: 'white' }}
-                selectedItemStyle={{ color: 'white' }}
-                toggleIconColor="white"
-                toggleIconColor="white"
-                arrowIconColor="white"
+            <SelectBox
+              label=""
+              inputPlaceholder="Select Interest"
+              options={K_OPTIONS}
+              selectedValues={selectedTeams}
+              onMultiSelect={onMultiChange()}
+              onTapClose={onMultiChange()}
+              containerStyle={{ padding: 30 }}
+              optionsLabelStyle={{ paddingHorizontal: 10 }}
+              labelStyle={{ height: 10 }}
+              multiOptionContainerStyle={{ backgroundColor: Colors.darkPink }}
+              isMulti
+            />
+          </View>
 
 
 
-
-                selectedValues={selectedTeams}
-                onMultiSelect={onMultiChange()}
-                onTapClose={onMultiChange()}
-                isMulti
-              />
-              <TouchableOpacity style={{ padding: 10, marginTop: 10 }} onPress={toggleModal}>
-                <H2>close</H2>
-              </TouchableOpacity>
-            </View>
-          </Modal>
 
           <View style={styles.SelectGender}>
             <TouchableOpacity onPress={() => setGender("mix")}>
@@ -252,22 +215,37 @@ const MonProfil = ({ route, ...props }) => {
           </View>
 
           {userProfileImage === null ? (
-            <TouchableOpacity
-              onPress={TakeImgFromGallery}
+
+            <View style={{ display: 'flex', flexDirection: 'row' }}><TouchableOpacity
+              onpress={TakeImgFromCamera}
               style={styles.uploadImg}
             >
               <Ionicons style={styles.position} name="md-camera" size={60} />
             </TouchableOpacity>
+              <TouchableOpacity onPress={TakeImgFromGallery}
+
+                style={styles.uploadImg}
+              >
+                <Ionicons style={styles.position} name="md-download-outline" size={50} />
+              </TouchableOpacity>
+            </View >
           ) : (
             <View style={styles.uploadImg}>
-              <Image
-                style={{ height: 80, width: 80, borderRadius: 50 }}
-                resizeMode="contain"
-                source={{
-                  uri: userProfileImage,
-                }}
-              />
+              <TouchableOpacity onPress={TakeImgFromGallery}>
+
+                <Image
+                  style={{ height: 80, width: 80, borderRadius: 50, ...Colors.customShadow }}
+                  resizeMode="cover"
+                  source={{
+                    uri: userProfileImage,
+                  }}
+
+                />
+
+              </TouchableOpacity>
+
             </View>
+
           )}
 
           <TouchableOpacity
@@ -334,7 +312,7 @@ const MonProfil = ({ route, ...props }) => {
           </TouchableOpacity>
         </View>
       </View>
-    </LinearGradient>
+    </LinearGradient >
   );
   function onMultiChange() {
     console.log(selectedTeams.length)
@@ -413,10 +391,11 @@ const styles = StyleSheet.create({
   },
   uploadImg: {
     height: 100,
-    width: "70%",
+    width: "33%",
     justifyContent: "center",
     alignItems: "center",
     display: "flex",
+    margin: 5,
     flexDirection: "row",
     backgroundColor: "#fff",
     borderRadius: 17,

@@ -11,6 +11,7 @@ import {
   Platform,
 } from "react-native";
 import { useIsFocused } from '@react-navigation/native';
+import ImagePicker from 'react-native-image-crop-picker';
 
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "./../../component/TopBar";
@@ -21,6 +22,9 @@ const Profile = (props) => {
   let [image, setImage] = useState(null)
   let [selectedTeams, setSelectedTeams] = useState([])
 
+  const [userProfileImage, setUserProfileImage] = useState(null);
+  const [UserProfileImageConfig, setUserProfileImageConfig] = useState(null);
+
   const [gender, setGender] = useState("");
   const [candy, setCandy] = useState(0)
   const [FirstName, setFirstName] = useState(null);
@@ -28,6 +32,18 @@ const Profile = (props) => {
   const isFocused = useIsFocused();
   const [id, setId] = useState("");
 
+  const TakeImgFromGallery = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true,
+    }).then((image) => {
+      console.log(image);
+      setUserProfileImage(image.path);
+      setUserProfileImageConfig(image);
+      setcontentType(image.mime);
+    });
+  };
 
 
   useEffect(() => {
@@ -68,13 +84,19 @@ const Profile = (props) => {
     if (
       gender != "" &&
       FirstName != "" &&
+      userProfileImage != null &&
       LastName != ""
+
     ) {
 
       if (id)
         firestore.collection("users").doc(id).update({
           userName: FirstName + LastName,
-          userGender: gender
+          userGender: gender,
+          userProfileImage: userProfileImage,
+          UserProfileImageConfig: UserProfileImageConfig,
+
+
         }).then(() => {
           console.log("Document successfully written!");
           Alert.alert("record has been successfully changed")
@@ -118,12 +140,16 @@ const Profile = (props) => {
 
 
 
-          <View style={styles.Image}>
-            {image ? <Image
-              style={{ height: 70, width: 70, borderRadius: 70, marginVertical: 10 }}
-              resizeMode='cover'
-              source={{ uri: image }}
-            />
+          <TouchableOpacity onPress={TakeImgFromGallery} style={styles.Image}>
+
+            {image ? (
+              <Image
+                style={{ height: 70, width: 70, borderRadius: 70, marginVertical: 10 }}
+                resizeMode='cover'
+                source={{ uri: image }}
+              />
+            )
+
               :
               <Image
                 style={{ height: 70, width: 70, borderRadius: 70, marginVertical: 10 }}
@@ -132,7 +158,8 @@ const Profile = (props) => {
                 source={{ uri: "https://www.w3schools.com/howto/img_avatar.png" }}
               />
             }
-          </View>
+          </TouchableOpacity>
+
 
 
 
