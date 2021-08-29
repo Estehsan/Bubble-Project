@@ -1,6 +1,6 @@
 import React from "react";
 
-import { StyleSheet, Text, View } from "react-native";
+import { Platform, StyleSheet, Text, View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import FaIcon from "react-native-vector-icons/FontAwesome5";
 import MIcon from "react-native-vector-icons/MaterialIcons";
@@ -15,6 +15,7 @@ import AuthLoading from "./../screens/auth/AuthLoading";
 import Flow from "./../screens/auth/Flow";
 import FlowA from "./../screens/auth/FlowA";
 import FlowB from "./../screens/auth/FlowB";
+import Reset from "./../screens/auth/Reset";
 
 import Home from "../screens/user/Home";
 import Message from "../screens/user/Message";
@@ -42,12 +43,11 @@ function BottomTabNavigator() {
         showLabel: false,
         style: {
           position: "absolute",
-          bottom: 25,
-          left: 40,
-          right: 40,
-          alignContent: "center",
+          marginHorizontal: '10%',
+          marginVertical: '10%',
           elevation: 0,
-          height: 70,
+          alignContent: "center",
+
           borderRadius: 30,
           ...styles.shadow,
         },
@@ -59,7 +59,7 @@ function BottomTabNavigator() {
         options={{
           tabBarIcon: ({ color }) => (
             <MIcon
-              style={styles.position}
+              style={Platform.OS == "ios" ? styles.position : styles.position2}
               name="home"
               size={38}
               color={color}
@@ -82,7 +82,7 @@ function BottomTabNavigator() {
         options={{
           tabBarIcon: ({ color }) => (
             <Ionicons
-              style={styles.position}
+              style={Platform.OS == "ios" ? styles.position : styles.position2}
               name="chatbubbles"
               size={35}
               color={color}
@@ -96,7 +96,7 @@ function BottomTabNavigator() {
         options={{
           tabBarIcon: ({ color }) => (
             <McIcon
-              style={styles.position}
+              style={Platform.OS == "ios" ? styles.position : styles.position2}
               name="glass-cocktail"
               size={35}
               color={color}
@@ -110,7 +110,7 @@ function BottomTabNavigator() {
         options={{
           tabBarIcon: ({ color }) => (
             <FaIcon
-              style={styles.position}
+              style={Platform.OS == "ios" ? styles.position : styles.position2}
               name="user-alt"
               size={30}
               color={color}
@@ -151,6 +151,11 @@ function Tabs() {
         component={FlowB}
         options={{ headerShown: false }}
       />
+      <All.Screen
+        name="Reset"
+        component={Reset}
+        options={{ headerShown: false }}
+      />
       <All.Screen name="Home" component={BottomTabNavigator} />
       <All.Screen name="MonProfil" component={MonProfil} />
       <All.Screen name="Drink" component={Drink} />
@@ -179,8 +184,9 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   position: {
-    justifyContent: "center",
-    alignContent: "center",
-    top: 15,
+    top: '40%',
+  },
+  position2: {
+    top: '0%',
   },
 });

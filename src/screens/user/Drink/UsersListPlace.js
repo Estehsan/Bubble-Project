@@ -40,48 +40,73 @@ const UsersListPlace = ({ route, ...props }) => {
   const { id, title, place, location, code, img, latlng } = route.params;
   const [userData, setUserData] = useState([]);
   const [currentUserId, setCurrentUserId] = useState("");
+  const [currentUserData, setCurrentUserData] = useState("");
+
   useEffect(() => {
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        setCurrentUserId(user.uid);
-        firestore.collection("users").onSnapshot((querySnapshot) => {
-          let docs = querySnapshot.docs
-            .filter((datam) => datam.id != user.uid)
-            .map((doc) => ({
-              id: doc.id,
-              name: doc.data().userName,
-              gender: doc.data().userGender,
-              userImg: doc.data().userProfileImageUrl,
-              latlng: {
-                longitude: doc.data().longitude,
-                latitude: doc.data().latitude,
-              },
-            }));
-          var data = [];
-          for (var i = 0; i < docs.length; i++) {
-            var dis = getDistance(
-              latlng,
-              docs[i].latlng,
-            )
+    let isMounted = true;
 
-            dis = dis / 1000
+    if (isMounted)
+      auth.onAuthStateChanged((user) => {
+        if (user) {
 
-            // console.log(dis)
+          var uid = user.uid;
+          setCurrentUserId(user.uid);
 
-            if (dis < 10) {
-              data.push(docs[i])
+          firestore.collection("users").doc(uid)
+            .onSnapshot(async (doc) => {
+
+              let docs = {
+                id: uid,
+                userName: doc.data().userName,
+                selectedTeams: doc.data().selectedTeams,
+              }
+              await setCurrentUserData(docs)
+              // console.log(docs)
+
+            })
+
+          firestore.collection("users").onSnapshot((querySnapshot) => {
+            let docs = querySnapshot.docs
+              .filter((datam) => datam.id != user.uid)
+              .map((doc) => ({
+                id: doc.id,
+                name: doc.data().userName,
+                gender: doc.data().userGender,
+                userImg: doc.data().userProfileImageUrl,
+                selectedTeams: doc.data().selectedTeams,
+                latlng: {
+                  longitude: doc.data().longitude,
+                  latitude: doc.data().latitude,
+                },
+              }));
+            var data = [];
+            for (var i = 0; i < docs.length; i++) {
+              var dis = getDistance(
+                latlng,
+                docs[i].latlng,
+              )
+
+              dis = dis / 1000
+
+              // console.log(dis)
+
+              if (dis < 10) {
+                data.push(docs[i])
+              }
             }
-          }
 
-          setUserData(data);
-          // console.log(data)
+            setUserData(data);
+            // console.log(data)
 
-        });
-      } else {
-        // User is signed out
-        // ...
+          });
+        } else {
+          // User is signed out
+          // ...
+        }
+      });
+      return () => {
+        isMounted = false
       }
-    });
   }, []);
 
   // console.log("gettinguserid =>", currentUserId);
@@ -95,9 +120,7 @@ const UsersListPlace = ({ route, ...props }) => {
           <TopBar />
         </View>
         <View style={{ marginTop: 30 }}>
-          <LocationTab />
         </View>
-        <SearchBar />
         <View style={{ marginTop: 10 }}>
           <TouchableOpacity
             onPress={() => props.navigation.navigate("UsersListPlace")}
@@ -130,10 +153,12 @@ const UsersListPlace = ({ route, ...props }) => {
                   }}
                 >
                   <UserChatInfo
+                    currentUserData={currentUserData}
                     id={item.id}
                     name={item.name}
                     gender={item.gender}
                     userImg={item.userImg}
+                    selectedTeams={item.selectedTeams}
                   />
                 </TouchableOpacity>
               )}

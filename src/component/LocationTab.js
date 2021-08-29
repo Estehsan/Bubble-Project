@@ -4,40 +4,43 @@ import Colors from "./../assets/colors/Colors";
 import Entypo from "react-native-vector-icons/Entypo";
 import Fontisto from "react-native-vector-icons/Fontisto";
 
-const LocationTab = () => {
-  const [kilo, setKilo] = useState(true);
+const LocationTab = (props) => {
+  const [range, setRange] = useState(true);
+  const [lightRange, setLightRange] = useState(true);
+
+
   return (
     <View style={styles.container}>
       <View style={styles.lBox}>
         <View style={{ justifyContent: "center" }}>
-          <TouchableOpacity onPress={() => setKilo(true)}>
-            <View style={[kilo ? styles.highlight : styles.wow]}>
+          <TouchableOpacity onPress={() => { props.ChangeKilo(true); setRange(true); }}>
+            <View style={[range ? styles.highlight : styles.wow]}>
               <Text style={styles.fstyle}>MOINS DE 10 KM</Text>
             </View>
           </TouchableOpacity>
         </View>
 
         <View style={{ justifyContent: "center" }}>
-          <TouchableOpacity onPress={() => setKilo(false)}>
-            <View style={[!kilo ? styles.highlight : styles.wow]}>
+          <TouchableOpacity onPress={() => { props.ChangeKilo(false); setRange(false); }}>
+            <View style={[!range ? styles.highlight : styles.wow]}>
               <Text style={styles.fstyle}>MOINS DE 1 KM</Text>
             </View>
           </TouchableOpacity>
         </View>
       </View>
       <View style={styles.rBox}>
-        <TouchableOpacity>
-          <View style={styles.shiglight}>
+        <TouchableOpacity onPress={() => { props.ChangeLight(true); setLightRange(true); }}>
+          <View style={lightRange ? styles.shiglight : { justifyContent: "center" }}>
             <Entypo color="#f9d71c" name="moon" size={20} />
           </View>
         </TouchableOpacity>
-        <TouchableOpacity>
-          <View style={{ justifyContent: "center" }}>
+        <TouchableOpacity onPress={() => { props.ChangeLight(false); setLightRange(false); }}>
+          <View style={!lightRange ? styles.shiglight : { justifyContent: "center" }}>
             <Fontisto color="#f9d71c" name="sun" size={20} />
           </View>
         </TouchableOpacity>
       </View>
-    </View>
+    </View >
   );
 };
 

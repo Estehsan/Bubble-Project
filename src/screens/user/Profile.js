@@ -8,7 +8,11 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  Platform,
 } from "react-native";
+import { useIsFocused } from '@react-navigation/native';
+import ImagePicker from 'react-native-image-crop-picker';
+
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "./../../component/TopBar";
 import { auth, firestore } from "../../db/firebase";
@@ -18,57 +22,81 @@ const Profile = (props) => {
   let [image, setImage] = useState(null)
   let [selectedTeams, setSelectedTeams] = useState([])
 
+  const [userProfileImage, setUserProfileImage] = useState(null);
+  const [UserProfileImageConfig, setUserProfileImageConfig] = useState(null);
+
   const [gender, setGender] = useState("");
+  const [candy, setCandy] = useState(0)
   const [FirstName, setFirstName] = useState(null);
   const [LastName, setLastName] = useState(null);
+  const isFocused = useIsFocused();
   const [id, setId] = useState("");
 
+  const TakeImgFromGallery = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true,
+    }).then((image) => {
+      console.log(image);
+      setUserProfileImage(image.path);
+      setUserProfileImageConfig(image);
+      setcontentType(image.mime);
+    });
+  };
 
 
   useEffect(() => {
     let isMounted = true
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        var uid = user.uid;
-        setId(uid)
 
-        console.log(id)
+    if (isMounted)
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          var uid = user.uid;
+          setId(uid)
+          // console.log(id)
+          firestore.collection("users").doc(uid)
+            .get().then((doc) => {
+              if (doc.exists) {
+                setImage(doc.data().userProfileImageUrl)
+                setSelectedTeams(doc.data().selectedTeams)
+                setCandy(doc.data().candy)
+                // console.log(info)
+              } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+              }
+            })
+        }
+        else {
 
-        firestore.collection("users").doc(uid)
-          .get().then((doc) => {
-            if (doc.exists && isMounted) {
-              setImage(doc.data().userProfileImageUrl)
-              setSelectedTeams(doc.data().selectedTeams)
+        }
 
-              // console.log(info)
+      })
 
-            } else {
-              // doc.data() will be undefined in this case
-              console.log("No such document!");
-            }
-          })
-      }
-
-      else {
-
-      }
-    })
+    // console.log(image)
 
     return () => { isMounted = false }
-  }, []);
+  }, [isFocused]);
 
 
   let updateInfo = () => {
     if (
       gender != "" &&
       FirstName != "" &&
+      userProfileImage != null &&
       LastName != ""
+
     ) {
 
       if (id)
         firestore.collection("users").doc(id).update({
           userName: FirstName + LastName,
-          userGender: gender
+          userGender: gender,
+          userProfileImage: userProfileImage,
+          UserProfileImageConfig: UserProfileImageConfig,
+
+
         }).then(() => {
           console.log("Document successfully written!");
           Alert.alert("record has been successfully changed")
@@ -91,27 +119,50 @@ const Profile = (props) => {
       <SafeAreaView style={styles.main}>
         <TopBar />
         <View style={styles.Profile}>
-          <Text style={styles.h1}>MON PROFIL </Text>
+          <TouchableOpacity
+            style={{ marginVertical: 10 }}
+            onPress={() => {
+              auth
+                .signOut()
+                .then(() => {
+                  // Sign-out successful.
+                  props.navigation.replace("Flow");
+                })
+                .catch(() => {
+                  // An error happened.
+                });
+            }}>
+
+            <Text style={styles.h1}>MON PROFIL </Text>
+
+          </TouchableOpacity>
 
 
-          {
 
-            selectedTeams &&
-            selectedTeams.length > 0 &&
-            <Text>+{selectedTeams.length}</Text>
-          }
-          {image ? <Image
-            style={{ height: 70, width: 70, borderRadius: 70 }}
-            resizeMode="contain"
-            source={{ uri: image }}
-          />
-            :
-            <Image
-              style={{ height: 70, width: 70, borderRadius: 70 }}
-              resizeMode="contain"
-              source={{ uri: "https://www.w3schools.com/howto/img_avatar.png" }}
-            />
-          }
+
+          <TouchableOpacity onPress={TakeImgFromGallery} style={styles.Image}>
+
+            {image ? (
+              <Image
+                style={{ height: 70, width: 70, borderRadius: 70, marginVertical: 10 }}
+                resizeMode='cover'
+                source={{ uri: image }}
+              />
+            )
+
+              :
+              <Image
+                style={{ height: 70, width: 70, borderRadius: 70, marginVertical: 10 }}
+                resizeMode='cover'
+
+                source={{ uri: "https://www.w3schools.com/howto/img_avatar.png" }}
+              />
+            }
+          </TouchableOpacity>
+
+
+
+
 
         </View>
         <View style={styles.Form}>
@@ -157,32 +208,34 @@ const Profile = (props) => {
               resizeMode="contain"
               source={require("./../../assets/images/rose.png")}
             />
-            <Text style={styles.h2}>3</Text>
+            <Text style={styles.h2}>{candy}</Text>
           </View>
-          <TouchableOpacity>
-            <View style={styles.btnopacity}>
+          <TouchableOpacity
+
+            onPress={() => {
+              // auth
+              //   .signOut()
+              //   .then(() => {
+              //     // Sign-out successful.
+              //     props.navigation.replace("Flow");
+              //   })
+              //   .catch(() => {
+              //     // An error happened.
+              //   });
+
+              props.navigation.navigate("AchatUser")
+
+            }}
+          >
+            <View style={styles.btnopacity}
+            >
               <Text style={styles.f}>ACHETAR</Text>
             </View>
-            <TouchableOpacity
-              style={styles.btnopacity}
-              onPress={() => {
-                auth
-                  .signOut()
-                  .then(() => {
-                    // Sign-out successful.
-                    props.navigation.replace("Flow");
-                  })
-                  .catch(() => {
-                    // An error happened.
-                  });
-              }}
-            >
-              <Text style={styles.f}>LOGOUT</Text>
-            </TouchableOpacity>
           </TouchableOpacity>
+
         </View>
       </SafeAreaView>
-    </LinearGradient>
+    </LinearGradient >
   );
 };
 
@@ -197,7 +250,6 @@ const styles = StyleSheet.create({
     fontFamily: "FredokaOne-Regular",
 
     color: "#fff",
-    marginBottom: 15,
     fontSize: 30,
   },
   h2: {
@@ -206,7 +258,7 @@ const styles = StyleSheet.create({
     fontSize: 50,
     opacity: 0.5,
   },
-  Profile: { alignItems: "center", marginVertical: 30 },
+  Profile: { alignItems: "center", marginVertical: 10 },
 
   linearGradient: { flex: 1 },
   Form: {
@@ -240,4 +292,9 @@ const styles = StyleSheet.create({
   f: {
     fontFamily: "FredokaOne-Regular",
   },
+  Badge: {},
+  badgeIconIos: { top: 20, backgroundColor: 'red', width: 30, height: 30, borderRadius: 30, justifyContent: 'center', alignItems: 'center' },
+  badgeIconAndroid: { zIndex: 1, elevation: 1, top: 20, backgroundColor: 'red', width: 30, height: 30, borderRadius: 30, justifyContent: 'center', alignItems: 'center' },
+  ImageIos: { zIndex: -1, elevation: -1 },
+  ImageAndroid: {}
 });

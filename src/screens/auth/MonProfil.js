@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import ImagePicker from "react-native-image-crop-picker";
-
 import { AsyncStorage } from "@react-native-async-storage/async-storage";
 import {
   StyleSheet,
@@ -25,6 +24,8 @@ import Modal from "react-native-modal";
 import P from "../../component/basic/P";
 import InputF from "../../component/InputF";
 import { nameValidator } from "../../helpers/nameValidator";
+import { passwordValidator } from "../../helpers/passwordValidator";
+import Colors from "../../assets/colors/Colors";
 
 
 const handleSignUp = async (
@@ -38,12 +39,12 @@ const handleSignUp = async (
 // This is register screen II
 
 const MonProfil = ({ route, ...props }) => {
-  const { email, password } = route.params;
+  const { email, date } = route.params;
   const [number, setNumber] = useState("");
   const [userProfileImage, setUserProfileImage] = useState(null);
   const [gender, setGender] = useState("");
   const [FirstName, setFirstName] = useState({ value: '', error: '' });
-  const [LastName, setLastName] = useState({ value: '', error: '' });
+  const [password, setPassword] = useState({ value: '', error: '' });
   const [UserProfileImageConfig, setUserProfileImageConfig] = useState(null);
   const [contentType, setcontentType] = useState(null);
   const [selectedTeams, setSelectedTeams] = useState([]);
@@ -123,6 +124,15 @@ const MonProfil = ({ route, ...props }) => {
       setcontentType(image.mime);
     });
   };
+  const TakeImgFromCamera = () => {
+    ImagePicker.openCamera({
+      width: 300,
+      height: 400,
+      cropping: true,
+    }).then(image => {
+      console.log(image);
+    });
+  }
 
   return (
     <LinearGradient colors={["#DD488C", "#000"]} style={styles.linearGradient}>
@@ -141,46 +151,34 @@ const MonProfil = ({ route, ...props }) => {
             placeholder="pseudo"
             keyboardType="default" />
 
-          <InputF onChangeText={(e) => setLastName({ value: e, error: '' })}
-            value={LastName.value}
-            error={LastName.error}
-            errorText={LastName.error}
+          <InputF onChangeText={(e) => setEmail({ value: e, error: '' })}
+            secureTextEntry={true}
+            onChangeText={(e) => setPassword({ value: e, error: '' })}
+            value={password.value}
+            error={password.error}
+            errorText={password.error}
             placeholder="date de naissance"
-
             keyboardType="default" />
-          <TouchableOpacity style={styles.input} onPress={toggleModal}>
-            <P>Selecte Interest</P>
-            {/* <FlatList
-              data="selectedTeams"
-              keyExtractor={(item) => item.id}
-              horizontal
-              renderItem={({ item }) => <H2 key={item}>{console.log(item)}</H2>}
-            /> */}
-            {/* {selectedTeams.map((item) => (
-              <Text key={id}>{item}</Text>
-            ))} */}
-          </TouchableOpacity>
-          <Modal isVisible={isModalVisible}>
-            <View
-              style={{
-                paddingHorizontal: 10,
-                paddingVertical: 50,
-                backgroundColor: "#fff",
-              }}
-            >
-              <SelectBox
-                label="Select multiple"
-                options={K_OPTIONS}
-                selectedValues={selectedTeams}
-                onMultiSelect={onMultiChange()}
-                onTapClose={onMultiChange()}
-                isMulti
-              />
-              <TouchableOpacity onPress={toggleModal}>
-                <Text>close</Text>
-              </TouchableOpacity>
-            </View>
-          </Modal>
+
+          <View style={{ backgroundColor: 'white', width: "70%", borderRadius: 30, paddingHorizontal: 10, marginBottom: 10, paddingVertical: 0 }}>
+
+            <SelectBox
+              label=""
+              inputPlaceholder="Select Interest"
+              options={K_OPTIONS}
+              selectedValues={selectedTeams}
+              onMultiSelect={onMultiChange()}
+              onTapClose={onMultiChange()}
+              containerStyle={{ padding: 30 }}
+              optionsLabelStyle={{ paddingHorizontal: 10 }}
+              labelStyle={{ height: 10 }}
+              multiOptionContainerStyle={{ backgroundColor: Colors.darkPink }}
+              isMulti
+            />
+          </View>
+
+
+
 
           <View style={styles.SelectGender}>
             <TouchableOpacity onPress={() => setGender("mix")}>
@@ -217,22 +215,37 @@ const MonProfil = ({ route, ...props }) => {
           </View>
 
           {userProfileImage === null ? (
-            <TouchableOpacity
-              onPress={TakeImgFromGallery}
+
+            <View style={{ display: 'flex', flexDirection: 'row' }}><TouchableOpacity
+              onpress={TakeImgFromCamera}
               style={styles.uploadImg}
             >
               <Ionicons style={styles.position} name="md-camera" size={60} />
             </TouchableOpacity>
+              <TouchableOpacity onPress={TakeImgFromGallery}
+
+                style={styles.uploadImg}
+              >
+                <Ionicons style={styles.position} name="md-download-outline" size={50} />
+              </TouchableOpacity>
+            </View >
           ) : (
             <View style={styles.uploadImg}>
-              <Image
-                style={{ height: 80, width: 80, borderRadius: 50 }}
-                resizeMode="contain"
-                source={{
-                  uri: userProfileImage,
-                }}
-              />
+              <TouchableOpacity onPress={TakeImgFromGallery}>
+
+                <Image
+                  style={{ height: 80, width: 80, borderRadius: 50, ...Colors.customShadow }}
+                  resizeMode="cover"
+                  source={{
+                    uri: userProfileImage,
+                  }}
+
+                />
+
+              </TouchableOpacity>
+
             </View>
+
           )}
 
           <TouchableOpacity
@@ -240,30 +253,31 @@ const MonProfil = ({ route, ...props }) => {
 
 
               const firstNameError = nameValidator(FirstName.value)
-              const lastNameError = nameValidator(LastName.value)
+              const passwordError = passwordValidator(password.value)
 
-              if (firstNameError || lastNameError) {
+              if (firstNameError || passwordError) {
                 setFirstName({ ...FirstName, error: firstNameError })
-                setLastName({ ...LastName, error: lastNameError })
+                setPassword({ ...password, error: passwordError })
+
               }
 
 
               if (
                 email != "" &&
-                password != "" &&
+                password.value != "" &&
                 userProfileImage != null &&
                 gender != "" &&
                 FirstName.value != "" &&
-                LastName.value != "" &&
+                date != "" &&
                 selectedTeams.length > 0
               ) {
                 var userDetails = {
                   email: email,
-                  password: password,
+                  password: password.value,
                   userProfileImage: userProfileImage,
                   gender: gender,
-                  FirstName: FirstName.value,
-                  LastName: LastName.value,
+                  Name: FirstName.value,
+                  DOB: date,
                   UserProfileImageConfig: UserProfileImageConfig,
                   contentType: contentType,
                   selectedTeams: selectedTeams,
@@ -298,7 +312,7 @@ const MonProfil = ({ route, ...props }) => {
           </TouchableOpacity>
         </View>
       </View>
-    </LinearGradient>
+    </LinearGradient >
   );
   function onMultiChange() {
     console.log(selectedTeams.length)
@@ -377,10 +391,11 @@ const styles = StyleSheet.create({
   },
   uploadImg: {
     height: 100,
-    width: "70%",
+    width: "33%",
     justifyContent: "center",
     alignItems: "center",
     display: "flex",
+    margin: 5,
     flexDirection: "row",
     backgroundColor: "#fff",
     borderRadius: 17,

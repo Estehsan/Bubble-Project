@@ -13,6 +13,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 15,
     paddingVertical: 3,
+    textTransform: 'uppercase',
+
     flexWrap: "wrap",
   },
 });

@@ -17,6 +17,7 @@ import InputF from './../../component/InputF'
 import { emailValidator } from './../../helpers/emailValidator'
 import { passwordValidator } from './../../helpers/passwordValidator'
 import CustomModal from "../../component/basic/CustomModal";
+import WP from './../../component/basic/WP'
 import Modal from 'react-native-modal';
 
 // const handleLogIn = async (email, password) => {
@@ -26,13 +27,63 @@ import Modal from 'react-native-modal';
 const FlowA = ({ ...props }) => {
   const [email, setEmail] = useState({ value: '', error: '' });
   const [password, setPassword] = useState({ value: '', error: '' });
+  const [loading, setLoading] = useState(false);
+
   const [error, setError] = useState()
   const [isModalVisible, setModalVisible] = useState(false);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
+  const onLoginPress = () => {
 
+
+    const emailError = emailValidator(email.value)
+    const passwordError = passwordValidator(password.value)
+
+    if (emailError || passwordError) {
+      setEmail({ ...email, error: emailError })
+      setPassword({ ...password, error: passwordError })
+    }
+
+
+
+    if (email != "" && password != "") {
+
+      // console.log(userDetails)
+      try {
+        auth.signInWithEmailAndPassword(email.value, password.value)
+          .then((userCredential) => {
+            setLoading(true)
+            // Signed in 
+            var user = userCredential.user;
+            props.navigation.replace("Home")
+            setLoading(false)
+
+            console.log(user)
+            // ...
+          })
+          .catch((error) => {
+            setLoading(true)
+
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            setError(errorMessage)
+            setModalVisible(true)
+            setLoading(false)
+            console.log(error)
+            // ..
+          });
+      }
+      catch (error) {
+
+        console.log(error)
+      }
+    }
+    else {
+      console.log("email password empty")
+    }
+  }
   return (
     <LinearGradient colors={["#DD488C", "#000"]} style={styles.linearGradient}>
       <SafeAreaView style={styles.main}>
@@ -58,66 +109,29 @@ const FlowA = ({ ...props }) => {
             placeholder="date de naissance"
             keyboardType="default" />
 
+          <TouchableOpacity onPress={() => props.navigation.push("Reset")}>
+            <WP>Reset Password</WP>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={onLoginPress}>
+            < View style={styles.btnopacity}>
 
 
-          <TouchableOpacity onPress={() => {
-
-
-            const emailError = emailValidator(email.value)
-            const passwordError = passwordValidator(password.value)
-
-            if (emailError || passwordError) {
-              setEmail({ ...email, error: emailError })
-              setPassword({ ...password, error: passwordError })
-            }
-
-
-
-            if (email != "" && password != "") {
-
-              // console.log(userDetails)
-              try {
-                auth.signInWithEmailAndPassword(email.value, password.value)
-                  .then((userCredential) => {
-                    // Signed in 
-                    var user = userCredential.user;
-                    props.navigation.replace("Home")
-                    console.log(user)
-                    // ...
-                  })
-                  .catch((error) => {
-                    var errorCode = error.code;
-                    var errorMessage = error.message;
-                    setError(errorMessage)
-
-
-                    console.log(error)
-                    // ..
-                  });
-              }
-              catch (error) {
-
-                console.log(error)
-              }
-            }
-            else {
-              console.log("email password empty")
-            }
-
-          }}>
-            <View style={styles.btnopacity}>
               <Text style={styles.f}>VALIDER</Text>
             </View>
 
           </TouchableOpacity>
         </View>
-        {error === null ?
+        {/* {error === null ?
           <Modal onBackdropPress={toggleModal} isVisible={isModalVisible}>
             <CustomModal title="Error" content={error} />
-          </Modal> : <Text>hailo</Text>}
+          </Modal> : <Text>hailo</Text>} */}
 
-        <Button title="Show modal" onPress={toggleModal} />
-        <ActivityIndicator size="large" />
+        <Modal onBackdropPress={toggleModal} isVisible={isModalVisible}>
+          <CustomModal title="Error" content={error} />
+        </Modal>
+
+
 
 
 

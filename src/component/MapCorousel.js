@@ -12,6 +12,7 @@ import H2 from "./basic/H2";
 import P from "./basic/P";
 
 const MapCorousel = ({
+  props,
   title,
   onPress,
   isSelected,
@@ -24,7 +25,7 @@ const MapCorousel = ({
   const width = useWindowDimensions().width;
 
   return (
-    <View style={([styles.Container], { width: width - 60 })}>
+    <TouchableOpacity style={([styles.Container], { width: width - 60 })} {...props} >
       <View style={styles.main}>
         <View style={styles.lContainer}>
           {img ? (
@@ -48,7 +49,7 @@ const MapCorousel = ({
           ></TouchableOpacity>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -72,6 +73,7 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
     flex: 1,
+    ...Colors.customShadow,
 
     justifyContent: "space-around",
     display: "flex",

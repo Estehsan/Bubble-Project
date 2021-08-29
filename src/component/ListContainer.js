@@ -10,10 +10,12 @@ const ListContainer = ({ title, location, place, code, img, navigation }) => {
       <View style={styles.main}>
         <View style={styles.lContainer}>
           {img ? (
-            <Image style={{ height: 100, width: 110 }} source={{ uri: img }} />
+            <Image style={{
+              height: 100, width: 110, ...Colors.customShadow,
+            }} source={{ uri: img }} />
           ) : (
             <Image
-              style={{ height: 100, width: 110 }}
+              style={{ height: 100, width: 110, ...Colors.customShadow, }}
               source={require("../assets/images/description.png")}
             />
           )}
@@ -38,7 +40,7 @@ const ListContainer = ({ title, location, place, code, img, navigation }) => {
           ></TouchableOpacity>
         </View>
       </View>
-    </View>
+    </View >
   );
 };
 
@@ -70,7 +72,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   rContainer: {
-    paddingHorizontal: 15,
     width: "70%",
   },
+  lContainer: { paddingHorizontal: 13, }
 });
