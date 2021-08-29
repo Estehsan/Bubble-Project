@@ -310,9 +310,9 @@ const ChatUser = ({ navigation, route, ...props }) => {
                               requestGetter: false,
                             })
                             .then(() => {
+                              setCheck(check + 1)
                               setGetRequest("accept");
                               setChecker(false);
-                              setCheck(check + 1)
                             });
                         }}
                       ></Button>

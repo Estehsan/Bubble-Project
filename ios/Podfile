@@ -20,6 +20,10 @@ pod 'react-native-google-maps', :path => rn_maps_path
 
   pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
 
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
+
+  pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
+
   target 'BubbleCodeTests' do
     inherit! :complete
     # Pods for testing

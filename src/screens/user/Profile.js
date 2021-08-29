@@ -8,6 +8,7 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  Platform,
 } from "react-native";
 import { useIsFocused } from '@react-navigation/native';
 
@@ -31,29 +32,33 @@ const Profile = (props) => {
 
   useEffect(() => {
     let isMounted = true
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        var uid = user.uid;
-        setId(uid)
-        // console.log(id)
-        firestore.collection("users").doc(uid)
-          .get().then((doc) => {
-            if (doc.exists && isMounted) {
-              setImage(doc.data().userProfileImageUrl)
-              setSelectedTeams(doc.data().selectedTeams)
-              setCandy(doc.data().candy)
-              // console.log(info)
-            } else {
-              // doc.data() will be undefined in this case
-              console.log("No such document!");
-            }
-          })
-      }
-      else {
 
-      }
+    if (isMounted)
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          var uid = user.uid;
+          setId(uid)
+          // console.log(id)
+          firestore.collection("users").doc(uid)
+            .get().then((doc) => {
+              if (doc.exists) {
+                setImage(doc.data().userProfileImageUrl)
+                setSelectedTeams(doc.data().selectedTeams)
+                setCandy(doc.data().candy)
+                // console.log(info)
+              } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+              }
+            })
+        }
+        else {
 
-    })
+        }
+
+      })
+
+    // console.log(image)
 
     return () => { isMounted = false }
   }, [isFocused]);
@@ -112,14 +117,14 @@ const Profile = (props) => {
 
 
           <View style={styles.Badge}>
-            <View style={styles.badgeIcon}>
+            <View style={Platform.Os === "ios" ? styles.badgeIconIos : styles.badgeIconAndroid}>
               {
                 selectedTeams &&
                 selectedTeams.length > 0 &&
                 <Text>+{selectedTeams.length}</Text>
               }
             </View>
-            <View style={styles.Image}>
+            <View style={Platform.OS === "ios" ? styles.ImageIos : styles.ImageAndroid}>
               {image ? <Image
                 style={{ height: 70, width: 70, borderRadius: 70 }}
                 resizeMode='cover'
@@ -268,6 +273,8 @@ const styles = StyleSheet.create({
     fontFamily: "FredokaOne-Regular",
   },
   Badge: {},
-  badgeIcon: { top: 20, backgroundColor: 'red', width: 30, height: 30, borderRadius: 30, justifyContent: 'center', alignItems: 'center' },
-  Image: { zIndex: -1, elevation: -1 }
+  badgeIconIos: { top: 20, backgroundColor: 'red', width: 30, height: 30, borderRadius: 30, justifyContent: 'center', alignItems: 'center' },
+  badgeIconAndroid: { zIndex: 1, elevation: 1, top: 20, backgroundColor: 'red', width: 30, height: 30, borderRadius: 30, justifyContent: 'center', alignItems: 'center' },
+  ImageIos: { zIndex: -1, elevation: -1 },
+  ImageAndroid: {}
 });

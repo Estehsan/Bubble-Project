@@ -43,64 +43,70 @@ const UsersListPlace = ({ route, ...props }) => {
   const [currentUserData, setCurrentUserData] = useState("");
 
   useEffect(() => {
-    auth.onAuthStateChanged((user) => {
-      if (user) {
+    let isMounted = true;
 
-        var uid = user.uid;
-        setCurrentUserId(user.uid);
+    if (isMounted)
+      auth.onAuthStateChanged((user) => {
+        if (user) {
 
-        firestore.collection("users").doc(uid)
-          .onSnapshot(async (doc) => {
+          var uid = user.uid;
+          setCurrentUserId(user.uid);
 
-            let docs = {
-              id: uid,
-              userName: doc.data().userName,
-              selectedTeams: doc.data().selectedTeams,
+          firestore.collection("users").doc(uid)
+            .onSnapshot(async (doc) => {
+
+              let docs = {
+                id: uid,
+                userName: doc.data().userName,
+                selectedTeams: doc.data().selectedTeams,
+              }
+              await setCurrentUserData(docs)
+              // console.log(docs)
+
+            })
+
+          firestore.collection("users").onSnapshot((querySnapshot) => {
+            let docs = querySnapshot.docs
+              .filter((datam) => datam.id != user.uid)
+              .map((doc) => ({
+                id: doc.id,
+                name: doc.data().userName,
+                gender: doc.data().userGender,
+                userImg: doc.data().userProfileImageUrl,
+                selectedTeams: doc.data().selectedTeams,
+                latlng: {
+                  longitude: doc.data().longitude,
+                  latitude: doc.data().latitude,
+                },
+              }));
+            var data = [];
+            for (var i = 0; i < docs.length; i++) {
+              var dis = getDistance(
+                latlng,
+                docs[i].latlng,
+              )
+
+              dis = dis / 1000
+
+              // console.log(dis)
+
+              if (dis < 10) {
+                data.push(docs[i])
+              }
             }
-            await setCurrentUserData(docs)
-            // console.log(docs)
 
-          })
+            setUserData(data);
+            // console.log(data)
 
-        firestore.collection("users").onSnapshot((querySnapshot) => {
-          let docs = querySnapshot.docs
-            .filter((datam) => datam.id != user.uid)
-            .map((doc) => ({
-              id: doc.id,
-              name: doc.data().userName,
-              gender: doc.data().userGender,
-              userImg: doc.data().userProfileImageUrl,
-              selectedTeams: doc.data().selectedTeams,
-              latlng: {
-                longitude: doc.data().longitude,
-                latitude: doc.data().latitude,
-              },
-            }));
-          var data = [];
-          for (var i = 0; i < docs.length; i++) {
-            var dis = getDistance(
-              latlng,
-              docs[i].latlng,
-            )
-
-            dis = dis / 1000
-
-            // console.log(dis)
-
-            if (dis < 10) {
-              data.push(docs[i])
-            }
-          }
-
-          setUserData(data);
-          // console.log(data)
-
-        });
-      } else {
-        // User is signed out
-        // ...
+          });
+        } else {
+          // User is signed out
+          // ...
+        }
+      });
+      return () => {
+        isMounted = false
       }
-    });
   }, []);
 
   // console.log("gettinguserid =>", currentUserId);

@@ -14,6 +14,7 @@ import {
   ActivityIndicator,
   FlatList,
   useWindowDimensions,
+  StatusBar
 } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { getDistance } from 'geolib';
@@ -26,6 +27,8 @@ import LinearGradient from "react-native-linear-gradient";
 import Geolocation from "@react-native-community/geolocation";
 import { auth, firestore } from "../../db/firebase";
 import Entypo from "react-native-vector-icons/Entypo";
+import MapStyleNight from "./MapStyles/MapStyleNight";
+import MapStyleDay from "./MapStyles/MapStyleDay"
 
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 
@@ -43,6 +46,10 @@ const Home = (props) => {
   const [marker, setMarker] = useState([]);
   const [selectedPlaceId, setSelectedPlaceId] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [kilo, setKilo] = useState(true);
+  const [light, setLight] = useState(true);
+
+
   const [userMarker, setUserMarker] = useState(
     {
       latlng: {
@@ -64,87 +71,88 @@ const Home = (props) => {
   useEffect(() => {
     let isMounted = true;
 
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        var uid = user.uid;
-        // console.log(uid)
-        let subscribe = firestore.collection("users").doc(uid)
-          .onSnapshot(async (doc) => {
+    if (isMounted)
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          var uid = user.uid;
+          // console.log(uid)
+          let subscribe = firestore.collection("users").doc(uid)
+            .onSnapshot(async (doc) => {
 
-            var docs = {
-              key: user.uid,
-              title: doc.data().userName,
-              latlng: {
-                longitude: doc.data().longitude,
-                latitude: doc.data().latitude,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-              },
-            }
+              var docs = {
+                key: user.uid,
+                title: doc.data().userName,
+                latlng: {
+                  longitude: doc.data().longitude,
+                  latitude: doc.data().latitude,
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421,
+                },
+              }
 
-            await setTimeout(() => {
-              let location = Geolocation.getCurrentPosition((position) => {
-                var lat = parseFloat(position.coords.latitude)
-                var long = parseFloat(position.coords.longitude)
+              await setTimeout(() => {
+                let location = Geolocation.getCurrentPosition((position) => {
+                  var lat = parseFloat(position.coords.latitude)
+                  var long = parseFloat(position.coords.longitude)
 
-                var initialRegion = {
-                  latlng: {
-                    latitude: lat,
-                    longitude: long,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
-                  },
-                }
-                console.log("initial region=> ", initialRegion.latlng.latitude)
-                console.log("docs=> ", docs.latlng.latitude)
+                  var initialRegion = {
+                    latlng: {
+                      latitude: lat,
+                      longitude: long,
+                      latitudeDelta: 0.0922,
+                      longitudeDelta: 0.0421,
+                    },
+                  }
+                  // console.log("initial region=> ", initialRegion.latlng.latitude)
+                  // console.log("docs=> ", docs.latlng.latitude)
 
 
-                // var hos = {
-                //   latitude: 24.931407349950064,
-                //   longitude: 67.03798921789368,
-                // }
-                // var dis = getDistance(
-                //   initialRegion.latlng,
-                //   hos
-                // )
-                // dis = dis / 1000
-                // console.log(dis, "Km")
+                  // var hos = {
+                  //   latitude: 24.931407349950064,
+                  //   longitude: 67.03798921789368,
+                  // }
+                  // var dis = getDistance(
+                  //   initialRegion.latlng,
+                  //   hos
+                  // )
+                  // dis = dis / 1000
+                  // console.log(dis, "Km")
 
-                if (docs.latlng.latitude != initialRegion.latlng.latitude ||
-                  docs.latlng.longitude != initialRegion.latlng.longitude) {
+                  if (docs.latlng.latitude != initialRegion.latlng.latitude ||
+                    docs.latlng.longitude != initialRegion.latlng.longitude) {
 
-                  setUserMarker(initialRegion)
-                  firestore.collection("users").doc(uid).update({
-                    latitude: initialRegion.latlng.latitude,
-                    longitude: initialRegion.latlng.longitude
-                  })
-                    .then(() => {
-                      console.log("Document successfully written!");
+                    setUserMarker(initialRegion)
+                    firestore.collection("users").doc(uid).update({
+                      latitude: initialRegion.latlng.latitude,
+                      longitude: initialRegion.latlng.longitude
                     })
-                    .catch((error) => {
-                      console.error("Error writing document: ", error);
-                    });
-                }
-                else {
-                  setUserMarker(docs)
-                }
-              },
-                (error) => alert(JSON.stringify(error)),
-                { enableHighAccuracy: false, timeout: 5000 });
-            }, 1000)
+                      .then(() => {
+                        console.log("Document successfully written!");
+                      })
+                      .catch((error) => {
+                        console.error("Error writing document: ", error);
+                      });
+                  }
+                  else {
+                    setUserMarker(docs)
+                  }
+                },
+                  (error) => alert(JSON.stringify(error)),
+                  { enableHighAccuracy: false, timeout: 5000 });
+              }, 1000)
 
 
 
-          })
+            })
 
-      } else {
-        // User is signed out
-        // ...
-      }
+        } else {
+          // User is signed out
+          // ...
+        }
 
-    });
+      });
 
-    let subscribeLoc = firestore.collection("location").onSnapshot((querySnapshot) => {
+    let subscribeLoc = firestore.collection("location").onSnapshot(async (querySnapshot) => {
       let docs = querySnapshot.docs.map((doc) => ({
         key: doc.id,
         title: doc.data().title,
@@ -160,10 +168,44 @@ const Home = (props) => {
 
       // 24.93986404097375, 67.04325282594995
 
-      if (isMounted) {
-        setMarker(docs);
-        setLoading(false);
+      var data = [];
+      if (kilo === true) {
+        for (var i = 0; i < docs.length; i++) {
+          var dis = await getDistance(
+            userMarker.latlng,
+            docs[i].latlng,
+          )
+
+          dis = dis / 1000
+
+          // console.log(dis)
+          if (dis < 10) {
+            data.push(docs[i])
+          }
+
+
+        }
+      } else {
+        for (var i = 0; i < docs.length; i++) {
+          var dis = await getDistance(
+            userMarker.latlng,
+            docs[i].latlng,
+          )
+
+          dis = dis / 1000
+
+          // console.log(dis)
+          if (dis < 1) {
+            data.push(docs[i])
+          }
+
+
+        }
+
       }
+      setMarker(data);
+      setLoading(false);
+
     });
 
 
@@ -173,14 +215,19 @@ const Home = (props) => {
     const index = marker.findIndex((marker) => marker.key == selectedPlaceId);
     flatlist.current.scrollToIndex({ index });
 
+
+
     return () => {
       isMounted = false
       // subscribe();
       subscribeLoc();
     };
-  }, [selectedPlaceId]);
+  }, [selectedPlaceId, kilo , userMarker]);
 
   // console.log(marker);
+
+  
+
 
   return (
     <LinearGradient
@@ -190,38 +237,42 @@ const Home = (props) => {
       <SafeAreaView style={styles.main}>
         <TopBar />
         <View style={{ marginTop: 30 }}>
-          <LocationTab />
+          <LocationTab ChangeKilo={e => setKilo(e)} ChangeLight={e => setLight(e)} />
         </View>
 
         {userMarker.latlng.latitude &&
-          <MapView
-            style={styles.mapContainer}
-            provider={PROVIDER_GOOGLE}
-            initialRegion={userMarker.latlng}
-          >
-            {marker.map((marker, key) => (
-              <Marker
-                key={key}
-                coordinate={marker.latlng}
-                title={marker.title}
-                description={marker.description}
-                onPress={() => setSelectedPlaceId(marker.key)}
-              >
-                <Entypo
-                  color={marker.key == selectedPlaceId ? "black" : "red"}
-                  name="drink"
-                  size={40}
-                />
-              </Marker>
-            ))}
+          <View style={styles.map}>
+            <StatusBar barStyle="dark-content" />
+            <MapView
+              customMapStyle={light ? MapStyleNight : MapStyleDay}
+              style={styles.mapContainer}
+              provider={PROVIDER_GOOGLE}
+              initialRegion={userMarker.latlng}
+            >
+              {marker.map((marker, key) => (
+                <Marker
+                  key={key}
+                  coordinate={marker.latlng}
+                  title={marker.title}
+                  description={marker.description}
+                  onPress={() => setSelectedPlaceId(marker.key)}
+                >
+                  <Entypo
+                    color={marker.key == selectedPlaceId ? "black" : "red"}
+                    name="drink"
+                    size={40}
+                  />
+                </Marker>
+              ))}
 
-            {userMarker &&
-              <Marker
-                coordinate={userMarker.latlng}
-              >
-              </Marker>
-            }
-          </MapView>
+              {userMarker &&
+                <Marker
+                  coordinate={userMarker.latlng}
+                >
+                </Marker>
+              }
+            </MapView>
+          </View>
         }
         {loading ? (
           <ActivityIndicator
@@ -233,6 +284,7 @@ const Home = (props) => {
             textStyle={styles.spinnerTextStyle}
           />
         ) : (
+          userMarker.latlng.latitude &&
           <View style={styles.Corousel}>
             <FlatList
               ref={flatlist}
@@ -304,24 +356,29 @@ const styles = StyleSheet.create({
     color: "red",
     marginVertical: 16,
   },
+  map: {
+    flex: 4, marginTop: 30, marginBottom: 10,
+    alignSelf: 'center', width: '90%', height: '100%',
+    borderWidth: 0, borderRadius: 15, overflow: 'hidden',
+
+  },
   mapContainer: {
-    alignItems: "center",
+    alignSelf: "center",
     flex: 4,
-    // marginBottom: 100,
-    marginTop: 30,
     width: '100%',
     height: '100%',
-    marginHorizontal: 15,
+    // marginHorizontal: 15,
     borderRadius: 40,
-    zIndex: -1,
-    elevation: -1,
+    // zIndex: 1,
+    // elevation: 1,
     ...Colors.customShadow,
   },
   Corousel: {
     // position: "absolute",
+    flex: 2,
     // bottom: 110,
-    // zIndex: 2,
-    // elevation: 2,
+    zIndex: 1,
+    elevation: 1,
     marginBottom: 100
 
   },
