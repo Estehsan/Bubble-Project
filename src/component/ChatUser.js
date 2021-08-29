@@ -54,7 +54,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
         backgroundColor: "#fFC1DD",
       },
       headerTitle: () => (
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: 'center' }}>
           <Text style={styles.ChatUserName}>{name}</Text>
         </View>
       ),

@@ -6,14 +6,16 @@ import {
   SafeAreaView,
   Image,
   TextInput,
-  TouchableOpacity,
-  ActivityIndicator,
+  TouchableOpacity, Button,
+  ActivityIndicator, Platform,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import InputF from "../../component/InputF";
 import { emailValidator } from "../../helpers/emailValidator";
 import { passwordValidator } from "../../helpers/passwordValidator";
 import TopBar from "./../../component/TopBar";
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 // This is signUp SCREEN
 
 // let handlecheck = (email, password) => {
@@ -21,62 +23,135 @@ import TopBar from "./../../component/TopBar";
 // }
 
 const FlowA = ({ ...props }) => {
+
   const [email, setEmail] = useState({ value: '', error: '' });
-  const [password, setPassword] = useState({ value: '', error: '' });
+  const [errorText, setErrorText] = useState('');
+
+  // DatePicker 
+  const [date, setDate] = useState(new Date());
+  const [mode, setMode] = useState('date');
+  const [show, setShow] = useState(false);
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === 'ios');
+    setDate(currentDate);
+  };
+
+  const showMode = (currentMode) => {
+    setShow(true);
+    setMode(currentMode);
+  };
+
+  const showDatepicker = () => {
+    showMode('date');
+  };
+  // Date Picker End
 
   return (
-    <LinearGradient colors={["#DD488C", "#000"]} style={styles.linearGradient}>
-      <SafeAreaView style={styles.main}>
-        <TopBar />
+    <>
+      <LinearGradient colors={["#DD488C", "#000"]} style={styles.linearGradient}>
+        <SafeAreaView style={styles.main}>
+          <TopBar />
 
-        <View style={styles.Profile}>
-          <Text style={styles.h1}>SE CONNECTER </Text>
-        </View>
-        <View style={styles.Form}>
-
-
-          <InputF onChangeText={(e) => setEmail({ value: e, error: '' })}
-            value={email.value}
-            error={email.error}
-            errorText={email.error}
-            placeholder="pseudo"
-            keyboardType="default" />
-
-          <InputF onChangeText={(e) => setEmail({ value: e, error: '' })}
-            secureTextEntry={true}
-            onChangeText={(e) => setPassword({ value: e, error: '' })}
-            value={password.value}
-            error={password.error}
-            errorText={password.error}
-            placeholder="date de naissance"
-            keyboardType="default" />
+          <View style={styles.Profile}>
+            <Text style={styles.h1}>SE CONNECTER </Text>
+          </View>
+          <View style={styles.Form}>
 
 
-          <TouchableOpacity
-            onPress={() => {
-              const emailError = emailValidator(email.value)
-              const passwordError = passwordValidator(password.value)
+            <InputF onChangeText={(e) => setEmail({ value: e, error: '' })}
+              value={email.value}
+              error={email.error}
+              errorText={email.error}
+              placeholder="pseudo"
+              keyboardType="default" />
 
-              if (emailError || passwordError) {
-                setEmail({ ...email, error: emailError })
-                setPassword({ ...password, error: passwordError })
-              }
+            {/* DataPicker Start */}
 
-              if (!emailError & !passwordError)
 
-                props.navigation.push("MonProfil", { email: email.value, password: password.value });
-            }}
-          >
+            {
+              show ? (
+                <View style={{
+                  width: "100%",
+                }}>
 
-            <View style={styles.btnopacity}>
+                  <DateTimePicker
+                    style={{ marginHorizontal: "15%", backgroundColor: 'white', }}
+                    testID="dateTimePicker"
+                    value={date}
+                    mode={mode}
+                    is24Hour={true}
+                    display="default"
+                    onChange={onChange}
+                  />
+                </View>
+              ) : (
 
-              <Text style={styles.f}>VALIDER</Text>
-            </View>
 
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    </LinearGradient >
+                <View style={{
+                  width: "100%",
+                  alignItems: 'center'
+
+                }}>
+                  <TouchableOpacity style={{
+                    width: "70%",
+                    borderRadius: 20,
+                    height: 40,
+                    justifyContent: "space-between",
+                    paddingHorizontal: 60,
+                    alignContent: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: "#fff",
+                    color: "black",
+                  }}
+                    onPress={showDatepicker}
+                  >
+                    <Text style={{ opacity: 0.5 }}>date de naissance</Text>
+                  </TouchableOpacity>
+                </View>
+
+
+              )
+            }
+
+            {/* DatePickerEnd */}
+            {errorText ?
+              <View style={styles.Error}>
+                <Text style={{ color: 'white' }}>{errorText}</Text>
+              </View>
+              : null}
+
+            <TouchableOpacity
+              onPress={() => {
+                const emailError = emailValidator(email.value)
+
+                if (emailError) {
+                  setEmail({ ...email, error: emailError })
+                }
+
+
+
+
+                if (!emailError)
+
+
+                  props.navigation.push("MonProfil", { email: email.value, date: date });
+              }}
+            >
+              <View style={{ alignItems: 'center', justifyContent: 'center', marginVertical: 20 }}>
+                <View style={styles.btnopacity}>
+
+                  <Text style={styles.f}>VALIDER</Text>
+                </View>
+              </View>
+
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
+      </LinearGradient >
+
+    </>
   );
 };
 
@@ -103,9 +178,7 @@ const styles = StyleSheet.create({
   Profile: { alignItems: "center", marginVertical: 30 },
 
   linearGradient: { flex: 1 },
-  Form: {
-    alignItems: "center",
-  },
+
   input: {
     width: "70%",
     borderRadius: 20,
@@ -134,4 +207,8 @@ const styles = StyleSheet.create({
   f: {
     fontFamily: "FredokaOne-Regular",
   },
+  Error: {
+    marginHorizontal: '16%',
+    marginTop: 10
+  }
 });

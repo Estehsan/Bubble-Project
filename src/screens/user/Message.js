@@ -104,9 +104,11 @@ const Message = ({ ...props }) => {
     >
       <SafeAreaView>
         <TopBar />
+        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: 'center' }}>
+          <Text style={styles.ChatUserName}>MES CONVERSATIONS</Text>
+        </View>
         <View>
 
-          <H1>Users Requested you to connect</H1>
           {loading ? (
             <ActivityIndicator
               style={{ alignItems: "center" }}
@@ -114,124 +116,112 @@ const Message = ({ ...props }) => {
               color="#000"
             />
           ) : (
-            <FlatList
-              data={data}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) => (
-                // console.log(item)
-                <View style={styles.Container}>
-                  <View style={styles.main}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        props.navigation.navigate("ChatUser", {
-                          currentUserId: userId,
-                          messageId: item.id,
-                          name: item.name,
-                          gender: item.gender,
-                          messageImg: item.image,
-                        });
-                      }}
-                    >
-                      <View style={styles.lContainer}>
-                        {item.image ? (
-                          <Image
-                            style={{ height: 50, width: 50, borderRadius: 50 }}
-                            source={{ uri: item.image }}
-                          />
-                        ) : (
-                          <Image
-                            style={{ height: 50, width: 50, borderRadius: 50 }}
-                            source={{
-                              uri: "https://www.w3schools.com/howto/img_avatar.png",
+            <>
+              {data === null ? (
+                <>
+                  <H1>Message Request </H1>
+                  <FlatList
+                    data={data}
+                    horizontal
+                    keyExtractor={(item) => item.id}
+                    renderItem={({ item }) => (
+                      // console.log(item)
+                      <View style={styles.Container}>
+                        <View style={styles.main}>
+                          <TouchableOpacity
+                            onPress={() => {
+                              props.navigation.navigate("ChatUser", {
+                                currentUserId: userId,
+                                messageId: item.id,
+                                name: item.name,
+                                gender: item.gender,
+                                messageImg: item.image,
+                              });
                             }}
-                          />
-                        )}
-
-                        <View style={styles.HeadingView}>
-                          <Text
-                            style={styles.heading}
-                            numberOfLines={1}
-                            ellipsizeMode={"tail"}
                           >
-                            {item.name}
-                          </Text>
-                          <Text style={styles.heading}>{item.gender}</Text>
+                            {item.image ? (
+                              <Image
+                                style={{ height: 50, width: 50, borderRadius: 50 }}
+                                source={{ uri: item.image }}
+                              />
+                            ) : (
+                              <Image
+                                style={{ height: 50, width: 50, borderRadius: 50 }}
+                                source={{
+                                  uri: "https://www.w3schools.com/howto/img_avatar.png",
+                                }}
+                              />
+                            )}
+
+
+
+                          </TouchableOpacity>
                         </View>
-                        {/* <View style={styles.rContainer}>
+                      </View>
+                    )}
+                  />
+                </>
+              )
+                : <View />}
+
+              <H1>All Chats</H1>
+              <FlatList
+                data={accepted}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                  // console.log(item)
+                  <View style={styles.Container}>
+                    <View style={styles.main}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          props.navigation.navigate("ChatUser", {
+                            currentUserId: userId,
+                            messageId: item.id,
+                            name: item.name,
+                            gender: item.gender,
+                            messageImg: item.image,
+                          });
+                        }}
+                      >
+                        <View style={styles.lContainer}>
+                          {item.image ? (
+                            <Image
+                              style={{ height: 50, width: 50, borderRadius: 50 }}
+                              source={{ uri: item.image }}
+                            />
+                          ) : (
+                            <Image
+                              style={{ height: 50, width: 50, borderRadius: 50 }}
+                              source={{
+                                uri: "https://www.w3schools.com/howto/img_avatar.png",
+                              }}
+                            />
+                          )}
+
+                          <View style={styles.HeadingView}>
+                            <Text
+                              style={styles.heading}
+                              numberOfLines={1}
+                              ellipsizeMode={"tail"}
+                            >
+                              {item.name}
+                            </Text>
+                            <Text style={styles.heading}>{item.gender}</Text>
+                          </View>
+                          {/* <View style={styles.rContainer}>
                         <View style={styles.btn}>
                           <Text>Content</Text>
                         </View>
                       </View> */}
-                      </View>
-                    </TouchableOpacity>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
                   </View>
-                </View>
-              )}
-            />
+                )}
+              />
+            </>
           )}
-          <H1>All Chats</H1>
-          {loading ? (
-            <ActivityIndicator
-              style={{ alignItems: "center" }}
-              size="large"
-              color="#000"
-            />
-          ) : (
-            <FlatList
-              data={accepted}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) => (
-                // console.log(item)
-                <View style={styles.Container}>
-                  <View style={styles.main}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        props.navigation.navigate("ChatUser", {
-                          currentUserId: userId,
-                          messageId: item.id,
-                          name: item.name,
-                          gender: item.gender,
-                          messageImg: item.image,
-                        });
-                      }}
-                    >
-                      <View style={styles.lContainer}>
-                        {item.image ? (
-                          <Image
-                            style={{ height: 50, width: 50, borderRadius: 50 }}
-                            source={{ uri: item.image }}
-                          />
-                        ) : (
-                          <Image
-                            style={{ height: 50, width: 50, borderRadius: 50 }}
-                            source={{
-                              uri: "https://www.w3schools.com/howto/img_avatar.png",
-                            }}
-                          />
-                        )}
 
-                        <View style={styles.HeadingView}>
-                          <Text
-                            style={styles.heading}
-                            numberOfLines={1}
-                            ellipsizeMode={"tail"}
-                          >
-                            {item.name}
-                          </Text>
-                          <Text style={styles.heading}>{item.gender}</Text>
-                        </View>
-                        {/* <View style={styles.rContainer}>
-                        <View style={styles.btn}>
-                          <Text>Content</Text>
-                        </View>
-                      </View> */}
-                      </View>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              )}
-            />
-          )}
         </View>
       </SafeAreaView>
     </LinearGradient>
@@ -283,5 +273,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "60%",
     paddingHorizontal: 30,
+  }, ChatUserName: {
+    fontFamily: "FredokaOne-Regular",
+    fontSize: 25,
   },
 });

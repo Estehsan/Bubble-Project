@@ -93,6 +93,7 @@ const Profile = (props) => {
         <TopBar />
         <View style={styles.Profile}>
           <TouchableOpacity
+            style={{ marginVertical: 10 }}
             onPress={() => {
               auth
                 .signOut()
@@ -111,29 +112,21 @@ const Profile = (props) => {
 
 
 
-          <View style={styles.Badge}>
-            <View style={styles.badgeIcon}>
-              {
-                selectedTeams &&
-                selectedTeams.length > 0 &&
-                <Text>+{selectedTeams.length}</Text>
-              }
-            </View>
-            <View style={styles.Image}>
-              {image ? <Image
-                style={{ height: 70, width: 70, borderRadius: 70 }}
-                resizeMode='cover'
-                source={{ uri: image }}
-              />
-                :
-                <Image
-                  style={{ height: 70, width: 70, borderRadius: 70 }}
-                  resizeMode='cover'
 
-                  source={{ uri: "https://www.w3schools.com/howto/img_avatar.png" }}
-                />
-              }
-            </View>
+          <View style={styles.Image}>
+            {image ? <Image
+              style={{ height: 70, width: 70, borderRadius: 70, marginVertical: 10 }}
+              resizeMode='cover'
+              source={{ uri: image }}
+            />
+              :
+              <Image
+                style={{ height: 70, width: 70, borderRadius: 70, marginVertical: 10 }}
+                resizeMode='cover'
+
+                source={{ uri: "https://www.w3schools.com/howto/img_avatar.png" }}
+              />
+            }
           </View>
 
 
@@ -233,7 +226,7 @@ const styles = StyleSheet.create({
     fontSize: 50,
     opacity: 0.5,
   },
-  Profile: { alignItems: "center", marginVertical: 30 },
+  Profile: { alignItems: "center", marginVertical: 10 },
 
   linearGradient: { flex: 1 },
   Form: {

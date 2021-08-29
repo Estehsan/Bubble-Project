@@ -26,6 +26,7 @@ import P from "../../component/basic/P";
 import InputF from "../../component/InputF";
 import { nameValidator } from "../../helpers/nameValidator";
 import { Colors } from "react-native/Libraries/NewAppScreen";
+import { passwordValidator } from "../../helpers/passwordValidator";
 
 
 const handleSignUp = async (
@@ -39,12 +40,12 @@ const handleSignUp = async (
 // This is register screen II
 
 const MonProfil = ({ route, ...props }) => {
-  const { email, password } = route.params;
+  const { email, date } = route.params;
   const [number, setNumber] = useState("");
   const [userProfileImage, setUserProfileImage] = useState(null);
   const [gender, setGender] = useState("");
   const [FirstName, setFirstName] = useState({ value: '', error: '' });
-  const [LastName, setLastName] = useState({ value: '', error: '' });
+  const [password, setPassword] = useState({ value: '', error: '' });
   const [UserProfileImageConfig, setUserProfileImageConfig] = useState(null);
   const [contentType, setcontentType] = useState(null);
   const [selectedTeams, setSelectedTeams] = useState([]);
@@ -142,13 +143,15 @@ const MonProfil = ({ route, ...props }) => {
             placeholder="pseudo"
             keyboardType="default" />
 
-          <InputF onChangeText={(e) => setLastName({ value: e, error: '' })}
-            value={LastName.value}
-            error={LastName.error}
-            errorText={LastName.error}
+          <InputF onChangeText={(e) => setEmail({ value: e, error: '' })}
+            secureTextEntry={true}
+            onChangeText={(e) => setPassword({ value: e, error: '' })}
+            value={password.value}
+            error={password.error}
+            errorText={password.error}
             placeholder="date de naissance"
-
             keyboardType="default" />
+
 
 
           <TouchableOpacity style={styles.input} onPress={toggleModal}>
@@ -272,30 +275,31 @@ const MonProfil = ({ route, ...props }) => {
 
 
               const firstNameError = nameValidator(FirstName.value)
-              const lastNameError = nameValidator(LastName.value)
+              const passwordError = passwordValidator(password.value)
 
-              if (firstNameError || lastNameError) {
+              if (firstNameError || passwordError) {
                 setFirstName({ ...FirstName, error: firstNameError })
-                setLastName({ ...LastName, error: lastNameError })
+                setPassword({ ...password, error: passwordError })
+
               }
 
 
               if (
                 email != "" &&
-                password != "" &&
+                password.value != "" &&
                 userProfileImage != null &&
                 gender != "" &&
                 FirstName.value != "" &&
-                LastName.value != "" &&
+                date != "" &&
                 selectedTeams.length > 0
               ) {
                 var userDetails = {
                   email: email,
-                  password: password,
+                  password: password.value,
                   userProfileImage: userProfileImage,
                   gender: gender,
-                  FirstName: FirstName.value,
-                  LastName: LastName.value,
+                  Name: FirstName.value,
+                  DOB: date,
                   UserProfileImageConfig: UserProfileImageConfig,
                   contentType: contentType,
                   selectedTeams: selectedTeams,

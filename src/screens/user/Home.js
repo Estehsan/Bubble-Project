@@ -175,7 +175,7 @@ const Home = (props) => {
 
     return () => {
       isMounted = false
-      // subscribe();
+      subscribe();
       subscribeLoc();
     };
   }, [selectedPlaceId]);

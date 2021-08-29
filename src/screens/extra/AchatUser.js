@@ -159,6 +159,10 @@ const AchatUser = ({ ...props }) => {
         <View>
           <TopBar />
         </View>
+
+        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: 'center', marginVertical: 10, }}>
+          <Text style={styles.ChatUserName}>MON FLEURISTE BUBBLE</Text>
+        </View>
         <View style={styles.TopBarExtra}>
           <Image
             style={{ height: 70, width: 70, borderRadius: 70, marginRight: 10 }}
@@ -176,57 +180,51 @@ const AchatUser = ({ ...props }) => {
             <Text> {''}</Text>
 
             <View style={styles.BoxImage}>
-              <Icon
-                style={styles.position}
-                name="flower"
-                size={30}
-                color={Colors.darkPink}
+              <Image
+                style={{ height: 35, width: 35, borderRadius: 35, }}
+                resizeMode="contain"
+                source={require('./../../assets/images/rose.png')}
               />
             </View>
           </View>
           <View style={styles.boxes}>
             <Text style={styles.BoxText}>PACK DE 5 ROSES</Text>
             <View style={styles.BoxImage}>
-              <Icon
-                style={styles.position}
-                name="flower"
-                size={30}
-                color={Colors.darkPink}
+              <Image
+                style={{ height: 35, width: 35, borderRadius: 35, }}
+                resizeMode="contain"
+                source={require('./../../assets/images/rose.png')}
               />
-              <Icon
-                style={styles.position}
-                name="flower"
-                size={30}
-                color={Colors.darkPink}
+              <Image
+                style={{ height: 35, width: 35, borderRadius: 35, }}
+                resizeMode="contain"
+                source={require('./../../assets/images/rose.png')}
               />
-              <Icon
-                style={styles.position}
-                name="flower"
-                size={30}
-                color={Colors.darkPink}
+              <Image
+                style={{ height: 35, width: 35, borderRadius: 35, }}
+                resizeMode="contain"
+                source={require('./../../assets/images/rose.png')}
               />
+
             </View>
           </View>
           <View style={styles.boxes}>
             <Text style={styles.BoxText}>PACK DE 10 ROSES</Text>
             <View style={styles.BoxImage}>
-              <Icon
-                style={styles.position}
-                name="flower"
-                size={30}
-                color={Colors.darkPink}
+              <Image
+                style={{ height: 35, width: 35, borderRadius: 35, }}
+                resizeMode="contain"
+                source={require('./../../assets/images/rose.png')}
               />
-              <Icon
-                style={styles.position}
-                name="flower"
-                size={30}
-                color={Colors.darkPink}
+              <Image
+                style={{ height: 35, width: 35, borderRadius: 35, }}
+                resizeMode="contain"
+                source={require('./../../assets/images/rose.png')}
               />
-              <Icon
-                style={styles.position}
-                name="flower"
-                size={30}
-                color={Colors.darkPink}
+              <Image
+                style={{ height: 35, width: 35, borderRadius: 35, }}
+                resizeMode="contain"
+                source={require('./../../assets/images/rose.png')}
               />
             </View>
           </View>
@@ -245,6 +243,20 @@ const AchatUser = ({ ...props }) => {
                   <Text>+</Text>
                 </View>
               </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+
+                  if (count && total < 0) {
+                    return;
+                  }
+
+                  setTotal(total - (0.99))
+                  setCount(count - (-1))
+                }}>
+                <View style={styles.priceBtn}>
+                  <Text>-</Text>
+                </View>
+              </TouchableOpacity>
             </View>
           </View>
           <View style={styles.part}>
@@ -260,18 +272,46 @@ const AchatUser = ({ ...props }) => {
                   <Text>+</Text>
                 </View>
               </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  if (count && total < 0) {
+                    return;
+                  }
+
+                  setTotal(total - (2.99))
+                  setCount(count - (-5))
+
+                }}>
+                <View style={styles.priceBtn}>
+                  <Text>-</Text>
+                </View>
+              </TouchableOpacity>
             </View>
           </View>
           <View style={styles.part}>
             <Text style={styles.BoxText}>4,99 €</Text>
             <View>
               <TouchableOpacity onPress={() => {
+                if (count && total < 0) {
+                  return;
+                }
+
+
                 setTotal(total + (4.99))
                 setCount(count + (+10))
 
               }}>
                 <View style={styles.priceBtn}>
                   <Text>+</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => {
+                setTotal(total - (4.99))
+                setCount(count - (-10))
+
+              }}>
+                <View style={styles.priceBtn}>
+                  <Text>-</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -302,7 +342,7 @@ const AchatUser = ({ ...props }) => {
           </TouchableOpacity>
         </View> */}
       </SafeAreaView>
-    </LinearGradient>
+    </LinearGradient >
   );
 };
 
@@ -311,7 +351,7 @@ export default AchatUser;
 const styles = StyleSheet.create({
   linearGradient: { flex: 1 },
   TopBarExtra: {
-    marginTop: 50,
+    marginTop: 20,
     marginBottom: 50,
     display: 'flex',
     flexDirection: 'row',
@@ -433,5 +473,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  ChatUserName: {
+    fontFamily: "FredokaOne-Regular",
+    fontSize: 25,
   },
 });

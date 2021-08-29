@@ -134,7 +134,7 @@ const Drink = ({ navigation }) => {
           dis = dis / 1000
 
           // console.log(dis)
-          if (dis < 10) {
+          if (dis < 1000) {
             data.push(docs[i])
           }
 
