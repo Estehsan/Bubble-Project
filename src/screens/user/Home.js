@@ -69,88 +69,7 @@ const Home = (props) => {
 
 
   useEffect(() => {
-    let isMounted = true;
 
-    if (isMounted)
-      auth.onAuthStateChanged((user) => {
-        if (user) {
-          var uid = user.uid;
-          // console.log(uid)
-          let subscribe = firestore.collection("users").doc(uid)
-            .onSnapshot(async (doc) => {
-
-              var docs = {
-                key: user.uid,
-                title: doc.data().userName,
-                latlng: {
-                  longitude: doc.data().longitude,
-                  latitude: doc.data().latitude,
-                  latitudeDelta: 0.0922,
-                  longitudeDelta: 0.0421,
-                },
-              }
-
-              await setTimeout(() => {
-                let location = Geolocation.getCurrentPosition((position) => {
-                  var lat = parseFloat(position.coords.latitude)
-                  var long = parseFloat(position.coords.longitude)
-
-                  var initialRegion = {
-                    latlng: {
-                      latitude: lat,
-                      longitude: long,
-                      latitudeDelta: 0.0922,
-                      longitudeDelta: 0.0421,
-                    },
-                  }
-                  // console.log("initial region=> ", initialRegion.latlng.latitude)
-                  // console.log("docs=> ", docs.latlng.latitude)
-
-
-                  // var hos = {
-                  //   latitude: 24.931407349950064,
-                  //   longitude: 67.03798921789368,
-                  // }
-                  // var dis = getDistance(
-                  //   initialRegion.latlng,
-                  //   hos
-                  // )
-                  // dis = dis / 1000
-                  // console.log(dis, "Km")
-
-                  if (docs.latlng.latitude != initialRegion.latlng.latitude ||
-                    docs.latlng.longitude != initialRegion.latlng.longitude) {
-
-                    setUserMarker(initialRegion)
-                    firestore.collection("users").doc(uid).update({
-                      latitude: initialRegion.latlng.latitude,
-                      longitude: initialRegion.latlng.longitude
-                    })
-                      .then(() => {
-                        console.log("Document successfully written!");
-                      })
-                      .catch((error) => {
-                        console.error("Error writing document: ", error);
-                      });
-                  }
-                  else {
-                    setUserMarker(docs)
-                  }
-                },
-                  (error) => alert(JSON.stringify(error)),
-                  { enableHighAccuracy: false, timeout: 5000 });
-              }, 1000)
-
-
-
-            })
-
-        } else {
-          // User is signed out
-          // ...
-        }
-
-      });
 
     let subscribeLoc = firestore.collection("location").onSnapshot(async (querySnapshot) => {
       let docs = querySnapshot.docs.map((doc) => ({
@@ -203,7 +122,7 @@ const Home = (props) => {
         }
 
       }
-      setMarker(data);
+      await setMarker(data);
       setLoading(false);
 
     });
@@ -222,11 +141,99 @@ const Home = (props) => {
       // subscribe();
       subscribeLoc();
     };
-  }, [selectedPlaceId, kilo , userMarker]);
+  }, [selectedPlaceId, kilo]);
 
   // console.log(marker);
+  useEffect(() => {
+    let isMounted = true;
+    var subscribe
+    if (isMounted)
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          var uid = user.uid;
+          // console.log(uid)
+          subscribe = firestore.collection("users").doc(uid)
+            .onSnapshot(async (doc) => {
 
-  
+              var docs = {
+                key: user.uid,
+                title: doc.data().userName,
+                latlng: {
+                  longitude: doc.data().longitude,
+                  latitude: doc.data().latitude,
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421,
+                },
+              }
+
+              await setTimeout(() => {
+                let location = Geolocation.getCurrentPosition((position) => {
+                  var lat = parseFloat(position.coords.latitude)
+                  var long = parseFloat(position.coords.longitude)
+
+                  var initialRegion = {
+                    latlng: {
+                      latitude: lat,
+                      longitude: long,
+                      latitudeDelta: 0.0922,
+                      longitudeDelta: 0.0421,
+                    },
+                  }
+                  console.log("initial region=> ", initialRegion.latlng.latitude)
+                  console.log("docs=> ", docs.latlng.latitude)
+
+
+                  // var hos = {
+                  //   latitude: 24.931407349950064,
+                  //   longitude: 67.03798921789368,
+                  // }
+                  // var dis = getDistance(
+                  //   initialRegion.latlng,
+                  //   hos
+                  // )
+                  // dis = dis / 1000
+                  // console.log(dis, "Km")
+
+                  if (docs.latlng.latitude != initialRegion.latlng.latitude ||
+                    docs.latlng.longitude != initialRegion.latlng.longitude) {
+
+                    setUserMarker(initialRegion)
+                    firestore.collection("users").doc(uid).update({
+                      latitude: initialRegion.latlng.latitude,
+                      longitude: initialRegion.latlng.longitude
+                    })
+                      .then(() => {
+                        console.log("Document successfully written!");
+                      })
+                      .catch((error) => {
+                        console.error("Error writing document: ", error);
+                      });
+                  }
+                  else {
+                    setUserMarker(docs)
+                  }
+                },
+                  (error) => alert(JSON.stringify(error)),
+                  { enableHighAccuracy: false, timeout: 5000 });
+              }, 1000)
+
+
+
+            })
+
+        } else {
+          // User is signed out
+          // ...
+        }
+
+      });
+
+    return () => {
+      subscribe();
+    }
+  }, [marker])
+
+
 
 
   return (
@@ -241,6 +248,7 @@ const Home = (props) => {
         </View>
 
         {userMarker.latlng.latitude &&
+          marker &&
           <View style={styles.map}>
             <StatusBar barStyle="dark-content" />
             <MapView
@@ -284,7 +292,7 @@ const Home = (props) => {
             textStyle={styles.spinnerTextStyle}
           />
         ) : (
-          userMarker.latlng.latitude &&
+          marker &&
           <View style={styles.Corousel}>
             <FlatList
               ref={flatlist}
