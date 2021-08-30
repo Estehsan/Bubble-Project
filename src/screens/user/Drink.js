@@ -59,7 +59,7 @@ const Drink = ({ navigation }) => {
   let [locationData, setLocationData] = useState([]);
   const [userMarker, setUserMarker] = useState({});
   const [kilo, setKilo] = useState(true);
-
+  const [light, setLight] = useState(true);
 
 
   useEffect(() => {
@@ -163,7 +163,7 @@ const Drink = ({ navigation }) => {
 
 
         setLocationData(data);
-        // console.log(data);
+        console.log(data);
         // }
       });
 
@@ -184,7 +184,7 @@ const Drink = ({ navigation }) => {
           <TopBar />
         </View>
         <View style={{ marginTop: 30 }}>
-          <LocationTab ChangeKilo={e => setKilo(e)} />
+          <LocationTab ChangeKilo={e => setKilo(e)} ChangeLight={e => setLight(e)} />
         </View>
         <SearchBar />
         <View style={{ marginTop: 10 }}>
