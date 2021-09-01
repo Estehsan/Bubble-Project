@@ -69,85 +69,13 @@ const Home = ({ navigation, props }) => {
 
 
   useEffect(() => {
-
-
-    let subscribeLoc = firestore.collection("location").onSnapshot(async (querySnapshot) => {
-      let docs = querySnapshot.docs.map((doc) => ({
-        key: doc.id,
-        title: doc.data().title,
-        address: doc.data().address,
-        description: doc.data().description,
-        schedules: doc.data().schedules,
-        img: doc.data().photo,
-        latlng: {
-          longitude: doc.data().longitude,
-          latitude: doc.data().latitude,
-        },
-      }));
-
-      // 24.93986404097375, 67.04325282594995
-
-      var data = [];
-      if (kilo === true) {
-        for (var i = 0; i < docs.length; i++) {
-          var dis = await getDistance(
-            userMarker.latlng,
-            docs[i].latlng,
-          )
-
-          dis = dis / 1000
-
-          // console.log(dis)
-          if (dis < 10) {
-            data.push(docs[i])
-          }
-
-
-        }
-      } else {
-        for (var i = 0; i < docs.length; i++) {
-          var dis = await getDistance(
-            userMarker.latlng,
-            docs[i].latlng,
-          )
-
-          dis = dis / 1000
-
-          // console.log(dis)
-          if (dis < 1) {
-            data.push(docs[i])
-          }
-
-
-        }
-
-      }
-      await setMarker(data);
-      setLoading(false);
-
-    });
-
-
-    if (!selectedPlaceId || !flatlist) {
-      return;
-    }
-    const index = marker.findIndex((marker) => marker.key == selectedPlaceId);
-    flatlist.current.scrollToIndex({ index });
-
-
-
-    return () => {
-      isMounted = false
-      // subscribe();
-      subscribeLoc();
-    };
-  }, [selectedPlaceId, kilo]);
-
-  // console.log(marker);
-  useEffect(() => {
-    let isMounted = true;
+    let isMounted = true
     var subscribe
     if (isMounted)
+
+
+
+
       auth.onAuthStateChanged((user) => {
         if (user) {
           var uid = user.uid;
@@ -166,72 +94,130 @@ const Home = ({ navigation, props }) => {
                 },
               }
 
-              await setTimeout(() => {
-                let location = Geolocation.getCurrentPosition((position) => {
-                  var lat = parseFloat(position.coords.latitude)
-                  var long = parseFloat(position.coords.longitude)
+              let location = Geolocation.getCurrentPosition((position) => {
+                var lat = parseFloat(position.coords.latitude)
+                var long = parseFloat(position.coords.longitude)
 
-                  var initialRegion = {
-                    latlng: {
-                      latitude: lat,
-                      longitude: long,
-                      latitudeDelta: 0.0922,
-                      longitudeDelta: 0.0421,
-                    },
-                  }
-                  console.log("initial region=> ", initialRegion.latlng.latitude)
-                  console.log("docs=> ", docs.latlng.latitude)
+                var initialRegion = {
+                  latlng: {
+                    latitude: lat,
+                    longitude: long,
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421,
+                  },
+                }
+                console.log("initial region=> ", initialRegion.latlng.latitude)
+                console.log("docs=> ", docs.latlng.latitude)
 
+                if (docs.latlng.latitude != initialRegion.latlng.latitude ||
+                  docs.latlng.longitude != initialRegion.latlng.longitude) {
 
-                  // var hos = {
-                  //   latitude: 24.931407349950064,
-                  //   longitude: 67.03798921789368,
-                  // }
-                  // var dis = getDistance(
-                  //   initialRegion.latlng,
-                  //   hos
-                  // )
-                  // dis = dis / 1000
-                  // console.log(dis, "Km")
-
-                  if (docs.latlng.latitude != initialRegion.latlng.latitude ||
-                    docs.latlng.longitude != initialRegion.latlng.longitude) {
-
-                    setUserMarker(initialRegion)
-                    firestore.collection("users").doc(uid).update({
-                      latitude: initialRegion.latlng.latitude,
-                      longitude: initialRegion.latlng.longitude
+                  setUserMarker(initialRegion)
+                  firestore.collection("users").doc(uid).update({
+                    latitude: initialRegion.latlng.latitude,
+                    longitude: initialRegion.latlng.longitude
+                  })
+                    .then(() => {
+                      console.log("Document successfully written!");
                     })
-                      .then(() => {
-                        console.log("Document successfully written!");
-                      })
-                      .catch((error) => {
-                        console.error("Error writing document: ", error);
-                      });
-                  }
-                  else {
-                    setUserMarker(docs)
-                  }
-                },
-                  (error) => alert(JSON.stringify(error)),
-                  { enableHighAccuracy: false, timeout: 5000 });
-              }, 1000)
-
-
-
+                    .catch((error) => {
+                      console.error("Error writing document: ", error);
+                    });
+                }
+                else {
+                  setUserMarker(docs)
+                }
+              },
+                (error) => alert(JSON.stringify(error)),
+                { enableHighAccuracy: false, timeout: 5000 });
             })
+
+          var subscribeLoc = firestore.collection("location").onSnapshot(async (querySnapshot) => {
+            let docs = querySnapshot.docs.map((doc) => ({
+              key: doc.id,
+              title: doc.data().title,
+              address: doc.data().address,
+              description: doc.data().description,
+              schedules: doc.data().schedules,
+              img: doc.data().photo,
+              latlng: {
+                longitude: doc.data().longitude,
+                latitude: doc.data().latitude,
+              },
+            }));
+
+            // 24.93986404097375, 67.04325282594995
+
+            var data = [];
+            if (kilo === true) {
+              for (var i = 0; i < docs.length; i++) {
+                var dis = await getDistance(
+                  userMarker.latlng,
+                  docs[i].latlng,
+                )
+
+                dis = dis / 1000
+
+                // console.log(dis)
+                if (dis < 10) {
+                  data.push(docs[i])
+                }
+
+
+              }
+            } else {
+              for (var i = 0; i < docs.length; i++) {
+                var dis = await getDistance(
+                  userMarker.latlng,
+                  docs[i].latlng,
+                )
+
+                dis = dis / 1000
+
+                // console.log(dis)
+                if (dis < 1) {
+                  data.push(docs[i])
+                }
+
+
+              }
+
+            }
+
+            // if (marker == data) {
+            setMarker(data);
+            setLoading(false);
+            // }
+          });
 
         } else {
           // User is signed out
           // ...
         }
 
+
       });
 
-    return () => {
-      subscribe();
+
+
+
+
+    if (!selectedPlaceId || !flatlist) {
+      return;
     }
-  }, [marker])
+    const index = marker.findIndex((marker) => marker.key == selectedPlaceId);
+    flatlist.current.scrollToIndex({ index });
+
+
+
+    return () => {
+      isMounted = false
+      subscribe();
+      subscribeLoc();
+    };
+  }, [selectedPlaceId, kilo]);
+
+
 
 
 
@@ -248,7 +234,6 @@ const Home = ({ navigation, props }) => {
         </View>
 
         {userMarker.latlng.latitude &&
-          marker &&
           <View style={styles.map}>
             <StatusBar barStyle="dark-content" />
             <MapView
@@ -273,7 +258,7 @@ const Home = ({ navigation, props }) => {
                 </Marker>
               ))}
 
-              {userMarker &&
+              {
                 <Marker
                   coordinate={userMarker.latlng}
                 >

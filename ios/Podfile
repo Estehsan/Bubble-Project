@@ -24,6 +24,8 @@ pod 'react-native-google-maps', :path => rn_maps_path
 
   pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
 
+  pod 'RNCCheckbox', :path => '../node_modules/@react-native-community/checkbox'
+
   target 'BubbleCodeTests' do
     inherit! :complete
     # Pods for testing

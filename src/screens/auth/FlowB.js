@@ -11,8 +11,7 @@ import {
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import InputF from "../../component/InputF";
-import { emailValidator } from "../../helpers/emailValidator";
-import { passwordValidator } from "../../helpers/passwordValidator";
+import { nameValidator } from "../../helpers/nameValidator";
 import TopBar from "./../../component/TopBar";
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -24,7 +23,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 
 const FlowA = ({ ...props }) => {
 
-  const [email, setEmail] = useState({ value: '', error: '' });
+  const [FirstName, setFirstName] = useState({ value: '', error: '' });
   const [errorText, setErrorText] = useState('');
 
   // DatePicker 
@@ -60,15 +59,16 @@ const FlowA = ({ ...props }) => {
           <View style={styles.Form}>
 
 
-            <InputF onChangeText={(e) => setEmail({ value: e, error: '' })}
-              value={email.value}
-              error={email.error}
-              errorText={email.error}
+
+            <InputF onChangeText={(e) => setFirstName({ value: e, error: '' })}
+              value={FirstName.value}
+              error={FirstName.error}
+              errorText={FirstName.error}
               placeholder="pseudo"
               keyboardType="default" />
 
-            {/* DataPicker Start */}
 
+            {/* DataPicker Start */}
 
             {
               show ? (
@@ -124,19 +124,23 @@ const FlowA = ({ ...props }) => {
 
             <TouchableOpacity
               onPress={() => {
-                const emailError = emailValidator(email.value)
+                // const emailError = emailValidator(email.value)
 
-                if (emailError) {
-                  setEmail({ ...email, error: emailError })
+                const firstNameError = nameValidator(FirstName.value)
+
+
+                if (firstNameError) {
+                  setFirstName({ ...FirstName, error: firstNameError })
+
                 }
 
 
 
 
-                if (!emailError)
+                if (!firstNameError)
 
 
-                  props.navigation.push("MonProfil", { email: email.value, date: date });
+                  props.navigation.push("MonProfil", { name: FirstName.value, date: date });
               }}
             >
               <View style={{ alignItems: 'center', justifyContent: 'center', marginVertical: 20 }}>

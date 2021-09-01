@@ -246,27 +246,18 @@ const AchatUser = ({ ...props }) => {
               <TouchableOpacity
                 onPress={() => {
                   setTotal(() => {
-                    let num = total - (0.99)
+                    // let num = total - (0.99)
 
-                    if (num > 0) {
-                      return num
-                    }
+                    // if (num > 0) {
+                    //   return num
+                    // }
 
-                    else {
-                      return 0
-                    }
+                    // else {
+                    //   return 0
+                    // }
+                    return 0
                   })
-                  setCount(() => {
-                    let num = count - 1
-
-                    if (num > 0) {
-                      return num
-                    }
-
-                    else {
-                      return 0
-                    }
-                  })
+                  setCount(0)
                 }}>
                 <View style={styles.priceBtn}>
                   <Text>-</Text>
@@ -290,28 +281,8 @@ const AchatUser = ({ ...props }) => {
 
               <TouchableOpacity
                 onPress={() => {
-                  setTotal(() => {
-                    let num = total - (2.99)
-
-                    if (num > 0) {
-                      return num
-                    }
-
-                    else {
-                      return 0
-                    }
-                  })
-                  setCount(() => {
-                    let num = count - (5)
-
-                    if (num > 0) {
-                      return num
-                    }
-
-                    else {
-                      return 0
-                    }
-                  })
+                  setTotal(0)
+                  setCount(0)
 
                 }}>
                 <View style={styles.priceBtn}>
@@ -334,28 +305,8 @@ const AchatUser = ({ ...props }) => {
               </TouchableOpacity>
 
               <TouchableOpacity onPress={() => {
-                setTotal(() => {
-                  let num = total - (4.99)
-
-                  if (num > 0) {
-                    return num
-                  }
-
-                  else {
-                    return 0
-                  }
-                })
-                setCount(() => {
-                  let num = count - (10)
-
-                  if (num > 0) {
-                    return num
-                  }
-
-                  else {
-                    return 0
-                  }
-                })
+                setTotal(0)
+                setCount(0)
 
               }}>
                 <View style={styles.priceBtn}>

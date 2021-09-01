@@ -143,11 +143,15 @@ const Profile = (props) => {
           <TouchableOpacity onPress={TakeImgFromGallery} style={styles.Image}>
 
             {image ? (
-              <Image
-                style={{ height: 70, width: 70, borderRadius: 70, marginVertical: 10 }}
-                resizeMode='cover'
-                source={{ uri: image }}
-              />
+
+              <View style={{ backgroundColor: 'silver', height: 70, width: 70, borderRadius: 70, marginVertical: 10 }}>
+
+                <Image
+                  style={{ height: 70, width: 70, borderRadius: 70, }}
+                  resizeMode='cover'
+                  source={{ uri: image }}
+                />
+              </View>
             )
 
               :
