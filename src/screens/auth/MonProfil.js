@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import ImagePicker from "react-native-image-crop-picker";
+import CheckBox from '@react-native-community/checkbox';
+
 import { AsyncStorage } from "@react-native-async-storage/async-storage";
 import {
   StyleSheet,
   Text,
   View,
+
   ScrollView,
   SafeAreaView,
   Image,
@@ -23,6 +26,8 @@ import { xorBy } from "lodash";
 import { auth, storage, firestore, signUp } from "../../db/firebase";
 import Modal from "react-native-modal";
 import P from "../../component/basic/P";
+import WP from "../../component/basic/WP";
+
 import InputF from "../../component/InputF";
 import { passwordValidator } from "../../helpers/passwordValidator";
 import { emailValidator } from "../../helpers/emailValidator";
@@ -42,6 +47,9 @@ const MonProfil = ({ route, ...props }) => {
   const [contentType, setcontentType] = useState(null);
   const [selectedTeams, setSelectedTeams] = useState([]);
   const [isLoading, setLoading] = useState(false);
+  const [isSelected, setSelection] = useState(false);
+  const [toggleCheckBox, setToggleCheckBox] = useState(false)
+
 
   const [errorText, setErrorText] = useState('');
 
@@ -158,7 +166,7 @@ const MonProfil = ({ route, ...props }) => {
             placeholder="date de naissance"
             keyboardType="default" />
 
-          <View style={{ backgroundColor: 'white', width: "70%", borderRadius: 30, paddingHorizontal: 10, marginBottom: 10, paddingVertical: 0 }}>
+          <View style={{ backgroundColor: 'white', width: "70%", borderRadius: 30, paddingHorizontal: 10, marginBottom: 15, paddingVertical: 0 }}>
 
             <SelectBox
               label=""
@@ -167,9 +175,9 @@ const MonProfil = ({ route, ...props }) => {
               selectedValues={selectedTeams}
               onMultiSelect={onMultiChange()}
               onTapClose={onMultiChange()}
-              containerStyle={{ padding: 30 }}
-              optionsLabelStyle={{ paddingHorizontal: 10 }}
-              labelStyle={{ height: 10 }}
+              containerStyle={{ paddingHorizontal: 20, marginBottom: 2, }}
+              optionsLabelStyle={{ paddingHorizontal: 10, }}
+              labelStyle={{ height: 6 }}
               multiOptionContainerStyle={{ backgroundColor: Colors.darkPink }}
               isMulti
             />
@@ -237,14 +245,35 @@ const MonProfil = ({ route, ...props }) => {
                   source={{
                     uri: userProfileImage,
                   }}
-
                 />
 
               </TouchableOpacity>
-
             </View>
 
-          )}
+
+          )
+          }
+
+          <View style={styles.CB}>
+
+            <View>
+              <CheckBox
+                disabled={false}
+                onFillColor={Colors.darkPink}
+                onTintColor="white"
+                onCheckColor="white"
+                tintColor={Colors.textB}
+                value={toggleCheckBox}
+                onValueChange={(newValue) => setToggleCheckBox(newValue)}
+              />
+            </View>
+            <View>
+              <Text style={{ color: 'white', marginHorizontal: 10, }}>Accepter les termes et conditions</Text>
+            </View>
+
+          </View>
+
+
 
           <TouchableOpacity
             onPress={async () => {
@@ -268,6 +297,7 @@ const MonProfil = ({ route, ...props }) => {
                 gender != "" &&
                 name != "" &&
                 date != "" &&
+                toggleCheckBox != 'false' &&
                 selectedTeams.length > 0
               ) {
                 var userDetails = {
@@ -300,15 +330,17 @@ const MonProfil = ({ route, ...props }) => {
               }
             }}
           >
+
             <View style={styles.btn}>
-              <Text style={styles.f}>MODIFIER</Text>
+              <Text style={styles.f}>VALIDER MON PROFILE</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => props.navigation.navigate("FlowB")}>
+
+          {/* <TouchableOpacity onPress={() => props.navigation.navigate("FlowB")}>
             <View style={styles.btnopacity}>
               <Text style={styles.f}>VALIDER</Text>
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </ScrollView>
     </LinearGradient >
@@ -400,4 +432,11 @@ const styles = StyleSheet.create({
     borderRadius: 17,
     marginTop: 10,
   },
+  CB: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 10,
+    flexDirection: 'row',
+  }
 });
