@@ -99,7 +99,10 @@ const ChatUser = ({ navigation, route, ...props }) => {
       .then((doc) => {
         setLoading(true)
 
-        setGetRequest(doc.data().status);
+        if (doc.exists) {
+          setGetRequest(doc.data().status);
+
+        }
         setLoading(false)
 
         // console.log(doc.data())
@@ -117,16 +120,19 @@ const ChatUser = ({ navigation, route, ...props }) => {
       .then(async (doc) => {
         setLoading(true)
 
-        await setRequest(doc.data().status);
-        await setChecker(doc.data().requestGetter);
-        console.log(doc.data());
+        if (doc.exists) {
+          await setRequest(doc.data().status);
+          await setChecker(doc.data().requestGetter);
+          console.log(doc.data());
+        }
         setLoading(false)
 
       })
       .catch((error) => {
         console.log("Error getting documents: ", error);
       });
-    // console.log(checker);
+   
+
   }, []);
 
   useEffect(() => {
@@ -280,7 +286,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
                         />
                       )}
 
-                      {request == "" && (
+                      {request == "" &&
                         <View>
                           <Button
                             title="Send Friend Request"
@@ -318,7 +324,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
                             }}
                           ></Button>
                         </View>
-                      )}
+                      }
 
                       {
                         (getRequest == "pending") &&
@@ -343,6 +349,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
                                   requestGetter: false,
                                 })
                                 .then(() => {
+                                  Alert.alert("Request Accepted");
                                   setCheck(check + 1)
                                   setGetRequest("accept");
                                   setChecker(false);
@@ -432,6 +439,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     bottom: 0,
     paddingHorizontal: 15,
+    color: 'black'
   },
   fieldContainer: {
     display: "flex",

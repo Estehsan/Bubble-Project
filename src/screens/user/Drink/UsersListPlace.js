@@ -116,7 +116,7 @@ const UsersListPlace = ({ route, ...props }) => {
       colors={["#FFC1DD", "#ffffff"]}
       style={styles.linearGradient}
     >
-      <View>
+      <ScrollView>
         <View>
           <TopBar />
         </View>
@@ -166,7 +166,7 @@ const UsersListPlace = ({ route, ...props }) => {
             />
           )}
         </View>
-      </View>
+      </ScrollView>
     </LinearGradient>
   );
 };
