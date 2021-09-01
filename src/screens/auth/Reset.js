@@ -98,7 +98,7 @@ const Reset = ({ ...props }) => {
                         < View style={styles.btnopacity}>
 
 
-                            <Text style={styles.f}>VALIDER</Text>
+                            <Text style={styles.f}>Reset</Text>
                         </View>
 
                     </TouchableOpacity>

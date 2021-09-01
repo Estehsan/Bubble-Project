@@ -29,6 +29,8 @@ const Message = ({ ...props }) => {
 
   let [userId, setuserId] = useState([]);
   let [loading, setLoading] = useState(true);
+  let [imageLoad, SetImageLoad] = useState(true);
+
 
   useEffect(async () => {
 
@@ -46,7 +48,7 @@ const Message = ({ ...props }) => {
             .doc(uid)
             .collection("friends")
             .where("requestGetter", "==", true)
-            .where("status", "==", "decline")
+            .where("status", "==", "pending")
 
             .onSnapshot(async (querySnapshot) => {
               let docs = querySnapshot.docs.map((doc) => ({
@@ -109,23 +111,24 @@ const Message = ({ ...props }) => {
 
           {loading ? (
             <ActivityIndicator
-              style={{ alignItems: "center" }}
+              style={{ alignItems: "center", alignContent: 'center', justifyContent: 'center', top: 200 }}
               size="large"
               color="#000"
             />
           ) : (
             <>
-              {data === null ? (
+              {data && (
                 <>
                   <H1>Message Request </H1>
                   <FlatList
                     data={data}
                     horizontal
+                    showsHorizontalScrollIndicator={false}
                     keyExtractor={(item) => item.id}
                     renderItem={({ item }) => (
                       // console.log(item)
                       <View style={styles.Container}>
-                        <View style={styles.main}>
+                        <View style={styles.Icons}>
                           <TouchableOpacity
                             onPress={() => {
                               props.navigation.navigate("ChatUser", {
@@ -137,19 +140,18 @@ const Message = ({ ...props }) => {
                               });
                             }}
                           >
-                            {item.image ? (
+                            <View style={{ backgroundColor: 'silver', height: 50, width: 50, borderRadius: 50 }}>
                               <Image
                                 style={{ height: 50, width: 50, borderRadius: 50 }}
                                 source={{ uri: item.image }}
+                                onLoadStart={SetImageLoad(true)}
+                                onLoadEnd={
+                                  SetImageLoad(false)
+                                }
                               />
-                            ) : (
-                              <Image
-                                style={{ height: 50, width: 50, borderRadius: 50 }}
-                                source={{
-                                  uri: "https://www.w3schools.com/howto/img_avatar.png",
-                                }}
-                              />
-                            )}
+                            </View>
+
+
 
 
 
@@ -159,8 +161,7 @@ const Message = ({ ...props }) => {
                     )}
                   />
                 </>
-              )
-                : <View />}
+              )}
 
               <H1>All Chats</H1>
               <FlatList
@@ -183,28 +184,47 @@ const Message = ({ ...props }) => {
                       >
                         <View style={styles.lContainer}>
                           {item.image ? (
-                            <Image
-                              style={{ height: 50, width: 50, borderRadius: 50 }}
-                              source={{ uri: item.image }}
-                            />
+                            <View style={{ backgroundColor: 'silver', height: 55, width: 55, borderRadius: 55 }}>
+
+                              <Image
+                                style={{ height: 55, width: 55, borderRadius: 55 }}
+                                source={{ uri: item.image }}
+                              />
+                            </View>
                           ) : (
-                            <Image
-                              style={{ height: 50, width: 50, borderRadius: 50 }}
-                              source={{
-                                uri: "https://www.w3schools.com/howto/img_avatar.png",
-                              }}
-                            />
+                            <View style={{ backgroundColor: 'silver', height: 50, width: 50, borderRadius: 50 }}>
+
+                              <Image
+                                style={{ height: 50, width: 50, borderRadius: 50 }}
+                                source={{
+                                  uri: "https://www.w3schools.com/howto/img_avatar.png",
+                                }}
+                              />
+                            </View>
+
                           )}
 
                           <View style={styles.HeadingView}>
-                            <Text
-                              style={styles.heading}
-                              numberOfLines={1}
-                              ellipsizeMode={"tail"}
-                            >
-                              {item.name}
-                            </Text>
-                            <Text style={styles.heading}>{item.gender}</Text>
+
+                            <View>
+                              <Text
+                                style={styles.heading}
+                                numberOfLines={1}
+                                ellipsizeMode={"tail"}
+                              >
+                                {item.name}
+                              </Text>
+                            </View>
+
+                            <View>
+                              <Ionicons
+                                style={styles.position}
+                                name={item.gender === "male" ? "male" : item.gender === "female" ? "female" : "male-female"}
+                                size={30}
+                                color={'#000'}
+                              />
+                            </View>
+
                           </View>
                           {/* <View style={styles.rContainer}>
                         <View style={styles.btn}>
@@ -265,14 +285,19 @@ const styles = StyleSheet.create({
   lContainer: {
     display: "flex",
     flexDirection: "row",
+    alignItems: 'center',
     flex: 1,
   },
   HeadingView: {
-    justifyContent: "center",
-    width: "60%",
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    width: "69%",
+    display: 'flex', flexDirection: 'row',
     paddingHorizontal: 30,
-  }, ChatUserName: {
+  },
+  ChatUserName: {
     fontFamily: "FredokaOne-Regular",
     fontSize: 25,
   },
+  Icons: { padding: 5, backgroundColor: 'white', borderRadius: 30, marginHorizontal: 10, marginVertical: 5, }
 });
