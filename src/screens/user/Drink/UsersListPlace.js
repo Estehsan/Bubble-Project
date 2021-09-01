@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Modal,
   FlatList,
+  ScrollView,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import LocationTab from "./../../../component/LocationTab";
@@ -115,7 +116,7 @@ const UsersListPlace = ({ route, ...props }) => {
       colors={["#FFC1DD", "#ffffff"]}
       style={styles.linearGradient}
     >
-      <SafeAreaView>
+      <ScrollView>
         <View>
           <TopBar />
         </View>
@@ -165,7 +166,7 @@ const UsersListPlace = ({ route, ...props }) => {
             />
           )}
         </View>
-      </SafeAreaView>
+      </ScrollView>
     </LinearGradient>
   );
 };

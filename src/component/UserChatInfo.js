@@ -8,19 +8,28 @@ const UserChatInfo = ({ currentUserData, id, gender, name, userImg, selectedTeam
 
   let mutualInterest = () => {
     let count = 0
+    let i = 0
+    let j = 0 
 
-    let userTeam =  currentUserData.selectedTeams.sort((a, b) => a.id.localeCompare(b.id))
-    let otherTeam = selectedTeams.sort((a,b) => (a.id > b.id) ? 1 : ((b.id > a.id) ? -1 : 0))  
+    console.log(selectedTeams)
 
-    for (var i in selectedTeams) {
 
-      
-      if (userTeam === otherTeam) {
-        count++
+    for(i in selectedTeams)
+    {
+      for(j in currentUserData.selectedTeams){
+        if(currentUserData.selectedTeams[j].id === selectedTeams[i].id){
+          count ++
+        }
       }
-      return count
     }
+
+    return count
+
+
   }
+
+ 
+
   return (
     <View style={styles.Container}>
       {selectedTeams &&
