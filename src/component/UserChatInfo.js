@@ -11,9 +11,6 @@ const UserChatInfo = ({ currentUserData, id, gender, name, userImg, selectedTeam
     let i = 0
     let j = 0 
 
-    console.log(selectedTeams)
-
-
     for(i in selectedTeams)
     {
       for(j in currentUserData.selectedTeams){
