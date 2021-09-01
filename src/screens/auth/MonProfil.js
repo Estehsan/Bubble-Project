@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   View,
+  ScrollView,
   SafeAreaView,
   Image,
   TextInput,
@@ -23,32 +24,27 @@ import { auth, storage, firestore, signUp } from "../../db/firebase";
 import Modal from "react-native-modal";
 import P from "../../component/basic/P";
 import InputF from "../../component/InputF";
-import { nameValidator } from "../../helpers/nameValidator";
 import { passwordValidator } from "../../helpers/passwordValidator";
+import { emailValidator } from "../../helpers/emailValidator";
+
 import Colors from "../../assets/colors/Colors";
-
-
-const handleSignUp = async (
-  email,
-  password,
-  userProfileImage,
-  gender,
-  FirstName
-) => { };
 
 // This is register screen II
 
 const MonProfil = ({ route, ...props }) => {
-  const { email, date } = route.params;
+  const { name, date } = route.params;
+  const [email, setEmail] = useState({ value: '', error: '' });
   const [number, setNumber] = useState("");
   const [userProfileImage, setUserProfileImage] = useState(null);
   const [gender, setGender] = useState("");
-  const [FirstName, setFirstName] = useState({ value: '', error: '' });
   const [password, setPassword] = useState({ value: '', error: '' });
   const [UserProfileImageConfig, setUserProfileImageConfig] = useState(null);
   const [contentType, setcontentType] = useState(null);
   const [selectedTeams, setSelectedTeams] = useState([]);
   const [isLoading, setLoading] = useState(false);
+
+  const [errorText, setErrorText] = useState('');
+
 
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -136,7 +132,7 @@ const MonProfil = ({ route, ...props }) => {
 
   return (
     <LinearGradient colors={["#DD488C", "#000"]} style={styles.linearGradient}>
-      <View style={styles.main}>
+      <ScrollView style={styles.main}>
         <TopBar />
         <View style={styles.Profile}>
           <Text style={styles.h1}>MON PROFIL</Text>
@@ -144,12 +140,14 @@ const MonProfil = ({ route, ...props }) => {
         <View style={styles.Form}>
 
 
-          <InputF onChangeText={(e) => setFirstName({ value: e, error: '' })}
-            value={FirstName.value}
-            error={FirstName.error}
-            errorText={FirstName.error}
+
+          <InputF onChangeText={(e) => setEmail({ value: e, error: '' })}
+            value={email.value}
+            error={email.error}
+            errorText={email.error}
             placeholder="pseudo"
             keyboardType="default" />
+
 
           <InputF onChangeText={(e) => setEmail({ value: e, error: '' })}
             secureTextEntry={true}
@@ -251,32 +249,33 @@ const MonProfil = ({ route, ...props }) => {
           <TouchableOpacity
             onPress={async () => {
 
+              const emailError = emailValidator(email.value)
 
-              const firstNameError = nameValidator(FirstName.value)
               const passwordError = passwordValidator(password.value)
 
-              if (firstNameError || passwordError) {
-                setFirstName({ ...FirstName, error: firstNameError })
+
+              if (emailError || passwordError) {
+                setEmail({ ...email, error: emailError })
                 setPassword({ ...password, error: passwordError })
 
               }
 
 
               if (
-                email != "" &&
+                email.value != "" &&
                 password.value != "" &&
                 userProfileImage != null &&
                 gender != "" &&
-                FirstName.value != "" &&
+                name != "" &&
                 date != "" &&
                 selectedTeams.length > 0
               ) {
                 var userDetails = {
-                  email: email,
+                  email: email.value,
                   password: password.value,
                   userProfileImage: userProfileImage,
                   gender: gender,
-                  Name: FirstName.value,
+                  name: name,
                   DOB: date,
                   UserProfileImageConfig: UserProfileImageConfig,
                   contentType: contentType,
@@ -287,8 +286,8 @@ const MonProfil = ({ route, ...props }) => {
                 try {
                   setLoading(true);
                   const SignUpReturn = await signUp(userDetails);
-                  props.navigation.push("Home");
                   console.log(userDetails);
+                  props.navigation.push("Home");
                   setLoading(false);
 
                 } catch (err) {
@@ -311,7 +310,7 @@ const MonProfil = ({ route, ...props }) => {
             </View>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     </LinearGradient >
   );
   function onMultiChange() {
