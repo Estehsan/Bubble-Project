@@ -74,10 +74,11 @@ const FlowA = ({ ...props }) => {
               show ? (
                 <View style={{
                   width: "100%",
+                  color : 'black'
                 }}>
 
                   <DateTimePicker
-                    style={{ marginHorizontal: "15%", backgroundColor: 'white', }}
+                    style={{ marginHorizontal: "15%", backgroundColor: 'white', color:  'black',}}
                     testID="dateTimePicker"
                     value={date}
                     mode={mode}

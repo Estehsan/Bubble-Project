@@ -15,7 +15,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "./../../component/TopBar";
-import { auth, firestore } from "../../db/firebase";
+import { auth, firestore, storage } from "../../db/firebase";
 import firebase from "firebase/app";
 
 const Profile = (props) => {
@@ -29,6 +29,7 @@ const Profile = (props) => {
   const [candy, setCandy] = useState(0)
   const [FirstName, setFirstName] = useState(null);
   const [LastName, setLastName] = useState(null);
+  const [contentType, setcontentType] = useState(null)
   const isFocused = useIsFocused();
   const [id, setId] = useState("");
 
@@ -42,7 +43,11 @@ const Profile = (props) => {
       setUserProfileImage(image.path);
       setUserProfileImageConfig(image);
       setcontentType(image.mime);
+      setImage(image.path)
+
     });
+
+
   };
 
 
@@ -80,7 +85,25 @@ const Profile = (props) => {
   }, [isFocused]);
 
 
-  let updateInfo = () => {
+  let updateInfo = async () => {
+    const metadata = {
+      contentType: contentType
+    }
+
+    const filename = userProfileImage.substring(userProfileImage.lastIndexOf('/') + 1);
+    const blob = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function () {
+        resolve(xhr.response);
+      };
+      xhr.onerror = function () {
+        reject(new TypeError("Network request failed"));
+      };
+      xhr.responseType = "blob";
+      xhr.open("GET", userProfileImage, true);
+      xhr.send(null);
+    });
+
     if (
       gender != "" &&
       FirstName != "" &&
@@ -90,23 +113,37 @@ const Profile = (props) => {
     ) {
 
       if (id)
-        firestore.collection("users").doc(id).update({
-          userName: FirstName + LastName,
-          userGender: gender,
-          userProfileImage: userProfileImage,
-          UserProfileImageConfig: UserProfileImageConfig,
 
-
-        }).then(() => {
-          console.log("Document successfully written!");
-          Alert.alert("record has been successfully changed")
-          setGender("")
-          setFirstName("")
-          setLastName("")
-        })
-          .catch((error) => {
-            console.error("Error writing document: ", error);
-          });
+        storage
+          .ref()
+          .child(`userProfileImage/${id}/` + filename)
+          .put(blob, metadata)
+          .then((url) => {
+            url.ref
+              .getDownloadURL()
+              .then((success) => {
+                firestore.collection("users").doc(id).update({
+                  userName: FirstName + LastName,
+                  userGender: gender,
+                  userProfileImageUrl: success,
+                }).then(() => {
+                  console.log("Document successfully written!");
+                  Alert.alert("record has been successfully changed")
+                  setGender("")
+                  setFirstName("")
+                  setLastName("")
+                  setImage(success)
+                })
+                  .catch((error) => {
+                    console.error("Error writing document: ", error);
+                  });
+              }).catch((e)=>{
+                console.log(e)
+              })
+          })
+          .catch((e) => {
+            console.error(e);
+          })
     }
     else {
       Alert.alert("All fields must been filled")

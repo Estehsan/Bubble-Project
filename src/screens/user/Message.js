@@ -117,7 +117,7 @@ const Message = ({ ...props }) => {
             />
           ) : (
             <>
-              {data && (
+              {data ? (
                 <>
                   <H1>Message Request </H1>
                   <FlatList
@@ -150,18 +150,18 @@ const Message = ({ ...props }) => {
                                 }
                               />
                             </View>
-
-
-
-
-
                           </TouchableOpacity>
                         </View>
                       </View>
                     )}
                   />
                 </>
-              )}
+              )
+              :
+              <>
+              <H1>No Request</H1>
+              </>
+            }
 
               <H1>All Chats</H1>
               <FlatList
