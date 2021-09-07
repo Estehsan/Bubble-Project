@@ -81,7 +81,7 @@ const Home = ({ navigation, props }) => {
                 var docs = undefined ? {} : {
                   key: user.uid,
                   title: doc.data().userName,
-                  latlng: {
+                  latlng: undefined ? {} : {
                     longitude: parseFloat(doc.data().longitude),
                     latitude: parseFloat(doc.data().latitude),
                     latitudeDelta: 0.0922,
@@ -94,7 +94,7 @@ const Home = ({ navigation, props }) => {
                 var lat = parseFloat(position.coords.latitude)
                 var long = parseFloat(position.coords.longitude)
 
-                var initialRegion = {
+                var initialRegion = await {
                   latlng: {
                     latitude: lat && lat,
                     longitude: long && long,
@@ -242,16 +242,17 @@ const Home = ({ navigation, props }) => {
 
         {userMarker != null &&
           userMarker != undefined &&
-          marker.length > 0 && (
-            <View style={styles.map}>
-              <StatusBar barStyle="dark-content" />
-              <MapView
-                customMapStyle={light ? MapStyleNight : MapStyleDay}
-                style={styles.mapContainer}
-                provider={PROVIDER_GOOGLE}
-                initialRegion={userMarker.latlng}
-              >
-                {marker.map((marker, key) => (
+          userMarker.latlng &&
+          <View style={styles.map}>
+            <StatusBar barStyle="dark-content" />
+            <MapView
+              customMapStyle={light ? MapStyleNight : MapStyleDay}
+              style={styles.mapContainer}
+              provider={PROVIDER_GOOGLE}
+              initialRegion={userMarker.latlng}
+            >
+              {marker.length > 0 ?
+                marker.map((marker, key) => (
                   <Marker
                     key={key}
                     coordinate={marker.latlng}
@@ -265,16 +266,21 @@ const Home = ({ navigation, props }) => {
                       size={40}
                     />
                   </Marker>
-                ))}
-                {
-                  <Marker
-                    coordinate={userMarker.latlng}
-                  >
-                  </Marker>
-                }
-              </MapView>
-            </View>
-          )}
+                ))
+                :
+                <View />
+              }
+              {
+                <Marker
+                  coordinate={userMarker.latlng}
+                >
+                </Marker>
+              }
+
+            </MapView>
+          </View>
+
+        }
         {loading ? (
           <ActivityIndicator
             //visibility of Overlay Loading Spinner
@@ -285,31 +291,36 @@ const Home = ({ navigation, props }) => {
             textStyle={styles.spinnerTextStyle}
           />
         ) : (
-          marker.length > 0 &&
-          <View style={styles.Corousel}>
-            <FlatList
-              ref={flatlist}
-              data={marker}
-              showsHorizontalScrollIndicator={false}
-              snapToInterval={width - 60}
-              horizontal
-              keyExtractor={(item) => item.key}
-              snapToAlignment={"center"}
-              decelerationRate={"fast"}
-              renderItem={({ item }) => (
+          marker.length > 0 ?
+            <View style={styles.Corousel}>
+              <FlatList
+                ref={flatlist}
+                data={marker}
+                showsHorizontalScrollIndicator={false}
+                snapToInterval={width - 60}
+                horizontal
+                keyExtractor={(item) => item.key}
+                snapToAlignment={"center"}
+                decelerationRate={"fast"}
+                renderItem={({ item }) => (
 
-                <MapCorousel
-                  onPress={() =>
-                    navigation.navigate("Message")
-                  }
-                  title={item.title}
-                  place={item.description}
-                  location={item.location}
-                  code={item.code}
-                />
-              )}
-            />
-          </View>
+                  <MapCorousel
+                    onPress={() =>
+                      navigation.navigate("Message")
+                    }
+                    title={item.title}
+                    place={item.description}
+                    location={item.location}
+                    code={item.code}
+                  />
+                )}
+              />
+            </View>
+            : <View style={styles.Corousel}>
+              <View style={{ justifyContent: "center" }}>
+                <Text style={{ alignSelf: "center", fontSize: 20 }}>No bubble near suggested distance</Text>
+              </View>
+            </View>
         )}
       </SafeAreaView>
     </LinearGradient >
