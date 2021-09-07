@@ -52,7 +52,7 @@ const FlowA = ({ ...props }) => {
 
       // console.log(userDetails)
       try {
-        auth.signInWithEmailAndPassword(email.value, password.value)
+        var subscribe = auth.signInWithEmailAndPassword(email.value, password.value)
           .then((userCredential) => {
             setLoading(true)
             // Signed in 
@@ -82,6 +82,10 @@ const FlowA = ({ ...props }) => {
     }
     else {
       console.log("email password empty")
+    }
+
+    return () =>{
+      subscribe();
     }
   }
   return (

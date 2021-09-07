@@ -32,7 +32,7 @@ const auth = firebase.auth();
 const storage = firebase.storage();
 
 
-firestore.settings({ experimentalForceLongPolling: true });
+firestore.settings({ experimentalForceLongPolling: true , merge : true});
 
 const signUp = (userDetails) => {
 
