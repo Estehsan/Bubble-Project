@@ -75,6 +75,13 @@ const Home = ({ navigation, props }) => {
     let isMounted = true
     var subscribe
 
+    // messaging()
+    //   .getToken()
+    //   .then(token => {
+    //     console.log(token)
+    //   }).catch((er) => {
+    //     console.log(er)
+    //   })
     // if (isMounted)
     await auth.onAuthStateChanged(async (user) => {
       if (user) {
@@ -106,8 +113,8 @@ const Home = ({ navigation, props }) => {
                   longitudeDelta: 0.0421,
                 },
               }
-              console.log("initial region=> ", initialRegion.latlng.latitude)
-              console.log("docs=> ", docs.latlng.latitude)
+              // console.log("initial region=> ", initialRegion.latlng.latitude)
+              // console.log("docs=> ", docs.latlng.latitude)
 
               if (docs.latlng.latitude != initialRegion.latlng.latitude ||
                 docs.latlng.longitude != initialRegion.latlng.longitude) {
@@ -187,7 +194,7 @@ const Home = ({ navigation, props }) => {
             // console.log(dis)
             if (dis < 10) {
               data.push(docs[i])
-              console.log(data)
+              // console.log(data)
             }
           }
 
@@ -209,7 +216,7 @@ const Home = ({ navigation, props }) => {
           }
         }
         await setMarker(data);
-        console.log(marker)
+        // console.log(marker)
         setLoading(false);
       }
       else {

@@ -3,6 +3,9 @@ import "firebase/auth";
 import "firebase/database";
 import "firebase/firestore";
 import "firebase/storage";
+import messaging from '@react-native-firebase/messaging';
+
+
 
 var firebaseConfig = {
   apiKey: "AIzaSyDe6BeaQ565phuRr3XaSyxTE2H45G50j3U",
@@ -27,6 +30,7 @@ if (firebase.apps.length === 0) {
 const firestore = firebase.firestore();
 const auth = firebase.auth();
 const storage = firebase.storage();
+
 
 firestore.settings({ experimentalForceLongPolling: true });
 
@@ -146,9 +150,6 @@ function logIn({ userLoginDetails, ...props }) {
     });
 }
 
-export { auth, firestore, storage, logIn, signUp };
+export { messaging, auth, firestore, storage,logIn, signUp };
 
-// export const app = firebase.initializeApp(firebaseConfig);
-// export const db = firebase.firestore();
-// export const auth = firebase.auth();
-// export const storage = firebase.storage();
+

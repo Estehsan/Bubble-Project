@@ -25,11 +25,12 @@ import LocationTab from "./LocationTab";
 import TopBar from "./TopBar";
 import ListContainer from "./ListContainer";
 import SearchBar from "./SearchBar";
-import { auth, firestore } from "../db/firebase";
+import { auth, firestore, messaging } from "../db/firebase";
 import firebase from "firebase/app";
 import { set } from "react-native-reanimated";
 import Colors from "../assets/colors/Colors";
 import H2 from "./basic/H2";
+
 // linear-gradient(0deg, #FFFFFF 0%, #FFC1DD 78.9%)
 const ChatUser = ({ navigation, route, ...props }) => {
   const { currentUserId, messageId, name, gender, messageImg } = route.params;
@@ -65,7 +66,39 @@ const ChatUser = ({ navigation, route, ...props }) => {
       headerLeft: () => <View></View>,
     });
   }, [navigation]);
+
+
+
+  useEffect(() => {
+    // messaging.onNotificationOpenedApp(remoteMessage => {
+    //   console.log(
+    //     'Notification caused app to open from background state:',
+    //     remoteMessage.notification,
+    //   );
+    //   navigation.navigate(remoteMessage.data.type);
+    // });
+
+    // // Check whether an initial notification is available
+    // messaging
+    //   .getInitialNotification()
+    //   .then(remoteMessage => {
+    //     if (remoteMessage) {
+    //       console.log(
+    //         'Notification caused app to open from quit state:',
+    //         remoteMessage.notification,
+    //       );
+    //       setInitialRoute(remoteMessage.data.type); // e.g. "Settings"
+    //     }
+    //     setLoading(false);
+    //   });
+
+    //   const unsubscribe = messaging.onMessage(async remoteMessage => {
+    //     Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    //   });
+  }, [])
+
   useEffect(async () => {
+
     let merge = uid_merge(currentUserId, messageId);
     get_messages(merge);
 
@@ -131,7 +164,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
       .catch((error) => {
         console.log("Error getting documents: ", error);
       });
-   
+
 
   }, []);
 

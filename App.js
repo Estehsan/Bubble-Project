@@ -11,7 +11,7 @@ import Purchases from 'react-native-purchases';
 
 
 const App = () => {
-  useEffect(() => {
+  useEffect(async () => {
     Purchases.setDebugLogsEnabled(true);
     Purchases.setup("public_sdk_key");
     SplashScreen.hide();
