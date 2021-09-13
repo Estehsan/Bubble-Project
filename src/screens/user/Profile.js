@@ -3,6 +3,7 @@ import {
   StyleSheet,
   Text,
   View,
+  ScrollView,
   SafeAreaView,
   Image,
   TextInput,
@@ -153,129 +154,133 @@ const Profile = (props) => {
   const [number, setNumber] = useState("");
   return (
     <LinearGradient colors={["#DD488C", "#000"]} style={styles.linearGradient}>
-      <SafeAreaView style={styles.main}>
-        <TopBar />
-        <View style={styles.Profile}>
-          <TouchableOpacity
-            style={{ marginVertical: 10 }}
-            onPress={() => {
-              auth
-                .signOut()
-                .then(() => {
-                  // Sign-out successful.
-                  props.navigation.replace("Flow");
-                })
-                .catch(() => {
-                  // An error happened.
-                });
-            }}>
+      <ScrollView>
+        <SafeAreaView style={styles.main}>
+          <TopBar />
+          <View style={styles.Profile}>
 
-            <Text style={styles.h1}>MON PROFIL </Text>
-
-          </TouchableOpacity>
+            <Text style={styles.h1}>MON PROFIL</Text>
 
 
 
+            <TouchableOpacity onPress={TakeImgFromGallery} style={styles.Image}>
 
-          <TouchableOpacity onPress={TakeImgFromGallery} style={styles.Image}>
+              {image ? (
 
-            {image ? (
+                <View style={{ backgroundColor: 'silver', height: 70, width: 70, borderRadius: 70, marginVertical: 10 }}>
 
-              <View style={{ backgroundColor: 'silver', height: 70, width: 70, borderRadius: 70, marginVertical: 10 }}>
+                  <Image
+                    style={{ height: 70, width: 70, borderRadius: 70, }}
+                    resizeMode='cover'
+                    source={{ uri: image }}
+                  />
+                </View>
+              )
 
+                :
                 <Image
-                  style={{ height: 70, width: 70, borderRadius: 70, }}
+                  style={{ height: 70, width: 70, borderRadius: 70, marginVertical: 10 }}
                   resizeMode='cover'
-                  source={{ uri: image }}
+
+                  source={{ uri: "https://www.w3schools.com/howto/img_avatar.png" }}
                 />
-              </View>
-            )
-
-              :
-              <Image
-                style={{ height: 70, width: 70, borderRadius: 70, marginVertical: 10 }}
-                resizeMode='cover'
-
-                source={{ uri: "https://www.w3schools.com/howto/img_avatar.png" }}
-              />
-            }
-          </TouchableOpacity>
+              }
+            </TouchableOpacity>
 
 
 
 
 
-        </View>
-        <View style={styles.Form}>
-          <TextInput
-            style={styles.input}
-            onChangeText={setFirstName}
-            value={FirstName}
-            placeholder="pseudo "
-            keyboardType="default"
-          />
-          <TextInput
-            style={styles.input}
-            onChangeText={setLastName}
-            value={LastName}
-            placeholder="date de naissance"
-            keyboardType="default"
-          />
-          <TextInput
-            style={styles.input}
-            onChangeText={setGender}
-            value={gender}
-            placeholder="genre"
-            keyboardType="default"
-          />
-          <TouchableOpacity
-            onPress={() => {
-              updateInfo()
-            }}
-          >
-            <View style={styles.btn}>
-              <Text style={styles.f}>MODIFIER</Text>
-            </View>
-          </TouchableOpacity>
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Image
-              style={{ height: 70, width: 70, borderRadius: 70 }}
-              resizeMode="contain"
-              source={require("./../../assets/images/rose.png")}
-            />
-            <Text style={styles.h2}>{candy}</Text>
           </View>
-          <TouchableOpacity
-
-            onPress={() => {
-              // auth
-              //   .signOut()
-              //   .then(() => {
-              //     // Sign-out successful.
-              //     props.navigation.replace("Flow");
-              //   })
-              //   .catch(() => {
-              //     // An error happened.
-              //   });
-
-              props.navigation.navigate("AchatUser")
-
-            }}
-          >
-            <View style={styles.btnopacity}
+          <View style={styles.Form}>
+            <TextInput
+              style={styles.input}
+              onChangeText={setFirstName}
+              value={FirstName}
+              placeholder="Prénom"
+              keyboardType="default"
+            />
+            <TextInput
+              style={styles.input}
+              onChangeText={setLastName}
+              value={LastName}
+              placeholder="Nom"
+              keyboardType="default"
+            />
+            <TextInput
+              style={styles.input}
+              onChangeText={setGender}
+              value={gender}
+              placeholder="Genre"
+              keyboardType="default"
+            />
+            <TouchableOpacity
+              onPress={() => {
+                updateInfo()
+              }}
             >
-              <Text style={styles.f}>ACHETAR</Text>
+              <View style={styles.btn}>
+                <Text style={styles.f}>MODIFIER</Text>
+              </View>
+            </TouchableOpacity>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Image
+                style={{ height: 70, width: 70, borderRadius: 70 }}
+                resizeMode="contain"
+                source={require("./../../assets/images/rose.png")}
+              />
+              <Text style={styles.h2}>{candy}</Text>
             </View>
-          </TouchableOpacity>
+            <TouchableOpacity
 
-        </View>
-      </SafeAreaView>
+              onPress={() => {
+                // auth
+                //   .signOut()
+                //   .then(() => {
+                //     // Sign-out successful.
+                //     props.navigation.replace("Flow");
+                //   })
+                //   .catch(() => {
+                //     // An error happened.
+                //   });
+
+                props.navigation.navigate("AchatUser")
+
+              }}
+            >
+              <View style={styles.btnopacity}
+              >
+                <Text style={styles.f}>ACHETER</Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={{ marginVertical: 10 }}
+              onPress={() => {
+                auth
+                  .signOut()
+                  .then(() => {
+                    // Sign-out successful.
+                    props.navigation.replace("Flow");
+                  })
+                  .catch(() => {
+                    // An error happened.
+                  });
+              }}>
+
+            <Text style={styles.h3}>Déconnexion</Text>
+
+            </TouchableOpacity>
+
+          </View>
+        </SafeAreaView>
+      </ScrollView>
     </LinearGradient >
   );
 };
@@ -286,6 +291,7 @@ const styles = StyleSheet.create({
   main: {
     flex: 1,
     display: "flex",
+    paddingBottom: 100
   },
   h1: {
     fontFamily: "FredokaOne-Regular",
@@ -298,6 +304,12 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 50,
     opacity: 0.5,
+  },
+  h3: {
+    fontFamily: "FredokaOne-Regular",
+
+    color: "#fff",
+    fontSize: 15,
   },
   Profile: { alignItems: "center", marginVertical: 10 },
 

@@ -153,7 +153,7 @@ const MonProfil = ({ route, ...props }) => {
             value={email.value}
             error={email.error}
             errorText={email.error}
-            placeholder="pseudo"
+            placeholder="Email"
             keyboardType="default" />
 
 
@@ -163,14 +163,14 @@ const MonProfil = ({ route, ...props }) => {
             value={password.value}
             error={password.error}
             errorText={password.error}
-            placeholder="date de naissance"
+            placeholder="Mot de passe"
             keyboardType="default" />
 
           <View style={{ backgroundColor: 'white', width: "70%", borderRadius: 30, paddingHorizontal: 10, marginBottom: 15, paddingVertical: 0 }}>
 
             <SelectBox
               label=""
-              inputPlaceholder="Select Interest"
+              inputPlaceholder="Centres d'intéret"
               options={K_OPTIONS}
               selectedValues={selectedTeams}
               onMultiSelect={onMultiChange()}
@@ -332,7 +332,7 @@ const MonProfil = ({ route, ...props }) => {
           >
 
             <View style={styles.btn}>
-              <Text style={styles.f}>VALIDER MON PROFILE</Text>
+              <Text style={styles.f}>VALIDER MON PROFIL</Text>
             </View>
           </TouchableOpacity>
 

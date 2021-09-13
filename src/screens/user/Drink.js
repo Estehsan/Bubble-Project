@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Modal,
   FlatList,
+  ScrollView,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import LocationTab from "../../component/LocationTab";
@@ -179,75 +180,77 @@ const Drink = ({ navigation }) => {
       colors={["#FFC1DD", "#ffffff"]}
       style={styles.linearGradient}
     >
-      <SafeAreaView>
-        <View>
-          <TopBar />
-        </View>
-        <View style={{ marginTop: 30 }}>
-          <LocationTab ChangeKilo={e => setKilo(e)} ChangeLight={e => setLight(e)} />
-        </View>
-        <SearchBar />
-        <View style={{ marginTop: 10 }}>
-          {/* {locationData && (
-            <FlatList
-              data={data}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate("UsersListPlace", {
-                      id: item.id,
-                      title: item.title,
-                      place: item.place,
-                      location: item.location,
-                      code: item.code,
-                      img: item.img,
-                    })
-                  }
-                >
-                  <ListContainer
-                    title={item.title}
-                    place={item.place}
-                    location={item.location}
-                    code={item.code}
-                    img={item.img}
-                  />
-                </TouchableOpacity>
-              )}
-            />
-          )} */}
-          {locationData && (
-            <FlatList
-              data={locationData}
-              keyExtractor={(item) => item.key}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate("UsersListPlace", {
-                      id: item.key,
-                      title: item.title,
-                      place: item.address,
-                      location: item.description,
-                      code: item.schedules,
-                      img: item.photo,
-                      latlng: item.latlng
-                    })
-                  }
-                >
-                  <ListContainer
-                    title={item.title}
-                    place={item.address}
-                    location={item.description}
-                    code={item.schedules}
-                    img={item.photo}
-                    navigation={navigation}
-                  />
-                </TouchableOpacity>
-              )}
-            />
-          )}
-        </View>
-      </SafeAreaView>
+      <ScrollView>
+        <SafeAreaView>
+          <View>
+            <TopBar />
+          </View>
+          <View style={{ marginTop: 30 }}>
+            <LocationTab ChangeKilo={e => setKilo(e)} ChangeLight={e => setLight(e)} />
+          </View>
+          <SearchBar />
+          <View style={{ marginTop: 10 }}>
+            {/* {locationData && (
+              <FlatList
+                data={data}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate("UsersListPlace", {
+                        id: item.id,
+                        title: item.title,
+                        place: item.place,
+                        location: item.location,
+                        code: item.code,
+                        img: item.img,
+                      })
+                    }
+                  >
+                    <ListContainer
+                      title={item.title}
+                      place={item.place}
+                      location={item.location}
+                      code={item.code}
+                      img={item.img}
+                    />
+                  </TouchableOpacity>
+                )}
+              />
+            )} */}
+            {locationData && (
+              <FlatList
+                data={locationData}
+                keyExtractor={(item) => item.key}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate("UsersListPlace", {
+                        id: item.key,
+                        title: item.title,
+                        place: item.address,
+                        location: item.description,
+                        code: item.schedules,
+                        img: item.photo,
+                        latlng: item.latlng
+                      })
+                    }
+                  >
+                    <ListContainer
+                      title={item.title}
+                      place={item.address}
+                      location={item.description}
+                      code={item.schedules}
+                      img={item.photo}
+                      navigation={navigation}
+                    />
+                  </TouchableOpacity>
+                )}
+              />
+            )}
+          </View>
+        </SafeAreaView>
+      </ScrollView>
     </LinearGradient>
   );
 };
