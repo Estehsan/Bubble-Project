@@ -14,10 +14,11 @@ import {
   ActivityIndicator,
   FlatList,
   useWindowDimensions,
-  StatusBar
+  StatusBar,
+  Alert,
 } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import { getDistance } from 'geolib';
+import { getDistance } from "geolib";
 
 import Colors from "../../assets/colors/Colors";
 import MapCorousel from "../../component/MapCorousel";
@@ -28,115 +29,122 @@ import Geolocation from "@react-native-community/geolocation";
 import { auth, firestore } from "../../db/firebase";
 import Entypo from "react-native-vector-icons/Entypo";
 import MapStyleNight from "./MapStyles/MapStyleNight";
-import MapStyleDay from "./MapStyles/MapStyleDay"
+import MapStyleDay from "./MapStyles/MapStyleDay";
 
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 // import haversine from "haversine";
 
-const { width, height } = Dimensions.get('window')
+const { width, height } = Dimensions.get("window");
 
-const SCREEN_HEIGHT = height
-const SCREEN_WIDTH = width
-const ASPECT_RATIO = width / height
-const LATITUDE_DELTA = 0.0922
-const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO
+const SCREEN_HEIGHT = height;
+const SCREEN_WIDTH = width;
+const ASPECT_RATIO = width / height;
+const LATITUDE_DELTA = 0.0922;
+const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-const Home = ({ navigation, props }) => {
+const Home = ({ ...props }) => {
   const [marker, setMarker] = useState([]);
   const [selectedPlaceId, setSelectedPlaceId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [kilo, setKilo] = useState(true);
   const [light, setLight] = useState(true);
-  const [load, setLoad] = useState(0)
+  const [load, setLoad] = useState(0);
   const [value, setValue] = useState(0); // integer state
 
-
-  const [userMarker, setUserMarker] = useState(
-    {
-      // latlng: {
-      //   latitude: parseFloat(0),
-      //   longitude: parseFloat(0),
-      //   latitudeDelta: 0.0922,
-      //   longitudeDelta: 0.0421,
-      // },
-    }
-  );
+  const [userMarker, setUserMarker] = useState({
+    // latlng: {
+    //   latitude: parseFloat(0),
+    //   longitude: parseFloat(0),
+    //   latitudeDelta: 0.0922,
+    //   longitudeDelta: 0.0421,
+    // },
+  });
 
   const width = useWindowDimensions().width;
 
   const flatlist = useRef();
   useEffect(async () => {
-    let isMounted = true
-    var subscribe
+    let isMounted = true;
+    var subscribe;
 
     if (isMounted)
       await auth.onAuthStateChanged(async (user) => {
         if (user) {
           var uid = user.uid;
           // console.log(uid)
-          subscribe = await firestore.collection("users").doc(uid)
+          subscribe = await firestore
+            .collection("users")
+            .doc(uid)
             .onSnapshot((doc) => {
               if (doc.exists) {
-                var docs = undefined ? {} : {
-                  key: user.uid,
-                  title: doc.data().userName,
-                  latlng: undefined ? {} : {
-                    longitude: parseFloat(doc.data().longitude),
-                    latitude: parseFloat(doc.data().latitude),
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
-                  },
-                }
+                var docs = undefined
+                  ? {}
+                  : {
+                      key: user.uid,
+                      title: doc.data().userName,
+                      latlng: undefined
+                        ? {}
+                        : {
+                            longitude: parseFloat(doc.data().longitude),
+                            latitude: parseFloat(doc.data().latitude),
+                            latitudeDelta: 0.0922,
+                            longitudeDelta: 0.0421,
+                          },
+                    };
               }
 
-              let location = Geolocation.getCurrentPosition(async (position) => {
-                var lat = parseFloat(position.coords.latitude)
-                var long = parseFloat(position.coords.longitude)
+              let location = Geolocation.getCurrentPosition(
+                async (position) => {
+                  var lat = parseFloat(position.coords.latitude);
+                  var long = parseFloat(position.coords.longitude);
 
-                var initialRegion = await {
-                  latlng: {
-                    latitude: lat && lat,
-                    longitude: long && long,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
-                  },
-                }
-                // console.log("initial region=> ", initialRegion.latlng.latitude)
-                // console.log("docs=> ", docs.latlng.latitude)
+                  var initialRegion = await {
+                    latlng: {
+                      latitude: lat && lat,
+                      longitude: long && long,
+                      latitudeDelta: 0.0922,
+                      longitudeDelta: 0.0421,
+                    },
+                  };
+                  // console.log("initial region=> ", initialRegion.latlng.latitude)
+                  // console.log("docs=> ", docs.latlng.latitude)
 
-                if (docs.latlng.latitude != initialRegion.latlng.latitude ||
-                  docs.latlng.longitude != initialRegion.latlng.longitude) {
-
-                  if (initialRegion) {
-                    setUserMarker(initialRegion)
+                  if (
+                    docs.latlng.latitude != initialRegion.latlng.latitude ||
+                    docs.latlng.longitude != initialRegion.latlng.longitude
+                  ) {
+                    if (initialRegion) {
+                      setUserMarker(initialRegion);
+                    }
+                    firestore
+                      .collection("users")
+                      .doc(uid)
+                      .update({
+                        latitude: initialRegion.latlng.latitude,
+                        longitude: initialRegion.latlng.longitude,
+                      })
+                      .then(() => {
+                        console.log("Document successfully written!");
+                      })
+                      .catch((error) => {
+                        console.error("Error writing document: ", error);
+                      });
+                  } else {
+                    if (docs) {
+                      setUserMarker(docs);
+                    }
                   }
-                  firestore.collection("users").doc(uid).update({
-                    latitude: initialRegion.latlng.latitude,
-                    longitude: initialRegion.latlng.longitude
-                  })
-                    .then(() => {
-                      console.log("Document successfully written!");
-                    })
-                    .catch((error) => {
-                      console.error("Error writing document: ", error);
-                    });
-                }
-                else {
-                  if (docs) {
-                    setUserMarker(docs)
-                  }
-                }
-              },
+                },
                 (error) => alert(JSON.stringify(error)),
-                { enableHighAccuracy: false, timeout: 5000 });
-            })
+                { enableHighAccuracy: false, timeout: 5000 }
+              );
+            });
         } else {
           // User is signed out
           // ...
         }
-
-
       });
 
     if (!selectedPlaceId || !flatlist) {
@@ -145,23 +153,22 @@ const Home = ({ navigation, props }) => {
     const index = marker.findIndex((marker) => marker.key == selectedPlaceId);
     flatlist.current.scrollToIndex({ index });
 
-
     return () => {
-      isMounted = false
+      isMounted = false;
       subscribe();
     };
   }, [selectedPlaceId, kilo]);
 
   useEffect(async () => {
-    let isMounted = true
+    let isMounted = true;
 
-    var subscribeLoc
+    var subscribeLoc;
 
     if (isMounted)
-      subscribeLoc = await firestore.collection("location").onSnapshot(async (querySnapshot) => {
-
-        var docs = await querySnapshot.docs.map((doc) => (
-          {
+      subscribeLoc = await firestore
+        .collection("location")
+        .onSnapshot(async (querySnapshot) => {
+          var docs = await querySnapshot.docs.map((doc) => ({
             key: doc.id,
             title: doc.data().title,
             address: doc.data().address,
@@ -172,94 +179,82 @@ const Home = ({ navigation, props }) => {
               longitude: doc.data().longitude,
               latitude: doc.data().latitude,
             },
-          }))
+          }));
 
-        // 24.93986404097375, 67.04325282594995
-        if (docs.length > 0) {
-          var data = [];
-          if (kilo === true) {
-            for (var i in docs) {
-              var dis = getDistance(
-                userMarker.latlng,
-                docs[i].latlng,
-              )
+          // 24.93986404097375, 67.04325282594995
+          if (docs.length > 0) {
+            var data = [];
+            if (kilo === true) {
+              for (var i in docs) {
+                var dis = getDistance(userMarker.latlng, docs[i].latlng);
 
-              dis = dis / 1000
+                dis = dis / 1000;
 
-              // console.log(dis)
-              if (dis < 10) {
-                data.push(docs[i])
-                // console.log(data)
+                // console.log(dis)
+                if (dis < 10) {
+                  data.push(docs[i]);
+                  // console.log(data)
+                }
+              }
+            } else {
+              for (var i = 0; i < docs.length; i++) {
+                var dis = getDistance(userMarker.latlng, docs[i].latlng);
+
+                dis = dis / 1000;
+
+                // console.log(dis)
+                if (dis < 1) {
+                  data.push(docs[i]);
+                }
               }
             }
-
-
-          }
-          else {
-            for (var i = 0; i < docs.length; i++) {
-              var dis = getDistance(
-                userMarker.latlng,
-                docs[i].latlng,
-              )
-
-              dis = dis / 1000
-
-              // console.log(dis)
-              if (dis < 1) {
-                data.push(docs[i])
-              }
+            if (data) {
+              await setMarker(data);
+              // console.log(marker)
+              setLoading(false);
             }
           }
-          if (data) {
-            await setMarker(data);
-            // console.log(marker)
-            setLoading(false);
-          }
-        }
-      });
+        });
 
     return () => {
       subscribeLoc();
       isMounted = false;
-
-    }
-  }, [userMarker])
+    };
+  }, [userMarker]);
 
   function useForceUpdate() {
-    return () => setValue(value => value + 1); // update the state to force render
+    return () => setValue((value) => value + 1); // update the state to force render
   }
 
   return (
     <LinearGradient
       colors={["#FFC1DD", "#ffffff"]}
-      style={styles.linearGradient}
-    >
+      style={styles.linearGradient}>
       <SafeAreaView style={styles.main}>
         <TopBar />
         <View style={{ marginTop: 30 }}>
-          <LocationTab ChangeKilo={e => setKilo(e)} ChangeLight={e => setLight(e)} />
+          <LocationTab
+            ChangeKilo={(e) => setKilo(e)}
+            ChangeLight={(e) => setLight(e)}
+          />
         </View>
 
-        {userMarker != null &&
-          userMarker != undefined &&
-          userMarker.latlng &&
+        {userMarker != null && userMarker != undefined && userMarker.latlng && (
           <View style={styles.map}>
             <StatusBar barStyle="dark-content" />
             <MapView
               customMapStyle={light ? MapStyleNight : MapStyleDay}
               style={styles.mapContainer}
               provider={PROVIDER_GOOGLE}
-              initialRegion={userMarker.latlng}
-            >
-              {marker.length > 0 ?
+              initialRegion={userMarker.latlng}>
+              {marker.length > 0 ? (
                 marker.map((marker, key) => (
                   <Marker
                     key={key}
                     coordinate={marker.latlng}
                     title={marker.title}
                     description={marker.description}
-                    onPress={() => setSelectedPlaceId(marker.key)}
-                  >
+                    onPress={() => setSelectedPlaceId(marker.key)}>
                     <Entypo
                       color={marker.key == selectedPlaceId ? "black" : "red"}
                       name="drink"
@@ -267,20 +262,13 @@ const Home = ({ navigation, props }) => {
                     />
                   </Marker>
                 ))
-                :
+              ) : (
                 <View />
-              }
-              {
-                <Marker
-                  coordinate={userMarker.latlng}
-                >
-                </Marker>
-              }
-
+              )}
+              {<Marker coordinate={userMarker.latlng}></Marker>}
             </MapView>
           </View>
-
-        }
+        )}
         {loading ? (
           <ActivityIndicator
             //visibility of Overlay Loading Spinner
@@ -290,40 +278,40 @@ const Home = ({ navigation, props }) => {
             //Text style of the Spinner Text
             textStyle={styles.spinnerTextStyle}
           />
+        ) : marker.length > 0 ? (
+          <View style={styles.Corousel}>
+            <FlatList
+              ref={flatlist}
+              data={marker}
+              showsHorizontalScrollIndicator={false}
+              snapToInterval={width - 60}
+              horizontal
+              keyExtractor={(item) => item.key}
+              snapToAlignment={"center"}
+              decelerationRate={"fast"}
+              renderItem={({ item }) => (
+                <MapCorousel
+                  key={item.key}
+                  title={item.title}
+                  place={item.description}
+                  location={item.location}
+                  code={item.code}
+                  latlng={item.latlng}
+                />
+              )}
+            />
+          </View>
         ) : (
-          marker.length > 0 ?
-            <View style={styles.Corousel}>
-              <FlatList
-                ref={flatlist}
-                data={marker}
-                showsHorizontalScrollIndicator={false}
-                snapToInterval={width - 60}
-                horizontal
-                keyExtractor={(item) => item.key}
-                snapToAlignment={"center"}
-                decelerationRate={"fast"}
-                renderItem={({ item }) => (
-
-                  <MapCorousel
-                    onPress={() =>
-                      navigation.navigate("Message")
-                    }
-                    title={item.title}
-                    place={item.description}
-                    location={item.location}
-                    code={item.code}
-                  />
-                )}
-              />
+          <View style={styles.Corousel}>
+            <View style={{ justifyContent: "center" }}>
+              <Text style={{ alignSelf: "center", fontSize: 20 }}>
+                No bubble near suggested distance
+              </Text>
             </View>
-            : <View style={styles.Corousel}>
-              <View style={{ justifyContent: "center" }}>
-                <Text style={{ alignSelf: "center", fontSize: 20 }}>No bubble near suggested distance</Text>
-              </View>
-            </View>
+          </View>
         )}
       </SafeAreaView>
-    </LinearGradient >
+    </LinearGradient>
   );
 };
 
@@ -374,16 +362,21 @@ const styles = StyleSheet.create({
     marginVertical: 16,
   },
   map: {
-    flex: 4, marginTop: 30, marginBottom: 10,
-    alignSelf: 'center', width: '90%', height: '100%',
-    borderWidth: 0, borderRadius: 15, overflow: 'hidden',
-
+    flex: 4,
+    marginTop: 30,
+    marginBottom: 10,
+    alignSelf: "center",
+    width: "90%",
+    height: "100%",
+    borderWidth: 0,
+    borderRadius: 15,
+    overflow: "hidden",
   },
   mapContainer: {
     alignSelf: "center",
     flex: 4,
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
     // marginHorizontal: 15,
     borderRadius: 40,
     // zIndex: 1,
@@ -396,7 +389,6 @@ const styles = StyleSheet.create({
     // bottom: 110,
     zIndex: 1,
     elevation: 1,
-    marginBottom: 100
-
+    marginBottom: 100,
   },
 });

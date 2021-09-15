@@ -48,8 +48,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
 
   let [loading, setLoading] = useState(true);
 
-
-  let [check, setCheck] = useState(0)
+  let [check, setCheck] = useState(0);
 
   const scrollViewRef = useRef();
   const width = useWindowDimensions().width;
@@ -59,15 +58,19 @@ const ChatUser = ({ navigation, route, ...props }) => {
         backgroundColor: "#fFC1DD",
       },
       headerTitle: () => (
-        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: 'center' }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}>
           <Text style={styles.ChatUserName}>{name}</Text>
         </View>
       ),
-      headerLeft: () => <View></View>,
+      headerLeft: () => <View />,
+      headerRight: () => <View />,
     });
   }, [navigation]);
-
-
 
   useEffect(() => {
     // messaging.onNotificationOpenedApp(remoteMessage => {
@@ -77,7 +80,6 @@ const ChatUser = ({ navigation, route, ...props }) => {
     //   );
     //   navigation.navigate(remoteMessage.data.type);
     // });
-
     // // Check whether an initial notification is available
     // messaging
     //   .getInitialNotification()
@@ -91,14 +93,12 @@ const ChatUser = ({ navigation, route, ...props }) => {
     //     }
     //     setLoading(false);
     //   });
-
     //   const unsubscribe = messaging.onMessage(async remoteMessage => {
     //     Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
     //   });
-  }, [])
+  }, []);
 
   useEffect(async () => {
-
     let merge = uid_merge(currentUserId, messageId);
     get_messages(merge);
 
@@ -110,14 +110,13 @@ const ChatUser = ({ navigation, route, ...props }) => {
       .doc(currentUserId)
       .get()
       .then((doc) => {
-        setLoading(true)
+        setLoading(true);
 
         setcurrentName(doc.data().userName);
         setcurrentGender(doc.data().userGender);
         setcurrentImage(doc.data().userProfileImageUrl);
         console.log(doc.data().userProfileImageUrl);
-        setLoading(false)
-
+        setLoading(false);
       })
       .catch((error) => {
         console.log("Error getting documents: ", error);
@@ -130,13 +129,12 @@ const ChatUser = ({ navigation, route, ...props }) => {
       .doc(currentUserId)
       .get()
       .then((doc) => {
-        setLoading(true)
+        setLoading(true);
 
         if (doc.exists) {
           setGetRequest(doc.data().status);
-
         }
-        setLoading(false)
+        setLoading(false);
 
         // console.log(doc.data())
       })
@@ -151,26 +149,21 @@ const ChatUser = ({ navigation, route, ...props }) => {
       .doc(messageId)
       .get()
       .then(async (doc) => {
-        setLoading(true)
+        setLoading(true);
 
         if (doc.exists) {
           await setRequest(doc.data().status);
           await setChecker(doc.data().requestGetter);
           console.log(doc.data());
         }
-        setLoading(false)
-
+        setLoading(false);
       })
       .catch((error) => {
         console.log("Error getting documents: ", error);
       });
-
-
   }, []);
 
-  useEffect(() => {
-
-  }, [check])
+  useEffect(() => {}, [check]);
 
   let uid_merge = (uid1, uid2) => {
     if (uid1 < uid2) {
@@ -195,12 +188,11 @@ const ChatUser = ({ navigation, route, ...props }) => {
           message: doc.data().message,
         }));
         {
-          setLoading(true)
+          setLoading(true);
 
           docs && setChats(docs);
           // console.log(docs)
-          setLoading(false)
-
+          setLoading(false);
         }
         // console.log(docs)
       });
@@ -219,31 +211,30 @@ const ChatUser = ({ navigation, route, ...props }) => {
 
       setMessage("");
       setLoading(false);
-
     }
   };
   return (
     <LinearGradient
       colors={["#FFC1DD", "#ffffff"]}
-      style={styles.linearGradient}
-    >
-      <SafeAreaView
-        style={styles.container}
-      >
+      style={styles.linearGradient}>
+      <SafeAreaView style={styles.container}>
         <KeyboardAvoidingView
           behavior={Platform.OS == "ios" ? "padding" : "height"}
-          keyboardVerticalOffset={100}
-        >
+          keyboardVerticalOffset={100}>
           {loading ? (
             <ActivityIndicator
-              style={{ alignItems: "center", alignContent: 'center', justifyContent: 'center', top: 200 }}
+              style={{
+                alignItems: "center",
+                alignContent: "center",
+                justifyContent: "center",
+                top: 200,
+              }}
               size="large"
               color="#000"
             />
           ) : (
             <>
               <View style={styles.Top}>
-
                 {route.params ? (
                   <>
                     <View>
@@ -259,16 +250,14 @@ const ChatUser = ({ navigation, route, ...props }) => {
                             <View
                               style={{
                                 padding: 10,
-                              }}
-                            >
+                              }}>
                               {item.userid == currentUserId ? (
                                 <View style={styles.rMessage}>
                                   <Text
                                     style={{
                                       color: "#fff",
                                       direction: "rtl",
-                                    }}
-                                  >
+                                    }}>
                                     {item.message}
                                   </Text>
                                 </View>
@@ -278,8 +267,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
                                     style={{
                                       display: "flex",
                                       marginVertical: 5,
-                                    }}
-                                  >
+                                    }}>
                                     {messageImg ? (
                                       <Image
                                         style={{
@@ -306,8 +294,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
                                       <Text
                                         style={{
                                           color: "#fff",
-                                        }}
-                                      >
+                                        }}>
                                         {item.message}
                                       </Text>
                                     </View>
@@ -319,7 +306,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
                         />
                       )}
 
-                      {request == "" &&
+                      {request == "" && (
                         <View>
                           <Button
                             title="Send Friend Request"
@@ -354,17 +341,15 @@ const ChatUser = ({ navigation, route, ...props }) => {
                               setGetRequest("pending");
                               setRequest("accept");
                               Alert.alert("Request has been send");
-                            }}
-                          ></Button>
+                            }}></Button>
                         </View>
-                      }
+                      )}
 
-                      {
-                        (getRequest == "pending") &&
+                      {getRequest == "pending" && (
                         <View>
                           <Text>Request has been send</Text>
                         </View>
-                      }
+                      )}
 
                       {checker && (
                         <View>
@@ -383,12 +368,11 @@ const ChatUser = ({ navigation, route, ...props }) => {
                                 })
                                 .then(() => {
                                   Alert.alert("Request Accepted");
-                                  setCheck(check + 1)
+                                  setCheck(check + 1);
                                   setGetRequest("accept");
                                   setChecker(false);
                                 });
-                            }}
-                          ></Button>
+                            }}></Button>
 
                           <Button
                             title="decline"
@@ -403,10 +387,9 @@ const ChatUser = ({ navigation, route, ...props }) => {
                                   status: "decline",
                                 });
                               Alert.alert("user declined");
-                              setCheck(check + 1)
+                              setCheck(check + 1);
                               setGetRequest("decline");
-                            }}
-                          ></Button>
+                            }}></Button>
                         </View>
                       )}
                     </View>
@@ -416,40 +399,41 @@ const ChatUser = ({ navigation, route, ...props }) => {
                 )}
               </View>
               <View style={styles.Footer}>
-
                 {getRequest != "decline" && request != "decline" ? (
                   request != "" &&
                   getRequest != "pending" &&
-                  request != "pending" &&
-                  // getRequest != "accept" &&
-                  <View style={styles.fieldContainer}>
-                    <TextInput
-                      style={styles.input}
-                      onChangeText={setMessage}
-                      value={message}
-                      placeholder="date de naissance"
-                      keyboardType="default"
-                    />
+                  request != "pending" && (
+                    // getRequest != "accept" &&
+                    <View style={styles.fieldContainer}>
+                      <TextInput
+                        style={styles.input}
+                        onChangeText={setMessage}
+                        value={message}
+                        placeholder="date de naissance"
+                        keyboardType="default"
+                      />
 
-                    <TouchableOpacity
-                      style={{ alignContent: "center" }}
-                      onPress={() => {
-                        send_message();
-                        Keyboard.dismiss();
-                      }}
-                    >
-                      <Icon name="arrow-up-circle" size={32} />
-                    </TouchableOpacity>
-                  </View>
-
+                      <TouchableOpacity
+                        style={{ alignContent: "center" }}
+                        onPress={() => {
+                          send_message();
+                          Keyboard.dismiss();
+                        }}>
+                        <Icon name="arrow-up-circle" size={32} />
+                      </TouchableOpacity>
+                    </View>
+                  )
                 ) : (
-                  <Text style={{ textAlign: "center" }}>Request declined or Request Still pending</Text>
+                  <Text style={{ textAlign: "center" }}>
+                    Request declined or Request Still pending
+                  </Text>
                 )}
               </View>
-            </>)}
+            </>
+          )}
         </KeyboardAvoidingView>
       </SafeAreaView>
-    </LinearGradient >
+    </LinearGradient>
   );
 };
 
@@ -462,7 +446,6 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "flex-end",
     flex: 1,
-
   },
   input: {
     borderRadius: 20,
@@ -472,7 +455,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     bottom: 0,
     paddingHorizontal: 15,
-    color: 'black'
+    color: "black",
   },
   fieldContainer: {
     display: "flex",
@@ -511,5 +494,4 @@ const styles = StyleSheet.create({
     fontFamily: "FredokaOne-Regular",
     fontSize: 25,
   },
-
 });

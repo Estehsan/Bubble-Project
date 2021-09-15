@@ -16,7 +16,7 @@ import ListContainer from "./../../../component/ListContainer";
 import SearchBar from "./../../../component/SearchBar";
 import UserChatInfo from "../../../component/UserChatInfo";
 import { auth, firestore } from "../../../db/firebase";
-import { getDistance } from 'geolib';
+import { getDistance } from "geolib";
 
 // linear-gradient(0deg, #FFFFFF 0%, #FFC1DD 78.9%)
 
@@ -49,22 +49,21 @@ const UsersListPlace = ({ route, ...props }) => {
     if (isMounted)
       auth.onAuthStateChanged((user) => {
         if (user) {
-
           var uid = user.uid;
           setCurrentUserId(user.uid);
 
-          firestore.collection("users").doc(uid)
+          firestore
+            .collection("users")
+            .doc(uid)
             .onSnapshot(async (doc) => {
-
               let docs = {
                 id: uid,
                 userName: doc.data().userName,
                 selectedTeams: doc.data().selectedTeams,
-              }
-              await setCurrentUserData(docs)
+              };
+              await setCurrentUserData(docs);
               // console.log(docs)
-
-            })
+            });
 
           firestore.collection("users").onSnapshot((querySnapshot) => {
             let docs = querySnapshot.docs
@@ -82,91 +81,85 @@ const UsersListPlace = ({ route, ...props }) => {
               }));
             var data = [];
             for (var i = 0; i < docs.length; i++) {
-              var dis = getDistance(
-                latlng,
-                docs[i].latlng,
-              )
+              var dis = getDistance(latlng, docs[i].latlng);
 
-              dis = dis / 1000
+              dis = dis / 1000;
 
               // console.log(dis)
 
               if (dis < 10) {
-                data.push(docs[i])
+                data.push(docs[i]);
               }
             }
 
             setUserData(data);
             // console.log(data)
-
           });
         } else {
           // User is signed out
           // ...
         }
       });
-      return () => {
-        isMounted = false
-      }
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // console.log("gettinguserid =>", currentUserId);
   return (
     <LinearGradient
       colors={["#FFC1DD", "#ffffff"]}
-      style={styles.linearGradient}
-    >
-      <ScrollView>
-        <View>
-          <TopBar />
-        </View>
-        <View style={{ marginTop: 30 }}>
-        </View>
-        <View style={{ marginTop: 10 }}>
-          <TouchableOpacity
-            onPress={() => props.navigation.navigate("UsersListPlace")}
-          >
-            <ListContainer
-              id={id}
-              title={title}
-              place={place}
-              location={location}
-              code={code}
-              img={img}
-            />
-          </TouchableOpacity>
+      style={styles.linearGradient}>
+      <SafeAreaView>
+        <ScrollView>
+          <View>
+            <TopBar />
+          </View>
+          <View style={{ marginTop: 30 }}></View>
+          <View style={{ marginTop: 10 }}>
+            <TouchableOpacity
+              onPress={() => props.navigation.navigate("UsersListPlace")}>
+              <ListContainer
+                id={id}
+                title={title}
+                place={place}
+                location={location}
+                code={code}
+                img={img}
+              />
+            </TouchableOpacity>
 
-          {userData && (
-            <FlatList
-              data={userData}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={styles.ListOfUsers}
-                  onPress={() => {
-                    props.navigation.navigate("ChatUser", {
-                      currentUserId: currentUserId,
-                      messageId: item.id,
-                      name: item.name,
-                      gender: item.gender,
-                      messageImg: item.userImg,
-                    });
-                  }}
-                >
-                  <UserChatInfo
-                    currentUserData={currentUserData}
-                    id={item.id}
-                    name={item.name}
-                    gender={item.gender}
-                    userImg={item.userImg}
-                    selectedTeams={item.selectedTeams}
-                  />
-                </TouchableOpacity>
-              )}
-            />
-          )}
-        </View>
-      </ScrollView>
+            {userData && (
+              <FlatList
+                data={userData}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={styles.ListOfUsers}
+                    onPress={() => {
+                      props.navigation.navigate("ChatUser", {
+                        currentUserId: currentUserId,
+                        messageId: item.id,
+                        name: item.name,
+                        gender: item.gender,
+                        messageImg: item.userImg,
+                      });
+                    }}>
+                    <UserChatInfo
+                      currentUserData={currentUserData}
+                      id={item.id}
+                      name={item.name}
+                      gender={item.gender}
+                      userImg={item.userImg}
+                      selectedTeams={item.selectedTeams}
+                    />
+                  </TouchableOpacity>
+                )}
+              />
+            )}
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     </LinearGradient>
   );
 };

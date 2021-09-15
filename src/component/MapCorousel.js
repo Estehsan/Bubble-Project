@@ -5,27 +5,44 @@ import {
   View,
   Image,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   useWindowDimensions,
 } from "react-native";
 import Colors from "../assets/colors/Colors";
 import H2 from "./basic/H2";
 import P from "./basic/P";
+import { useNavigation } from "@react-navigation/native";
 
 const MapCorousel = ({
   props,
-  title,
   onPress,
   isSelected,
+  title,
+  key,
   location,
   place,
   code,
   img,
-  navigation,
+  latlng,
+  UsersListPlace,
 }) => {
   const width = useWindowDimensions().width;
+  const navigation = useNavigation();
 
   return (
-    <TouchableOpacity style={([styles.Container], { width: width - 60 })} {...props} >
+    <TouchableOpacity
+      style={([styles.Container], { width: width - 60 })}
+      onPress={() =>
+        navigation.navigate("UsersListPlace", {
+          id: key,
+          title: title,
+          place: place,
+          location: location,
+          code: code,
+          img: img,
+          latlng: latlng,
+        })
+      }>
       <View style={styles.main}>
         <View style={styles.lContainer}>
           {img ? (
@@ -42,11 +59,10 @@ const MapCorousel = ({
           <P style={{ flexWrap: "wrap" }}>{location}</P>
           <P>{place}</P>
           <P>{code}</P>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => {
               // navigation.navigate('UsersListPlace');
-            }}
-          ></TouchableOpacity>
+            }}></TouchableOpacity> */}
         </View>
       </View>
     </TouchableOpacity>
