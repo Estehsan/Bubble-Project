@@ -79,8 +79,8 @@ const Profile = (props) => {
     let isMounted = true
 
     if (isMounted)
-    var sub , sub2;  
-    sub = auth.onAuthStateChanged((user) => {
+    var sub2;  
+     auth.onAuthStateChanged((user) => {
         if (user) {
           var uid = user.uid;
           setId(uid)
@@ -107,8 +107,6 @@ const Profile = (props) => {
     // console.log(image)
 
     return () => { isMounted = false 
-    sub();
-    sub2();
     }
   }, [isFocused]);
 
