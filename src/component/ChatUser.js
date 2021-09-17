@@ -127,8 +127,8 @@ const ChatUser = ({ navigation, route, ...props }) => {
       .doc(messageId)
       .collection("friends")
       .doc(currentUserId)
-      .get()
-      .then((doc) => {
+      .onSnapshot(async (doc) => {
+
         setLoading(true);
 
         if (doc.exists) {
@@ -138,17 +138,13 @@ const ChatUser = ({ navigation, route, ...props }) => {
 
         // console.log(doc.data())
       })
-      .catch((error) => {
-        console.log("Error getting documents: ", error);
-      });
 
     let dataUser = await firestore
       .collection("users")
       .doc(currentUserId)
       .collection("friends")
       .doc(messageId)
-      .get()
-      .then(async (doc) => {
+      .onSnapshot(async (doc) => {
         setLoading(true);
 
         if (doc.exists) {
@@ -158,12 +154,9 @@ const ChatUser = ({ navigation, route, ...props }) => {
         }
         setLoading(false);
       })
-      .catch((error) => {
-        console.log("Error getting documents: ", error);
-      });
   }, []);
 
-  useEffect(() => {}, [check]);
+  useEffect(() => { }, [check]);
 
   let uid_merge = (uid1, uid2) => {
     if (uid1 < uid2) {

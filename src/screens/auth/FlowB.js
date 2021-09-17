@@ -26,10 +26,13 @@ const FlowA = ({ ...props }) => {
   const [FirstName, setFirstName] = useState({ value: '', error: '' });
   const [errorText, setErrorText] = useState('');
 
+
   // DatePicker 
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
+  const [showDate, setShowDate] = useState(false);
+
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -44,6 +47,7 @@ const FlowA = ({ ...props }) => {
 
   const showDatepicker = () => {
     showMode('date');
+    setShowDate(true)
   };
   // Date Picker End
 
@@ -108,7 +112,7 @@ const FlowA = ({ ...props }) => {
                   }}
                     onPress={showDatepicker}
                   >
-                    <Text style={{ opacity: 0.5 }}>date de naissance</Text>
+                    <Text style={{ opacity: 0.5 }}>{showDate ? date.toDateString() : <Text>date de naissance</Text>}</Text>
                   </TouchableOpacity>
                 </View>
 
