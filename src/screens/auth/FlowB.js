@@ -58,7 +58,7 @@ const FlowA = ({ ...props }) => {
           <TopBar />
 
           <View style={styles.Profile}>
-            <Text style={styles.h1}>SE CONNECTER </Text>
+            <Text style={styles.h1}>INSCRIPTION </Text>
           </View>
           <View style={styles.Form}>
 
@@ -68,7 +68,7 @@ const FlowA = ({ ...props }) => {
               value={FirstName.value}
               error={FirstName.error}
               errorText={FirstName.error}
-              placeholder="pseudo"
+              placeholder="Pseudo"
               keyboardType="default" />
 
 
@@ -112,7 +112,7 @@ const FlowA = ({ ...props }) => {
                   }}
                     onPress={showDatepicker}
                   >
-                    <Text style={{ opacity: 0.5 }}>{showDate ? date.toDateString() : <Text>date de naissance</Text>}</Text>
+                    <Text style={{ opacity: 0.5 }}>{showDate ? date.toDateString() : <Text>Date de naissance</Text>}</Text>
                   </TouchableOpacity>
                 </View>
 

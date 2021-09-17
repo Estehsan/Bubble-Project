@@ -93,7 +93,7 @@ const FlowA = ({ ...props }) => {
       <SafeAreaView style={styles.main}>
         <TopBar />
         <View style={styles.Profile}>
-          <Text style={styles.h1}>S’INSCRIRE </Text>
+          <Text style={styles.h1}>CONNEXION </Text>
         </View>
         <View style={styles.Form}>
 
@@ -102,7 +102,7 @@ const FlowA = ({ ...props }) => {
             value={email.value}
             error={email.error}
             errorText={email.error}
-            placeholder="pseudo"
+            placeholder="email"
             keyboardType="default" />
           <InputF onChangeText={(e) => setEmail({ value: e, error: '' })}
             secureTextEntry={true}
@@ -110,11 +110,11 @@ const FlowA = ({ ...props }) => {
             value={password.value}
             error={password.error}
             errorText={password.error}
-            placeholder="date de naissance"
+            placeholder="Mot de passe"
             keyboardType="default" />
 
           <TouchableOpacity onPress={() => props.navigation.push("Reset")}>
-            <WP>Reset Password</WP>
+            <WP>Mot de passe oublié ?</WP>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={onLoginPress}>
