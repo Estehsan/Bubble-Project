@@ -15,7 +15,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { auth, firestore } from "../../db/firebase";
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "../../component/TopBar";
-import H1 from './../../component/basic/H1'
+import H1 from "./../../component/basic/H1";
 const Message = ({ ...props }) => {
   let [currentId, setcurrentId] = useState("");
   let [currentName, setcurrentName] = useState("");
@@ -26,15 +26,12 @@ const Message = ({ ...props }) => {
   let [data, setData] = useState([]);
   let [accepted, setAccepted] = useState([]);
 
-
   let [userId, setuserId] = useState([]);
   let [loading, setLoading] = useState(true);
   let [imageLoad, SetImageLoad] = useState(true);
 
-
   useEffect(async () => {
-
-    let isMounted = true
+    let isMounted = true;
 
     if (isMounted)
       auth.onAuthStateChanged(async (user) => {
@@ -62,7 +59,7 @@ const Message = ({ ...props }) => {
               await setData(docs);
               console.log(data);
               setLoading(false);
-            })
+            });
 
           let data2 = await firestore
             .collection("users")
@@ -80,7 +77,7 @@ const Message = ({ ...props }) => {
               await setAccepted(docs);
               console.log(data);
               setLoading(false);
-            })
+            });
 
           // ...
         } else {
@@ -90,28 +87,35 @@ const Message = ({ ...props }) => {
       });
 
     return () => {
-      isMounted = false
-      data2()
-      data()
-    }
+      isMounted = false;
+      data2();
+      data();
+    };
   }, []);
-
 
   return (
     <LinearGradient
       colors={["#FFC1DD", "#ffffff"]}
-      style={styles.linearGradient}
-    >
+      style={styles.linearGradient}>
       <SafeAreaView>
         <TopBar />
-        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: 'center' }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}>
           <Text style={styles.ChatUserName}>MES CONVERSATIONS</Text>
         </View>
         <View>
-
           {loading ? (
             <ActivityIndicator
-              style={{ alignItems: "center", alignContent: 'center', justifyContent: 'center', top: 200 }}
+              style={{
+                alignItems: "center",
+                alignContent: "center",
+                justifyContent: "center",
+                top: 200,
+              }}
               size="large"
               color="#000"
             />
@@ -138,16 +142,23 @@ const Message = ({ ...props }) => {
                                 gender: item.gender,
                                 messageImg: item.image,
                               });
-                            }}
-                          >
-                            <View style={{ backgroundColor: 'silver', height: 50, width: 50, borderRadius: 50 }}>
+                            }}>
+                            <View
+                              style={{
+                                backgroundColor: "silver",
+                                height: 50,
+                                width: 50,
+                                borderRadius: 50,
+                              }}>
                               <Image
-                                style={{ height: 50, width: 50, borderRadius: 50 }}
+                                style={{
+                                  height: 50,
+                                  width: 50,
+                                  borderRadius: 50,
+                                }}
                                 source={{ uri: item.image }}
                                 onLoadStart={SetImageLoad(true)}
-                                onLoadEnd={
-                                  SetImageLoad(false)
-                                }
+                                onLoadEnd={SetImageLoad(false)}
                               />
                             </View>
                           </TouchableOpacity>
@@ -156,12 +167,11 @@ const Message = ({ ...props }) => {
                     )}
                   />
                 </>
-              )
-              :
-              <>
-              <H1>No Request</H1>
-              </>
-            }
+              ) : (
+                <>
+                  <H1>No Request</H1>
+                </>
+              )}
 
               <H1>All Chats</H1>
               <FlatList
@@ -180,38 +190,52 @@ const Message = ({ ...props }) => {
                             gender: item.gender,
                             messageImg: item.image,
                           });
-                        }}
-                      >
+                        }}>
                         <View style={styles.lContainer}>
                           {item.image ? (
-                            <View style={{ backgroundColor: 'silver', height: 55, width: 55, borderRadius: 55 }}>
-
+                            <View
+                              style={{
+                                backgroundColor: "silver",
+                                height: 55,
+                                width: 55,
+                                borderRadius: 55,
+                              }}>
                               <Image
-                                style={{ height: 55, width: 55, borderRadius: 55 }}
+                                style={{
+                                  height: 55,
+                                  width: 55,
+                                  borderRadius: 55,
+                                }}
                                 source={{ uri: item.image }}
                               />
                             </View>
                           ) : (
-                            <View style={{ backgroundColor: 'silver', height: 50, width: 50, borderRadius: 50 }}>
-
+                            <View
+                              style={{
+                                backgroundColor: "silver",
+                                height: 50,
+                                width: 50,
+                                borderRadius: 50,
+                              }}>
                               <Image
-                                style={{ height: 50, width: 50, borderRadius: 50 }}
+                                style={{
+                                  height: 50,
+                                  width: 50,
+                                  borderRadius: 50,
+                                }}
                                 source={{
                                   uri: "https://www.w3schools.com/howto/img_avatar.png",
                                 }}
                               />
                             </View>
-
                           )}
 
                           <View style={styles.HeadingView}>
-
                             <View>
                               <Text
                                 style={styles.heading}
                                 numberOfLines={1}
-                                ellipsizeMode={"tail"}
-                              >
+                                ellipsizeMode={"tail"}>
                                 {item.name}
                               </Text>
                             </View>
@@ -219,12 +243,17 @@ const Message = ({ ...props }) => {
                             <View>
                               <Ionicons
                                 style={styles.position}
-                                name={item.gender === "male" ? "male" : item.gender === "female" ? "female" : "male-female"}
+                                name={
+                                  item.gender === "male"
+                                    ? "male"
+                                    : item.gender === "female"
+                                    ? "female"
+                                    : "male-female"
+                                }
                                 size={30}
-                                color={'#000'}
+                                color={"#000"}
                               />
                             </View>
-
                           </View>
                           {/* <View style={styles.rContainer}>
                         <View style={styles.btn}>
@@ -239,7 +268,6 @@ const Message = ({ ...props }) => {
               />
             </>
           )}
-
         </View>
       </SafeAreaView>
     </LinearGradient>
@@ -285,19 +313,26 @@ const styles = StyleSheet.create({
   lContainer: {
     display: "flex",
     flexDirection: "row",
-    alignItems: 'center',
+    alignItems: "center",
     flex: 1,
   },
   HeadingView: {
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
+    justifyContent: "space-evenly",
+    alignItems: "center",
     width: "69%",
-    display: 'flex', flexDirection: 'row',
+    display: "flex",
+    flexDirection: "row",
     paddingHorizontal: 30,
   },
   ChatUserName: {
     fontFamily: "FredokaOne-Regular",
     fontSize: 25,
   },
-  Icons: { padding: 5, backgroundColor: 'white', borderRadius: 30, marginHorizontal: 10, marginVertical: 5, }
+  Icons: {
+    padding: 5,
+    backgroundColor: "white",
+    borderRadius: 30,
+    marginHorizontal: 10,
+    marginVertical: 5,
+  },
 });

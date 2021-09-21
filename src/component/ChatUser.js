@@ -30,6 +30,7 @@ import firebase from "firebase/app";
 import { set } from "react-native-reanimated";
 import Colors from "../assets/colors/Colors";
 import H2 from "./basic/H2";
+import WP from "./basic/WP";
 
 // linear-gradient(0deg, #FFFFFF 0%, #FFC1DD 78.9%)
 const ChatUser = ({ navigation, route, ...props }) => {
@@ -128,7 +129,6 @@ const ChatUser = ({ navigation, route, ...props }) => {
       .collection("friends")
       .doc(currentUserId)
       .onSnapshot(async (doc) => {
-
         setLoading(true);
 
         if (doc.exists) {
@@ -137,7 +137,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
         setLoading(false);
 
         // console.log(doc.data())
-      })
+      });
 
     let dataUser = await firestore
       .collection("users")
@@ -153,10 +153,10 @@ const ChatUser = ({ navigation, route, ...props }) => {
           console.log(doc.data());
         }
         setLoading(false);
-      })
+      });
   }, []);
 
-  useEffect(() => { }, [check]);
+  useEffect(() => {}, [check]);
 
   let uid_merge = (uid1, uid2) => {
     if (uid1 < uid2) {
@@ -213,7 +213,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
       <SafeAreaView style={styles.container}>
         <KeyboardAvoidingView
           behavior={Platform.OS == "ios" ? "padding" : "height"}
-          keyboardVerticalOffset={100}>
+          keyboardVerticalOffset={90}>
           {loading ? (
             <ActivityIndicator
               style={{
@@ -397,23 +397,33 @@ const ChatUser = ({ navigation, route, ...props }) => {
                   getRequest != "pending" &&
                   request != "pending" && (
                     // getRequest != "accept" &&
-                    <View style={styles.fieldContainer}>
-                      <TextInput
-                        style={styles.input}
-                        onChangeText={setMessage}
-                        value={message}
-                        placeholder="date de naissance"
-                        keyboardType="default"
-                      />
+                    <View>
+                      <View style={styles.fieldContainer}>
+                        <TextInput
+                          style={styles.input}
+                          onChangeText={setMessage}
+                          value={message}
+                          placeholder="date de naissance"
+                          keyboardType="default"
+                        />
 
-                      <TouchableOpacity
-                        style={{ alignContent: "center" }}
-                        onPress={() => {
-                          send_message();
-                          Keyboard.dismiss();
-                        }}>
-                        <Icon name="arrow-up-circle" size={32} />
-                      </TouchableOpacity>
+                        <TouchableOpacity
+                          style={{ alignContent: "center" }}
+                          onPress={() => {
+                            send_message();
+                            Keyboard.dismiss();
+                          }}>
+                          <Icon name="arrow-up-circle" size={32} />
+                        </TouchableOpacity>
+                      </View>
+                      <View style={styles.bottombtn}>
+                        <View style={styles.btn}>
+                          <WP>Quitter la conversation</WP>
+                        </View>
+                        <View style={styles.btn}>
+                          <WP>Continuer</WP>
+                        </View>
+                      </View>
                     </View>
                   )
                 ) : (
@@ -486,5 +496,20 @@ const styles = StyleSheet.create({
   ChatUserName: {
     fontFamily: "FredokaOne-Regular",
     fontSize: 25,
+  },
+  bottombtn: {
+    justifyContent: "space-evenly",
+    flexDirection: "row",
+    display: "flex",
+    width: "100%",
+  },
+  btn: {
+    height: 40,
+    width: 150,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    backgroundColor: Colors.darkPink,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
