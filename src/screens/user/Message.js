@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ActivityIndicator,
+  TextInput,
 } from "react-native";
 import Colors from "../../assets/colors/Colors";
 import Entypo from "react-native-vector-icons/Entypo";
@@ -25,13 +26,20 @@ const Message = ({ ...props }) => {
 
   let [data, setData] = useState([]);
   let [accepted, setAccepted] = useState([]);
+  let [searchAccepted, setSearchAccepted] = useState([])
 
   let [userId, setuserId] = useState([]);
   let [loading, setLoading] = useState(true);
   let [imageLoad, SetImageLoad] = useState(true);
+  let [renderSearch, setRenderSearch] = useState(false);
+  let [renderAccepted, setRenderAccepted] = useState(true);
+  const [defaultSearchValue, setDefaultSearchValue] = useState("")
+
+
 
   useEffect(async () => {
     let isMounted = true;
+    var data2
 
     if (isMounted)
       auth.onAuthStateChanged(async (user) => {
@@ -61,7 +69,7 @@ const Message = ({ ...props }) => {
               setLoading(false);
             });
 
-          let data2 = await firestore
+          data2 = await firestore
             .collection("users")
             .doc(uid)
             .collection("friends")
@@ -86,12 +94,40 @@ const Message = ({ ...props }) => {
         }
       });
 
+    console.log(accepted)
+
     return () => {
       isMounted = false;
       data2();
       data();
     };
   }, []);
+
+  let handleSearchBar = (event) => {
+    const searchText = event;
+    if (accepted) {
+      // Object.keys(accepted).map((val) => {
+      //   console.log(accepted[val].name)
+      // });
+      const result = accepted.filter((val) => {
+        return val.name.toString().toLowerCase().indexOf(searchText.toString().toLowerCase()) !== -1 ||
+          val.gender.toString().toLowerCase().indexOf(searchText.toString().toLowerCase()) !== -1;
+      })
+      if (searchText.length > 0) {
+        setRenderAccepted(false)
+        setRenderSearch(true)
+        setDefaultSearchValue(searchText)
+        setSearchAccepted(result)
+      } else {
+        setRenderAccepted(true)
+        setRenderSearch(false)
+        setDefaultSearchValue(searchText)
+        setSearchAccepted(result)
+      }
+    }
+  }
+
+
 
   return (
     <LinearGradient
@@ -106,6 +142,14 @@ const Message = ({ ...props }) => {
             justifyContent: "center",
           }}>
           <Text style={styles.ChatUserName}>MES CONVERSATIONS</Text>
+        </View>
+        <View>
+          <TextInput
+            placeholder="Search for friends ..."
+            onChangeText={(e) => handleSearchBar(e)}
+            value={defaultSearchValue}
+            style={styles.inputField}
+          />
         </View>
         <View>
           {loading ? (
@@ -174,98 +218,194 @@ const Message = ({ ...props }) => {
               )}
 
               <H1>All Chats</H1>
-              <FlatList
-                data={accepted}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                  // console.log(item)
-                  <View style={styles.Container}>
-                    <View style={styles.main}>
-                      <TouchableOpacity
-                        onPress={() => {
-                          props.navigation.navigate("ChatUser", {
-                            currentUserId: userId,
-                            messageId: item.id,
-                            name: item.name,
-                            gender: item.gender,
-                            messageImg: item.image,
-                          });
-                        }}>
-                        <View style={styles.lContainer}>
-                          {item.image ? (
-                            <View
-                              style={{
-                                backgroundColor: "silver",
-                                height: 55,
-                                width: 55,
-                                borderRadius: 55,
-                              }}>
-                              <Image
+              {renderAccepted &&
+                <FlatList
+                  data={accepted}
+                  keyExtractor={(item) => item.id}
+                  renderItem={({ item }) => (
+                    // console.log(item)
+                    <View style={styles.Container}>
+                      <View style={styles.main}>
+                        <TouchableOpacity
+                          onPress={() => {
+                            props.navigation.navigate("ChatUser", {
+                              currentUserId: userId,
+                              messageId: item.id,
+                              name: item.name,
+                              gender: item.gender,
+                              messageImg: item.image,
+                            });
+                          }}>
+                          <View style={styles.lContainer}>
+                            {item.image ? (
+                              <View
                                 style={{
+                                  backgroundColor: "silver",
                                   height: 55,
                                   width: 55,
                                   borderRadius: 55,
-                                }}
-                                source={{ uri: item.image }}
-                              />
-                            </View>
-                          ) : (
-                            <View
-                              style={{
-                                backgroundColor: "silver",
-                                height: 50,
-                                width: 50,
-                                borderRadius: 50,
-                              }}>
-                              <Image
+                                }}>
+                                <Image
+                                  style={{
+                                    height: 55,
+                                    width: 55,
+                                    borderRadius: 55,
+                                  }}
+                                  source={{ uri: item.image }}
+                                />
+                              </View>
+                            ) : (
+                              <View
                                 style={{
+                                  backgroundColor: "silver",
                                   height: 50,
                                   width: 50,
                                   borderRadius: 50,
-                                }}
-                                source={{
-                                  uri: "https://www.w3schools.com/howto/img_avatar.png",
-                                }}
-                              />
-                            </View>
-                          )}
+                                }}>
+                                <Image
+                                  style={{
+                                    height: 50,
+                                    width: 50,
+                                    borderRadius: 50,
+                                  }}
+                                  source={{
+                                    uri: "https://www.w3schools.com/howto/img_avatar.png",
+                                  }}
+                                />
+                              </View>
+                            )}
 
-                          <View style={styles.HeadingView}>
-                            <View>
-                              <Text
-                                style={styles.heading}
-                                numberOfLines={1}
-                                ellipsizeMode={"tail"}>
-                                {item.name}
-                              </Text>
-                            </View>
+                            <View style={styles.HeadingView}>
+                              <View>
+                                <Text
+                                  style={styles.heading}
+                                  numberOfLines={1}
+                                  ellipsizeMode={"tail"}>
+                                  {item.name}
+                                </Text>
+                              </View>
 
-                            <View>
-                              <Ionicons
-                                style={styles.position}
-                                name={
-                                  item.gender === "male"
-                                    ? "male"
-                                    : item.gender === "female"
-                                    ? "female"
-                                    : "male-female"
-                                }
-                                size={30}
-                                color={"#000"}
-                              />
+                              <View>
+                                <Ionicons
+                                  style={styles.position}
+                                  name={
+                                    item.gender === "male"
+                                      ? "male"
+                                      : item.gender === "female"
+                                        ? "female"
+                                        : "male-female"
+                                  }
+                                  size={30}
+                                  color={"#000"}
+                                />
+                              </View>
                             </View>
-                          </View>
-                          {/* <View style={styles.rContainer}>
+                            {/* <View style={styles.rContainer}>
                         <View style={styles.btn}>
                           <Text>Content</Text>
                         </View>
                       </View> */}
-                        </View>
-                      </TouchableOpacity>
+                          </View>
+                        </TouchableOpacity>
+                      </View>
                     </View>
-                  </View>
-                )}
-              />
+                  )}
+                />
+              }
+              {renderSearch &&
+                <FlatList
+                  data={searchAccepted}
+                  keyExtractor={(item) => item.id}
+                  renderItem={({ item }) => (
+                    // console.log(item)
+                    <View style={styles.Container}>
+                      <View style={styles.main}>
+                        <TouchableOpacity
+                          onPress={() => {
+                            props.navigation.navigate("ChatUser", {
+                              currentUserId: userId,
+                              messageId: item.id,
+                              name: item.name,
+                              gender: item.gender,
+                              messageImg: item.image,
+                            });
+                          }}>
+                          <View style={styles.lContainer}>
+                            {item.image ? (
+                              <View
+                                style={{
+                                  backgroundColor: "silver",
+                                  height: 55,
+                                  width: 55,
+                                  borderRadius: 55,
+                                }}>
+                                <Image
+                                  style={{
+                                    height: 55,
+                                    width: 55,
+                                    borderRadius: 55,
+                                  }}
+                                  source={{ uri: item.image }}
+                                />
+                              </View>
+                            ) : (
+                              <View
+                                style={{
+                                  backgroundColor: "silver",
+                                  height: 50,
+                                  width: 50,
+                                  borderRadius: 50,
+                                }}>
+                                <Image
+                                  style={{
+                                    height: 50,
+                                    width: 50,
+                                    borderRadius: 50,
+                                  }}
+                                  source={{
+                                    uri: "https://www.w3schools.com/howto/img_avatar.png",
+                                  }}
+                                />
+                              </View>
+                            )}
+
+                            <View style={styles.HeadingView}>
+                              <View>
+                                <Text
+                                  style={styles.heading}
+                                  numberOfLines={1}
+                                  ellipsizeMode={"tail"}>
+                                  {item.name}
+                                </Text>
+                              </View>
+
+                              <View>
+                                <Ionicons
+                                  style={styles.position}
+                                  name={
+                                    item.gender === "male"
+                                      ? "male"
+                                      : item.gender === "female"
+                                        ? "female"
+                                        : "male-female"
+                                  }
+                                  size={30}
+                                  color={"#000"}
+                                />
+                              </View>
+                            </View>
+                            {/* <View style={styles.rContainer}>
+                         <View style={styles.btn}>
+                           <Text>Content</Text>
+                         </View>
+                       </View> */}
+                          </View>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  )}
+                />
+              }
             </>
           )}
         </View>
@@ -304,6 +444,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 60,
     alignItems: "center",
+  },
+  inputField: {
+    flexDirection: "row",
+    alignContent: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    marginTop: 15,
+    color : 'black',
+    padding: 15,
+    backgroundColor: "#fff",
+    borderRadius: 20,
   },
   headng: {
     fontFamily: "FredokaOne-Bold",
