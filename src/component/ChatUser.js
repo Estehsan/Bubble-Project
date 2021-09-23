@@ -17,6 +17,8 @@ import {
   Keyboard,
   Dimensions,
   ActivityIndicator,
+  Modal,
+  Pressable,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
@@ -51,6 +53,12 @@ const ChatUser = ({ navigation, route, ...props }) => {
 
   let [check, setCheck] = useState(0);
 
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [quitmodal, setQuitModal] = useState(false);
+
+
+
   const scrollViewRef = useRef();
   const width = useWindowDimensions().width;
   useLayoutEffect(() => {
@@ -73,39 +81,10 @@ const ChatUser = ({ navigation, route, ...props }) => {
     });
   }, [navigation]);
 
-  useEffect(() => {
-    // messaging.onNotificationOpenedApp(remoteMessage => {
-    //   console.log(
-    //     'Notification caused app to open from background state:',
-    //     remoteMessage.notification,
-    //   );
-    //   navigation.navigate(remoteMessage.data.type);
-    // });
-    // // Check whether an initial notification is available
-    // messaging
-    //   .getInitialNotification()
-    //   .then(remoteMessage => {
-    //     if (remoteMessage) {
-    //       console.log(
-    //         'Notification caused app to open from quit state:',
-    //         remoteMessage.notification,
-    //       );
-    //       setInitialRoute(remoteMessage.data.type); // e.g. "Settings"
-    //     }
-    //     setLoading(false);
-    //   });
-    //   const unsubscribe = messaging.onMessage(async remoteMessage => {
-    //     Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
-    //   });
-  }, []);
 
   useEffect(async () => {
     let merge = uid_merge(currentUserId, messageId);
     get_messages(merge);
-
-    // console.log(currentUserId, messageId, name, gender, messageImg);
-
-    // console.log(messageImg);
     let datum = await firestore
       .collection("users")
       .doc(currentUserId)
@@ -116,7 +95,6 @@ const ChatUser = ({ navigation, route, ...props }) => {
         setcurrentName(doc.data().userName);
         setcurrentGender(doc.data().userGender);
         setcurrentImage(doc.data().userProfileImageUrl);
-        console.log(doc.data().userProfileImageUrl);
         setLoading(false);
       })
       .catch((error) => {
@@ -154,9 +132,11 @@ const ChatUser = ({ navigation, route, ...props }) => {
         }
         setLoading(false);
       });
-  }, []);
+    await setModalVisible(checker)
 
-  useEffect(() => {}, [check]);
+  }, [checker]);
+
+  useEffect(() => { }, [check]);
 
   let uid_merge = (uid1, uid2) => {
     if (uid1 < uid2) {
@@ -189,6 +169,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
         }
         // console.log(docs)
       });
+    console.log(checker)
   };
 
   let send_message = () => {
@@ -210,6 +191,128 @@ const ChatUser = ({ navigation, route, ...props }) => {
     <LinearGradient
       colors={["#FFC1DD", "#ffffff"]}
       style={styles.linearGradient}>
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={quitmodal}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Are you sure you want to leave all room messages and request will be deleted ?</Text>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+
+              onPress={async () => {
+                await firestore
+                  .collection("users")
+                  .doc(messageId)
+                  .collection("friends")
+                  .doc(currentUserId)
+                  .delete()
+
+                await firestore
+                  .collection("users")
+                  .doc(currentUserId)
+                  .collection("friends")
+                  .doc(messageId)
+                  .delete()
+
+                let merger = uid_merge(currentUserId, messageId)
+
+                let deleteuser = await firestore.collection(`message`).doc(merger).collection(`chat`)
+                deleteuser.get().then(function (querySnapshot) {
+                  querySnapshot.forEach(function (doc) {
+                    doc.ref.delete();
+                  });
+                });
+
+                  
+                    setMessage("");
+                    setGetRequest("");
+                    setRequest("");
+                    setQuitModal(!quitmodal)
+                    Alert.alert("You have leaved the room");
+              }}
+            >
+              <Text style={styles.textStyle}>Yes</Text>
+            </Pressable>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => {
+                setQuitModal(!quitmodal)
+              }}
+            >
+              <Text style={styles.textStyle}>No</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          navigation.goBack();
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Request Continue to chat with this user ?</Text>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+
+              onPress={async () => {
+                await firestore
+                  .collection("users")
+                  .doc(currentUserId)
+                  .collection("friends")
+                  .doc(messageId)
+                  .update({
+                    friendId: messageId,
+                    status: "accept",
+                    requestGetter: false,
+                  })
+                  .then(() => {
+                    Alert.alert("Request Accepted");
+                    setGetRequest("accept");
+                    setChecker(false);
+                    setCheck(check + 1);
+                  });
+              }}
+            >
+              <Text style={styles.textStyle}>Accept</Text>
+            </Pressable>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => {
+                firestore
+                  .collection("users")
+                  .doc(currentUserId)
+                  .collection("friends")
+                  .doc(messageId)
+                  .update({
+                    friendId: messageId,
+                    status: "decline",
+                    requestGetter: false,
+
+                  });
+                Alert.alert("user declined");
+                setGetRequest("decline");
+                setChecker(false);
+                setCheck(check + 1);
+              }}
+            >
+              <Text style={styles.textStyle}>Reject</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+
       <SafeAreaView style={styles.container}>
         <KeyboardAvoidingView
           behavior={Platform.OS == "ios" ? "padding" : "height"}
@@ -299,7 +402,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
                         />
                       )}
 
-                      {request == "" && (
+                      {/* {request == "" && (
                         <View>
                           <Button
                             title="Send Friend Request"
@@ -336,55 +439,61 @@ const ChatUser = ({ navigation, route, ...props }) => {
                               Alert.alert("Request has been send");
                             }}></Button>
                         </View>
-                      )}
+                      )} */}
 
-                      {getRequest == "pending" && (
+                      {/* {getRequest == "pending" && (
                         <View>
                           <Text>Request has been send</Text>
                         </View>
-                      )}
+                      )} */}
 
-                      {checker && (
-                        <View>
-                          <Button
-                            title="accept"
-                            onPress={async () => {
-                              await firestore
-                                .collection("users")
-                                .doc(currentUserId)
-                                .collection("friends")
-                                .doc(messageId)
-                                .update({
-                                  friendId: messageId,
-                                  status: "accept",
-                                  requestGetter: false,
-                                })
-                                .then(() => {
-                                  Alert.alert("Request Accepted");
-                                  setCheck(check + 1);
-                                  setGetRequest("accept");
-                                  setChecker(false);
-                                });
-                            }}></Button>
+                      {/* {checker && (
+                        <>
+                          <View>
+                            <Button
+                              title="accept"
+                              onPress={async () => {
+                                await firestore
+                                  .collection("users")
+                                  .doc(currentUserId)
+                                  .collection("friends")
+                                  .doc(messageId)
+                                  .update({
+                                    friendId: messageId,
+                                    status: "accept",
+                                    requestGetter: false,
+                                  })
+                                  .then(() => {
+                                    Alert.alert("Request Accepted");
+                                    setGetRequest("accept");
+                                    setChecker(false);
+                                    setCheck(check + 1);
 
-                          <Button
-                            title="decline"
-                            onPress={() => {
-                              firestore
-                                .collection("users")
-                                .doc(currentUserId)
-                                .collection("friends")
-                                .doc(messageId)
-                                .update({
-                                  friendId: messageId,
-                                  status: "decline",
-                                });
-                              Alert.alert("user declined");
-                              setCheck(check + 1);
-                              setGetRequest("decline");
-                            }}></Button>
-                        </View>
-                      )}
+                                  });
+                              }}></Button>
+
+                            <Button
+                              title="decline"
+                              onPress={() => {
+                                firestore
+                                  .collection("users")
+                                  .doc(currentUserId)
+                                  .collection("friends")
+                                  .doc(messageId)
+                                  .update({
+                                    friendId: messageId,
+                                    status: "decline",
+                                  });
+                                Alert.alert("user declined");
+                                setGetRequest("decline");
+                                setChecker(false);
+                                setCheck(check + 1);
+
+                              }}></Button>
+                          </View>
+                        </>
+
+                      )} */}
                     </View>
                   </>
                 ) : (
@@ -393,44 +502,92 @@ const ChatUser = ({ navigation, route, ...props }) => {
               </View>
               <View style={styles.Footer}>
                 {getRequest != "decline" && request != "decline" ? (
-                  request != "" &&
-                  getRequest != "pending" &&
-                  request != "pending" && (
-                    // getRequest != "accept" &&
-                    <View>
-                      <View style={styles.fieldContainer}>
-                        <TextInput
-                          style={styles.input}
-                          onChangeText={setMessage}
-                          value={message}
-                          placeholder="date de naissance"
-                          keyboardType="default"
-                        />
 
-                        <TouchableOpacity
-                          style={{ alignContent: "center" }}
-                          onPress={() => {
-                            send_message();
-                            Keyboard.dismiss();
-                          }}>
-                          <Icon name="arrow-up-circle" size={32} />
-                        </TouchableOpacity>
-                      </View>
-                      <View style={styles.bottombtn}>
-                        <View style={styles.btn}>
-                          <WP>Quitter la conversation</WP>
-                        </View>
-                        <View style={styles.btn}>
-                          <WP>Continuer</WP>
-                        </View>
-                      </View>
+                  // getRequest != "accept" &&
+                  <View>
+                    <View style={styles.fieldContainer}>
+                      <TextInput
+                        style={styles.input}
+                        onChangeText={setMessage}
+                        value={message}
+                        placeholder="date de naissance"
+                        keyboardType="default"
+
+                      />
+
+                      <TouchableOpacity
+                        style={{ alignContent: "center" }}
+                        onPress={() => {
+                          send_message();
+                          Keyboard.dismiss();
+                        }}>
+                        <Icon name="arrow-up-circle" size={32} />
+                      </TouchableOpacity>
                     </View>
-                  )
+
+                  </View>
+
                 ) : (
-                  <Text style={{ textAlign: "center" }}>
-                    Request declined or Request Still pending
+                  <Text style={{ textAlign: "center", fontSize: 20, }}>
+                    Request declined send request again to continue
                   </Text>
                 )}
+                {getRequest != "accept" || request != "accept" ? (
+                  <View style={styles.bottombtn}>
+                    <View style={styles.btn}>
+                      <TouchableOpacity onPress={() => {
+                        setQuitModal(true)
+                      }}>
+                        <WP>Quitter la conversation</WP>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={styles.btn}>
+                      <TouchableOpacity
+                        onPress={() => {
+
+                          if (getRequest != "pending") {
+                            firestore
+                              .collection("users")
+                              .doc(messageId)
+                              .collection("friends")
+                              .doc(currentUserId)
+                              .set({
+                                friendId: currentUserId,
+                                status: "pending",
+                                requestGetter: true,
+                                name: currentName,
+                                gender: currentGender,
+                                image: currentImage,
+                              });
+
+                            firestore
+                              .collection("users")
+                              .doc(currentUserId)
+                              .collection("friends")
+                              .doc(messageId)
+                              .set({
+                                friendId: messageId,
+                                status: "accept",
+                                requestGetter: false,
+                                name: name,
+                                gender: gender,
+                                image: messageImg,
+                              });
+                            setGetRequest("pending");
+                            setRequest("accept");
+                            Alert.alert("You have continue the chat wait for other user to continue");
+                          }
+                          else {
+                            Alert.alert("You have Already continue a Chat wait for other user");
+                          }
+                        }}
+                      >
+                        <WP>Continuer</WP>
+                      </TouchableOpacity>
+                    </View>
+
+                  </View>
+                ) : <View></View>}
               </View>
             </>
           )}
@@ -512,4 +669,46 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    margin: 10
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center"
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center"
+  }
 });
