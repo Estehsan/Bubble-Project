@@ -166,40 +166,39 @@ const ChatUser = ({ navigation, route, ...props }) => {
       });
     console.log(checker);
   };
-  const leaveChat = () => {
-    async () => {
-      await firestore
-        .collection("users")
-        .doc(messageId)
-        .collection("friends")
-        .doc(currentUserId)
-        .delete();
+  let leaveChat = async () => {
+    await firestore
+      .collection("users")
+      .doc(messageId)
+      .collection("friends")
+      .doc(currentUserId)
+      .delete();
 
-      await firestore
-        .collection("users")
-        .doc(currentUserId)
-        .collection("friends")
-        .doc(messageId)
-        .delete();
+    await firestore
+      .collection("users")
+      .doc(currentUserId)
+      .collection("friends")
+      .doc(messageId)
+      .delete();
 
-      let merger = uid_merge(currentUserId, messageId);
+    let merger = uid_merge(currentUserId, messageId);
 
-      let deleteuser = await firestore
-        .collection(`message`)
-        .doc(merger)
-        .collection(`chat`);
-      deleteuser.get().then(function (querySnapshot) {
-        querySnapshot.forEach(function (doc) {
-          doc.ref.delete();
-        });
+    let deleteuser = await firestore
+      .collection(`message`)
+      .doc(merger)
+      .collection(`chat`);
+    deleteuser.get().then(function (querySnapshot) {
+      querySnapshot.forEach(function (doc) {
+        doc.ref.delete();
       });
+    });
 
-      setMessage("");
-      setGetRequest("");
-      setRequest("");
-      setQuitModal(!quitmodal);
-      Alert.alert("You have leaved the room");
-    };
+    setMessage("");
+    setGetRequest("");
+    setRequest("");
+    setQuitModal(!quitmodal);
+    Alert.alert("You have leaved the room");
+    navigation.navigate("Message");
   };
   let send_message = () => {
     if (message.length > 0) {
@@ -234,20 +233,19 @@ const ChatUser = ({ navigation, route, ...props }) => {
             <Text style={styles.Headinghai}></Text>
 
             <Text style={styles.modalText}>
-              Are you sure you want to leave all room messages and request will
-              be deleted ?
+              XX vous propose de continuer ...
             </Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={leaveChat}>
-              <Text style={styles.textStyle}>Yes</Text>
+              onPress={() => leaveChat()}>
+              <Text style={styles.textStyle}>Accepter</Text>
             </Pressable>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => {
                 setQuitModal(!quitmodal);
               }}>
-              <Text style={styles.textStyle}>No</Text>
+              <Text style={styles.textStyle}>Decliner</Text>
             </Pressable>
           </View>
         </View>
