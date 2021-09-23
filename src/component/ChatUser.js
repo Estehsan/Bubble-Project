@@ -53,11 +53,8 @@ const ChatUser = ({ navigation, route, ...props }) => {
 
   let [check, setCheck] = useState(0);
 
-
   const [modalVisible, setModalVisible] = useState(false);
   const [quitmodal, setQuitModal] = useState(false);
-
-
 
   const scrollViewRef = useRef();
   const width = useWindowDimensions().width;
@@ -80,7 +77,6 @@ const ChatUser = ({ navigation, route, ...props }) => {
       headerRight: () => <View />,
     });
   }, [navigation]);
-
 
   useEffect(async () => {
     let merge = uid_merge(currentUserId, messageId);
@@ -132,11 +128,10 @@ const ChatUser = ({ navigation, route, ...props }) => {
         }
         setLoading(false);
       });
-    await setModalVisible(checker)
-
+    await setModalVisible(checker);
   }, [checker]);
 
-  useEffect(() => { }, [check]);
+  useEffect(() => {}, [check]);
 
   let uid_merge = (uid1, uid2) => {
     if (uid1 < uid2) {
@@ -169,9 +164,43 @@ const ChatUser = ({ navigation, route, ...props }) => {
         }
         // console.log(docs)
       });
-    console.log(checker)
+    console.log(checker);
   };
+  const leaveChat = () => {
+    async () => {
+      await firestore
+        .collection("users")
+        .doc(messageId)
+        .collection("friends")
+        .doc(currentUserId)
+        .delete();
 
+      await firestore
+        .collection("users")
+        .doc(currentUserId)
+        .collection("friends")
+        .doc(messageId)
+        .delete();
+
+      let merger = uid_merge(currentUserId, messageId);
+
+      let deleteuser = await firestore
+        .collection(`message`)
+        .doc(merger)
+        .collection(`chat`);
+      deleteuser.get().then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+          doc.ref.delete();
+        });
+      });
+
+      setMessage("");
+      setGetRequest("");
+      setRequest("");
+      setQuitModal(!quitmodal);
+      Alert.alert("You have leaved the room");
+    };
+  };
   let send_message = () => {
     if (message.length > 0) {
       let merge = uid_merge(currentUserId, messageId);
@@ -191,7 +220,6 @@ const ChatUser = ({ navigation, route, ...props }) => {
     <LinearGradient
       colors={["#FFC1DD", "#ffffff"]}
       style={styles.linearGradient}>
-
       <Modal
         animationType="fade"
         transparent={true}
@@ -199,53 +227,26 @@ const ChatUser = ({ navigation, route, ...props }) => {
         onRequestClose={() => {
           setModalVisible(!modalVisible);
         }}
-      >
+        contentContainerStyle={styles.modalStyle}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Are you sure you want to leave all room messages and request will be deleted ?</Text>
+            <Text style={styles.Headinghai}>FELICITATIONS</Text>
+            <Text style={styles.Headinghai}></Text>
+
+            <Text style={styles.modalText}>
+              Are you sure you want to leave all room messages and request will
+              be deleted ?
+            </Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
-
-              onPress={async () => {
-                await firestore
-                  .collection("users")
-                  .doc(messageId)
-                  .collection("friends")
-                  .doc(currentUserId)
-                  .delete()
-
-                await firestore
-                  .collection("users")
-                  .doc(currentUserId)
-                  .collection("friends")
-                  .doc(messageId)
-                  .delete()
-
-                let merger = uid_merge(currentUserId, messageId)
-
-                let deleteuser = await firestore.collection(`message`).doc(merger).collection(`chat`)
-                deleteuser.get().then(function (querySnapshot) {
-                  querySnapshot.forEach(function (doc) {
-                    doc.ref.delete();
-                  });
-                });
-
-                  
-                    setMessage("");
-                    setGetRequest("");
-                    setRequest("");
-                    setQuitModal(!quitmodal)
-                    Alert.alert("You have leaved the room");
-              }}
-            >
+              onPress={leaveChat}>
               <Text style={styles.textStyle}>Yes</Text>
             </Pressable>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => {
-                setQuitModal(!quitmodal)
-              }}
-            >
+                setQuitModal(!quitmodal);
+              }}>
               <Text style={styles.textStyle}>No</Text>
             </Pressable>
           </View>
@@ -258,14 +259,14 @@ const ChatUser = ({ navigation, route, ...props }) => {
         visible={modalVisible}
         onRequestClose={() => {
           navigation.goBack();
-        }}
-      >
+        }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Request Continue to chat with this user ?</Text>
+            <Text style={styles.modalText}>
+              Request Continue to chat with this user ?
+            </Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
-
               onPress={async () => {
                 await firestore
                   .collection("users")
@@ -283,8 +284,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
                     setChecker(false);
                     setCheck(check + 1);
                   });
-              }}
-            >
+              }}>
               <Text style={styles.textStyle}>Accept</Text>
             </Pressable>
             <Pressable
@@ -299,14 +299,12 @@ const ChatUser = ({ navigation, route, ...props }) => {
                     friendId: messageId,
                     status: "decline",
                     requestGetter: false,
-
                   });
                 Alert.alert("user declined");
                 setGetRequest("decline");
                 setChecker(false);
                 setCheck(check + 1);
-              }}
-            >
+              }}>
               <Text style={styles.textStyle}>Reject</Text>
             </Pressable>
           </View>
@@ -502,7 +500,6 @@ const ChatUser = ({ navigation, route, ...props }) => {
               </View>
               <View style={styles.Footer}>
                 {getRequest != "decline" && request != "decline" ? (
-
                   // getRequest != "accept" &&
                   <View>
                     <View style={styles.fieldContainer}>
@@ -512,7 +509,6 @@ const ChatUser = ({ navigation, route, ...props }) => {
                         value={message}
                         placeholder="date de naissance"
                         keyboardType="default"
-
                       />
 
                       <TouchableOpacity
@@ -524,27 +520,25 @@ const ChatUser = ({ navigation, route, ...props }) => {
                         <Icon name="arrow-up-circle" size={32} />
                       </TouchableOpacity>
                     </View>
-
                   </View>
-
                 ) : (
-                  <Text style={{ textAlign: "center", fontSize: 20, }}>
+                  <Text style={{ textAlign: "center", fontSize: 20 }}>
                     Request declined send request again to continue
                   </Text>
                 )}
                 {getRequest != "accept" || request != "accept" ? (
                   <View style={styles.bottombtn}>
                     <View style={styles.btn}>
-                      <TouchableOpacity onPress={() => {
-                        setQuitModal(true)
-                      }}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          setQuitModal(true);
+                        }}>
                         <WP>Quitter la conversation</WP>
                       </TouchableOpacity>
                     </View>
                     <View style={styles.btn}>
                       <TouchableOpacity
                         onPress={() => {
-
                           if (getRequest != "pending") {
                             firestore
                               .collection("users")
@@ -575,19 +569,22 @@ const ChatUser = ({ navigation, route, ...props }) => {
                               });
                             setGetRequest("pending");
                             setRequest("accept");
-                            Alert.alert("You have continue the chat wait for other user to continue");
+                            Alert.alert(
+                              "You have continue the chat wait for other user to continue"
+                            );
+                          } else {
+                            Alert.alert(
+                              "You have Already continue a Chat wait for other user"
+                            );
                           }
-                          else {
-                            Alert.alert("You have Already continue a Chat wait for other user");
-                          }
-                        }}
-                      >
+                        }}>
                         <WP>Continuer</WP>
                       </TouchableOpacity>
                     </View>
-
                   </View>
-                ) : <View></View>}
+                ) : (
+                  <View></View>
+                )}
               </View>
             </>
           )}
@@ -668,12 +665,13 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.darkPink,
     justifyContent: "center",
     alignItems: "center",
+    borderRadius: 10,
   },
   centeredView: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22
+    marginTop: 22,
   },
   modalView: {
     margin: 20,
@@ -681,34 +679,44 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 35,
     alignItems: "center",
+    backgroundColor: Colors.darkPink,
+
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 2
+      height: 2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5
+    elevation: 5,
   },
   button: {
     borderRadius: 20,
     padding: 10,
     elevation: 2,
-    margin: 10
+    margin: 10,
   },
   buttonOpen: {
     backgroundColor: "#F194FF",
   },
   buttonClose: {
-    backgroundColor: "#2196F3",
+    backgroundColor: "white",
   },
   textStyle: {
-    color: "white",
     fontWeight: "bold",
-    textAlign: "center"
+    textAlign: "center",
   },
   modalText: {
     marginBottom: 15,
-    textAlign: "center"
-  }
+    textAlign: "center",
+    color: "white",
+  },
+  modalStyle: {
+    backgroundColor: Colors.darkPink,
+  },
+  Headinghai: {
+    fontFamily: "FredokaOne-Regular",
+    fontSize: 25,
+    color: "#fff",
+  },
 });
