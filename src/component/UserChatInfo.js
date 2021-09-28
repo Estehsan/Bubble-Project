@@ -1,38 +1,93 @@
-import React from "react";
-import { StyleSheet, Text, View, ScrollView, Image } from "react-native";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, Text, View, ScrollView, Image, Modal, Pressable } from "react-native";
 import Colors from "./../assets/colors/Colors";
 import Entypo from "react-native-vector-icons/Entypo";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { useNavigation } from '@react-navigation/native';
+import { block } from "react-native-reanimated";
+
 
 const UserChatInfo = ({ currentUserData, id, gender, name, userImg, selectedTeams }) => {
+
+  const [quitmodal, setQuitModal] = useState(false);
+  const [commonTeams, setCommonTeams] = useState([])
+  const navigation = useNavigation();
+
+
 
   let mutualInterest = () => {
     let count = 0
     let i = 0
-    let j = 0 
+    let j = 0
 
-    for(i in selectedTeams)
-    {
-      for(j in currentUserData.selectedTeams){
-        if(currentUserData.selectedTeams[j].id === selectedTeams[i].id){
-          count ++
+    for (i in selectedTeams) {
+      for (j in currentUserData.selectedTeams) {
+        if (currentUserData.selectedTeams[j].id === selectedTeams[i].id) {
+          count++
+
         }
       }
     }
 
     return count
-
-
   }
 
- 
+  let renderTeamModal = () => {
+    let i = 0
+    let j = 0
+
+    for (i in selectedTeams) {
+      for (j in currentUserData.selectedTeams) {
+        if (currentUserData.selectedTeams[j].id === selectedTeams[i].id) {
+          commonTeams.push(currentUserData.selectedTeams[j].item)
+        }
+      }
+    }
+
+    // console.log(currentUserData.id , id , name , gender)
+
+    setQuitModal(true)
+  }
+
 
   return (
     <View style={styles.Container}>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={quitmodal}
+        onRequestClose={() => {
+          setQuitModal(!quitmodal);
+          setCommonTeams([])
+
+        }}
+        contentContainerStyle={styles.modalStyle}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.Headinghai}>COMMON</Text>
+            <Text style={styles.Headinghai}></Text>
+
+            <Text style={styles.modalText}>
+              {commonTeams}
+            </Text>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => {
+                setQuitModal(!quitmodal);
+                setCommonTeams([])
+              }}>
+              <Text style={styles.textStyle}>Close</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
       {selectedTeams &&
         mutualInterest() > 0 &&
         <View style={styles.Badge}>
-          <Text style={{ color: 'white' }}>{mutualInterest()}</Text>
+          <TouchableOpacity onPress={() => renderTeamModal()}>
+            <Text style={{ color: 'white' }}>{mutualInterest()}</Text>
+          </TouchableOpacity>
         </View>
 
       }
@@ -68,10 +123,23 @@ const UserChatInfo = ({ currentUserData, id, gender, name, userImg, selectedTeam
           <Text>{gender}</Text>
         </View>
         <View style={styles.rContainer}>
-          <Entypo color="red" name="flower" size={30} />
+          <TouchableOpacity
+            style={styles.ListOfUsers}
+            onPress={() => {
+              navigation.navigate("ChatUser", {
+                currentUserId: currentUserData.id,
+                messageId: id,
+                name: name,
+                gender: gender,
+                messageImg: userImg,
+              });
+            }}>
+            <Entypo color="red" name="flower" size={30} />
+          </TouchableOpacity>
+
         </View>
       </View>
-    </View>
+    </View >
   );
 };
 
@@ -117,4 +185,52 @@ const styles = StyleSheet.create({
     height: 30, width: 30, backgroundColor: Colors.darkPink, borderRadius: 30, justifyContent: 'center', alignItems: 'center', position: 'absolute', left: 25,
     top: 3
   },
+  modalText: {
+    margin: 15,
+    textAlign: "center",
+    color: "white",
+    padding: 5,
+    justifyContent: "center",
+  },
+  modalStyle: {
+    backgroundColor: Colors.darkPink,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+    flexDirection: "column",
+    padding: 10
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    backgroundColor: Colors.darkPink,
+
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    margin: 10,
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+  },
+  buttonClose: {
+    backgroundColor: "white",
+  },
+  ListOfUsers: {},
 });

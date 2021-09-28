@@ -134,17 +134,17 @@ const UsersListPlace = ({ route, ...props }) => {
                 data={userData}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
-                  <TouchableOpacity
-                    style={styles.ListOfUsers}
-                    onPress={() => {
-                      props.navigation.navigate("ChatUser", {
-                        currentUserId: currentUserId,
-                        messageId: item.id,
-                        name: item.name,
-                        gender: item.gender,
-                        messageImg: item.userImg,
-                      });
-                    }}>
+                  // <TouchableOpacity
+                  //   style={styles.ListOfUsers}
+                  //   onPress={() => {
+                  //     props.navigation.navigate("ChatUser", {
+                  //       currentUserId: currentUserId,
+                  //       messageId: item.id,
+                  //       name: item.name,
+                  //       gender: item.gender,
+                  //       messageImg: item.userImg,
+                  //     });
+                  //   }}>
                     <UserChatInfo
                       currentUserData={currentUserData}
                       id={item.id}
@@ -153,7 +153,7 @@ const UsersListPlace = ({ route, ...props }) => {
                       userImg={item.userImg}
                       selectedTeams={item.selectedTeams}
                     />
-                  </TouchableOpacity>
+                  // </TouchableOpacity>
                 )}
               />
             )}

@@ -131,7 +131,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
     await setModalVisible(checker);
   }, [checker]);
 
-  useEffect(() => {}, [check]);
+  useEffect(() => { }, [check]);
 
   let uid_merge = (uid1, uid2) => {
     if (uid1 < uid2) {
@@ -224,7 +224,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
         transparent={true}
         visible={quitmodal}
         onRequestClose={() => {
-          setModalVisible(!modalVisible);
+          setQuitModal(!quitmodal);
         }}
         contentContainerStyle={styles.modalStyle}>
         <View style={styles.centeredView}>
