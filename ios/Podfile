@@ -26,6 +26,8 @@ pod 'react-native-google-maps', :path => rn_maps_path
 
   pod 'RNCCheckbox', :path => '../node_modules/@react-native-community/checkbox'
 
+  pod 'react-native-onesignal', :path => '../node_modules/react-native-onesignal'
+
   target 'BubbleCodeTests' do
     inherit! :complete
     # Pods for testing
