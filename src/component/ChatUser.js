@@ -21,6 +21,8 @@ import {
   Pressable,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import OneSignal from "react-native-onesignal"
+
 
 import LinearGradient from "react-native-linear-gradient";
 import LocationTab from "./LocationTab";
@@ -52,6 +54,8 @@ const ChatUser = ({ navigation, route, ...props }) => {
   let [loading, setLoading] = useState(true);
 
   let [check, setCheck] = useState(0);
+
+  let [notificationId, setNotificationId] = useState("")
 
   const [modalVisible, setModalVisible] = useState(false);
   const [quitmodal, setQuitModal] = useState(false);
@@ -91,6 +95,22 @@ const ChatUser = ({ navigation, route, ...props }) => {
         setcurrentName(doc.data().userName);
         setcurrentGender(doc.data().userGender);
         setcurrentImage(doc.data().userProfileImageUrl);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log("Error getting documents: ", error);
+      });
+
+    let messagedatum = await firestore
+      .collection("users")
+      .doc(messageId)
+      .get()
+      .then((doc) => {
+        setLoading(true);
+        if (doc.exists) {
+          setNotificationId(doc.data().notificationId)
+        }
+
         setLoading(false);
       })
       .catch((error) => {
@@ -200,19 +220,73 @@ const ChatUser = ({ navigation, route, ...props }) => {
     Alert.alert("You have leaved the room");
     navigation.navigate("Message");
   };
-  let send_message = () => {
+  let send_message = async () => {
     if (message.length > 0) {
       let merge = uid_merge(currentUserId, messageId);
-
+      setLoading(true);
       firestore.collection(`message`).doc(merge).collection(`chat`).add({
         message: message,
         id: currentUserId,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      });
-      setLoading(true);
+      })
+      // let timestamp = Math.floor(Date.now() / 1000);
 
+      // console.log(userId)
+
+      // const notificationObj = {
+      //   contents: {
+      //     en: `${currentName} :  ${message}`
+      //   },
+      //   include_player_ids: [userId]
+      // };
+
+      // const jsonString = JSON.stringify(notificationObj);
+
+      // OneSignal.postNotification(jsonString, (success) => {
+      //   console.log("Success:", success);
+      // }, (error) => {
+      //   console.log("Error:", error);
+      // });
+
+      const { userId } = await OneSignal.getDeviceState()
+
+      if (notificationId != "" && notificationId != userId) {
+        let externalUserId = notificationId; // You will supply the external user id to the OneSignal SDK
+
+        // Setting External User Id with Callback Available in SDK Version 3.9.3+
+        OneSignal.setExternalUserId(externalUserId, (results) => {
+          // The results will contain push and email success statuses
+          console.log('Results of setting external user id');
+          console.log(results);
+
+          // Push can be expected in almost every situation with a success status, but
+          // as a pre-caution its good to verify it exists
+          if (results.push && results.push.success) {
+            console.log('Results of setting external user id push status:');
+            console.log(results.push.success);
+          }
+        })
+
+        const notification = {
+          contents: {
+            en: `${currentName} :  ${message}`
+          },
+          include_player_ids: [externalUserId]
+        };
+
+
+        const jsonStri = JSON.stringify(notification);
+
+        OneSignal.postNotification(jsonStri, (success) => {
+          console.log("Success:", success);
+        }, (error) => {
+          console.log("Error:", error);
+        });
+
+      }
       setMessage("");
       setLoading(false);
+
     }
   };
   return (
@@ -288,6 +362,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => {
+                setLoading(true);
                 firestore
                   .collection("users")
                   .doc(currentUserId)
@@ -302,6 +377,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
                 setGetRequest("decline");
                 setChecker(false);
                 setCheck(check + 1);
+                setLoading(false);
               }}>
               <Text style={styles.textStyle}>Reject</Text>
             </Pressable>
@@ -496,94 +572,107 @@ const ChatUser = ({ navigation, route, ...props }) => {
                   <View />
                 )}
               </View>
-              <View style={styles.Footer}>
-                {getRequest != "decline" && request != "decline" ? (
-                  // getRequest != "accept" &&
-                  <View>
-                    <View style={styles.fieldContainer}>
-                      <TextInput
-                        style={styles.input}
-                        onChangeText={setMessage}
-                        value={message}
-                        placeholder="date de naissance"
-                        keyboardType="default"
-                      />
+              {loading ? (
+                <ActivityIndicator
+                  style={{
+                    alignItems: "center",
+                    alignContent: "center",
+                    justifyContent: "center",
+                    top: 200,
+                  }}
+                  size="large"
+                  color="#000"
+                />
+              ) : (
+                <View style={styles.Footer}>
+                  {getRequest != "decline" && request != "decline" ? (
+                    // getRequest != "accept" &&
+                    <View>
+                      <View style={styles.fieldContainer}>
+                        <TextInput
+                          style={styles.input}
+                          onChangeText={setMessage}
+                          value={message}
+                          placeholder="date de naissance"
+                          keyboardType="default"
+                        />
 
-                      <TouchableOpacity
-                        style={{ alignContent: "center" }}
-                        onPress={() => {
-                          send_message();
-                          Keyboard.dismiss();
-                        }}>
-                        <Icon name="arrow-up-circle" size={32} />
-                      </TouchableOpacity>
+                        <TouchableOpacity
+                          style={{ alignContent: "center" }}
+                          onPress={() => {
+                            send_message();
+                            Keyboard.dismiss();
+                          }}>
+                          <Icon name="arrow-up-circle" size={32} />
+                        </TouchableOpacity>
+                      </View>
                     </View>
-                  </View>
-                ) : (
-                  <Text style={{ textAlign: "center", fontSize: 20 }}>
-                    Request declined send request again to continue
-                  </Text>
-                )}
-                {getRequest != "accept" || request != "accept" ? (
-                  <View style={styles.bottombtn}>
-                    <View style={styles.btn}>
-                      <TouchableOpacity
-                        onPress={() => {
-                          setQuitModal(true);
-                        }}>
-                        <WP>Quitter la conversation</WP>
-                      </TouchableOpacity>
-                    </View>
-                    <View style={styles.btn}>
-                      <TouchableOpacity
-                        onPress={() => {
-                          if (getRequest != "pending") {
-                            firestore
-                              .collection("users")
-                              .doc(messageId)
-                              .collection("friends")
-                              .doc(currentUserId)
-                              .set({
-                                friendId: currentUserId,
-                                status: "pending",
-                                requestGetter: true,
-                                name: currentName,
-                                gender: currentGender,
-                                image: currentImage,
-                              });
+                  ) : (
+                    <Text style={{ textAlign: "center", fontSize: 20 }}>
+                      Request declined send request again to continue
+                    </Text>
+                  )}
+                  {getRequest != "accept" || request != "accept" ? (
+                    <View style={styles.bottombtn}>
+                      <View style={styles.btn}>
+                        <TouchableOpacity
+                          onPress={() => {
+                            setQuitModal(true);
+                          }}>
+                          <WP>Quitter la conversation</WP>
+                        </TouchableOpacity>
+                      </View>
+                      <View style={styles.btn}>
+                        <TouchableOpacity
+                          onPress={() => {
+                            if (getRequest != "pending") {
+                              firestore
+                                .collection("users")
+                                .doc(messageId)
+                                .collection("friends")
+                                .doc(currentUserId)
+                                .set({
+                                  friendId: currentUserId,
+                                  status: "pending",
+                                  requestGetter: true,
+                                  name: currentName,
+                                  gender: currentGender,
+                                  image: currentImage,
+                                });
 
-                            firestore
-                              .collection("users")
-                              .doc(currentUserId)
-                              .collection("friends")
-                              .doc(messageId)
-                              .set({
-                                friendId: messageId,
-                                status: "accept",
-                                requestGetter: false,
-                                name: name,
-                                gender: gender,
-                                image: messageImg,
-                              });
-                            setGetRequest("pending");
-                            setRequest("accept");
-                            Alert.alert(
-                              "You have continue the chat wait for other user to continue"
-                            );
-                          } else {
-                            Alert.alert(
-                              "You have Already continue a Chat wait for other user"
-                            );
-                          }
-                        }}>
-                        <WP>Continuer</WP>
-                      </TouchableOpacity>
+                              firestore
+                                .collection("users")
+                                .doc(currentUserId)
+                                .collection("friends")
+                                .doc(messageId)
+                                .set({
+                                  friendId: messageId,
+                                  status: "accept",
+                                  requestGetter: false,
+                                  name: name,
+                                  gender: gender,
+                                  image: messageImg,
+                                });
+                              setGetRequest("pending");
+                              setRequest("accept");
+                              Alert.alert(
+                                "You have continue the chat wait for other user to continue"
+                              );
+                            } else {
+                              Alert.alert(
+                                "You have Already continue a Chat wait for other user"
+                              );
+                            }
+                          }}>
+                          <WP>Continuer</WP>
+                        </TouchableOpacity>
+                      </View>
                     </View>
-                  </View>
-                ) : (
-                  <View></View>
-                )}
-              </View>
+                  ) : (
+                    <View></View>
+                  )}
+                </View>
+              )}
             </>
           )}
         </KeyboardAvoidingView>

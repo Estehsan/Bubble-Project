@@ -4,6 +4,7 @@ import "firebase/database";
 import "firebase/firestore";
 import "firebase/storage";
 import messaging from '@react-native-firebase/messaging';
+import OneSignal from "react-native-onesignal"
 
 
 
@@ -69,6 +70,9 @@ const signUp = (userDetails) => {
           xhr.send(null);
         });
 
+        const { userId } = await OneSignal.getDeviceState()
+
+
         storage
           .ref()
           .child(`userProfileImage/${uid}/` + filename)
@@ -90,7 +94,8 @@ const signUp = (userDetails) => {
                   userProfileImageUrl: userProfileImageUrl,
                   latitude: 0,
                   longitude: 0,
-                  candy: 3
+                  candy: 3,
+                  notificationId : userId,
                 }
                 let user = firestore
                   .collection("users")

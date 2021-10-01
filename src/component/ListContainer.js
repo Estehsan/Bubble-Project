@@ -4,19 +4,33 @@ import Colors from "../assets/colors/Colors";
 import H2 from "./basic/H2";
 import P from "./basic/P";
 
-const ListContainer = ({ title, location, place, code, img, navigation }) => {
+const ListContainer = ({
+  title,
+  location,
+  place,
+  code,
+  img,
+  navigation,
+  qrimage,
+}) => {
   return (
     <View style={styles.Container}>
       <View style={styles.main}>
         <View style={styles.lContainer}>
           {img ? (
-            <Image style={{
-              height: 100, width: 110, ...Colors.customShadow,
-            }} source={{ uri: img }} />
+            <Image
+              style={{
+                height: 100,
+                width: 110,
+                ...Colors.customShadow,
+              }}
+              source={{ uri: img }}
+            />
           ) : (
             <Image
-              style={{ height: 100, width: 110, ...Colors.customShadow, }}
+              style={{ height: 100, width: 110, ...Colors.customShadow }}
               source={require("../assets/images/description.png")}
+              // source={{ uri: img }}
             />
           )}
         </View>
@@ -33,14 +47,14 @@ const ListContainer = ({ title, location, place, code, img, navigation }) => {
           <P ellipsizeMode="tail" numberOfLines={1}>
             {code}
           </P>
+          <Image source={{ uri: qrimage }} />
           <TouchableOpacity
             onPress={() => {
               // navigation.navigate('UsersListPlace');
-            }}
-          ></TouchableOpacity>
+            }}></TouchableOpacity>
         </View>
       </View>
-    </View >
+    </View>
   );
 };
 
@@ -74,5 +88,5 @@ const styles = StyleSheet.create({
   rContainer: {
     width: "70%",
   },
-  lContainer: { paddingHorizontal: 13, }
+  lContainer: { paddingHorizontal: 13 },
 });

@@ -1,55 +1,65 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, ScrollView, Image, Modal, Pressable } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Image,
+  Modal,
+  Pressable,
+  FlatList,
+} from "react-native";
 import Colors from "./../assets/colors/Colors";
 import Entypo from "react-native-vector-icons/Entypo";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 import { block } from "react-native-reanimated";
 
-
-const UserChatInfo = ({ currentUserData, id, gender, name, userImg, selectedTeams }) => {
-
+const UserChatInfo = ({
+  currentUserData,
+  id,
+  gender,
+  name,
+  userImg,
+  selectedTeams,
+}) => {
   const [quitmodal, setQuitModal] = useState(false);
-  const [commonTeams, setCommonTeams] = useState([])
+  const [commonTeams, setCommonTeams] = useState([]);
   const navigation = useNavigation();
 
-
-
   let mutualInterest = () => {
-    let count = 0
-    let i = 0
-    let j = 0
+    let count = 0;
+    let i = 0;
+    let j = 0;
 
     for (i in selectedTeams) {
       for (j in currentUserData.selectedTeams) {
         if (currentUserData.selectedTeams[j].id === selectedTeams[i].id) {
-          count++
-
+          count++;
         }
       }
     }
 
-    return count
-  }
+    return count;
+  };
 
   let renderTeamModal = () => {
-    let i = 0
-    let j = 0
+    let i = 0;
+    let j = 0;
 
     for (i in selectedTeams) {
       for (j in currentUserData.selectedTeams) {
         if (currentUserData.selectedTeams[j].id === selectedTeams[i].id) {
-          commonTeams.push(currentUserData.selectedTeams[j].item)
+          commonTeams.push(currentUserData.selectedTeams[j].item);
         }
       }
     }
 
     // console.log(currentUserData.id , id , name , gender)
 
-    setQuitModal(true)
-  }
-
+    setQuitModal(true);
+  };
 
   return (
     <View style={styles.Container}>
@@ -59,8 +69,7 @@ const UserChatInfo = ({ currentUserData, id, gender, name, userImg, selectedTeam
         visible={quitmodal}
         onRequestClose={() => {
           setQuitModal(!quitmodal);
-          setCommonTeams([])
-
+          setCommonTeams([]);
         }}
         contentContainerStyle={styles.modalStyle}>
         <View style={styles.centeredView}>
@@ -68,34 +77,31 @@ const UserChatInfo = ({ currentUserData, id, gender, name, userImg, selectedTeam
             <Text style={styles.Headinghai}>COMMON</Text>
             <Text style={styles.Headinghai}></Text>
 
-            <Text style={styles.modalText}>
-              {commonTeams}
-            </Text>
+            {/* <FlatList
+              data={commonTeams}
+              renderItem={({ item }) => <Text>{commonTeams}</Text>}
+            /> */}
+            <Text style={[styles.modalText, {}]}>{commonTeams}</Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => {
                 setQuitModal(!quitmodal);
-                setCommonTeams([])
+                setCommonTeams([]);
               }}>
               <Text style={styles.textStyle}>Close</Text>
             </Pressable>
           </View>
         </View>
       </Modal>
-      {selectedTeams &&
-        mutualInterest() > 0 &&
+      {selectedTeams && mutualInterest() > 0 && (
         <View style={styles.Badge}>
           <TouchableOpacity onPress={() => renderTeamModal()}>
-            <Text style={{ color: 'white' }}>{mutualInterest()}</Text>
+            <Text style={{ color: "white" }}>{mutualInterest()}</Text>
           </TouchableOpacity>
         </View>
-
-      }
+      )}
       <View style={styles.main}>
         <View style={styles.lContainer}>
-
-
-
           {userImg ? (
             <Image
               style={{ height: 50, width: 50, borderRadius: 50 }}
@@ -110,9 +116,7 @@ const UserChatInfo = ({ currentUserData, id, gender, name, userImg, selectedTeam
         </View>
 
         <View style={styles.center}>
-
-          <View style={{ display: 'flex', flexDirection: 'row' }}>
-
+          <View style={{ display: "flex", flexDirection: "row" }}>
             <Text>{name}</Text>
             <Ionicons
               style={styles.position}
@@ -134,12 +138,15 @@ const UserChatInfo = ({ currentUserData, id, gender, name, userImg, selectedTeam
                 messageImg: userImg,
               });
             }}>
-            <Entypo color="red" name="flower" size={30} />
+            <Image
+              style={{ height: 50, width: 50, borderRadius: 50 }}
+              resizeMode="contain"
+              source={require("./../assets/images/rose.png")}
+            />
           </TouchableOpacity>
-
         </View>
       </View>
-    </View >
+    </View>
   );
 };
 
@@ -147,9 +154,9 @@ export default UserChatInfo;
 
 const styles = StyleSheet.create({
   Container: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    color: 'red',
+    flexDirection: "row",
+    justifyContent: "center",
+    color: "red",
     alignItems: "center",
     ...Colors.customShadow,
   },
@@ -180,10 +187,17 @@ const styles = StyleSheet.create({
   },
   lContainer: { flex: 1 },
   center: { flex: 2 },
-  rContainer: { flex: 1, alignItems: 'flex-end' },
+  rContainer: { flex: 1, alignItems: "flex-end" },
   Badge: {
-    height: 30, width: 30, backgroundColor: Colors.darkPink, borderRadius: 30, justifyContent: 'center', alignItems: 'center', position: 'absolute', left: 25,
-    top: 3
+    height: 30,
+    width: 30,
+    backgroundColor: Colors.darkPink,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    left: 25,
+    top: 3,
   },
   modalText: {
     margin: 15,
@@ -201,7 +215,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 22,
     flexDirection: "column",
-    padding: 10
+    padding: 10,
   },
   modalView: {
     margin: 20,

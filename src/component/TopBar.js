@@ -1,14 +1,19 @@
-import React from 'react';
-import {StyleSheet, Text, View, Image} from 'react-native';
+import React from "react";
+import { StyleSheet, Text, View, Image } from "react-native";
 
-const TopBar = () => {
+const TopBar = ({ children }) => {
   return (
     <View style={styles.container}>
-      <Image
-        style={{height: 400, width: 130}}
-        resizeMode="contain"
-        source={require('./../assets/images/logo-bubble.png')}
-      />
+      <View style={styles.side}>{children}</View>
+
+      <View style={styles.center}>
+        <Image
+          style={{ height: 100, width: 130 }}
+          resizeMode="contain"
+          source={require("./../assets/images/logo-bubble.png")}
+        />
+      </View>
+      <View style={styles.side}></View>
     </View>
   );
 };
@@ -17,9 +22,17 @@ export default TopBar;
 
 const styles = StyleSheet.create({
   container: {
-    height: 110,
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flex: 1,
+    flexDirection: "row-reverse",
+    display: "flex",
+    height: 100,
+    justifyContent: "space-around",
+    alignItems: "center",
+    width: "100%",
   },
+  main: {
+    alignItems: "center",
+    width: "70%",
+  },
+  side: { backgroundColor: "red", width: "15%" },
 });

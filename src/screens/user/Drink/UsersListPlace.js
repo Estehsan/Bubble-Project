@@ -8,6 +8,7 @@ import {
   Modal,
   FlatList,
   ScrollView,
+  Image,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import LocationTab from "./../../../component/LocationTab";
@@ -15,6 +16,8 @@ import TopBar from "./../../../component/TopBar";
 import ListContainer from "./../../../component/ListContainer";
 import SearchBar from "./../../../component/SearchBar";
 import UserChatInfo from "../../../component/UserChatInfo";
+import RNQRGenerator from "rn-qr-generator";
+
 import { auth, firestore } from "../../../db/firebase";
 import { getDistance } from "geolib";
 
@@ -42,8 +45,34 @@ const UsersListPlace = ({ route, ...props }) => {
   const [userData, setUserData] = useState([]);
   const [currentUserId, setCurrentUserId] = useState("");
   const [currentUserData, setCurrentUserData] = useState("");
+  const [qrimage, setQrimage] = useState(null);
 
   useEffect(() => {
+    // QRCODE START
+    const arr = JSON.stringify([title, place, location, code, img]);
+
+    RNQRGenerator.generate({
+      value: arr,
+      height: 300,
+      width: 300,
+      base64: true,
+      backgroundColor: "#FFC1DD",
+      color: "#DD488C",
+      correctionLevel: "M",
+      // padding: {
+      //   top: 0,
+      //   left: 0,
+      //   bottom: 0,
+      //   right: 0,
+      // }
+    })
+      .then((response) => {
+        console.log("Response:", response);
+        setQrimage(response.uri);
+      })
+      .catch((err) => console.log("Cannot create QR code", err));
+
+    // QRCODE END
     let isMounted = true;
 
     if (isMounted)
@@ -113,7 +142,13 @@ const UsersListPlace = ({ route, ...props }) => {
       <SafeAreaView>
         <ScrollView>
           <View>
-            <TopBar />
+            <TopBar>
+              <Image
+                style={{ height: 60, width: 60 }}
+                source={{ uri: qrimage }}
+                // source={{ uri: img }}
+              />
+            </TopBar>
           </View>
           <View style={{ marginTop: 30 }}></View>
           <View style={{ marginTop: 10 }}>
@@ -145,14 +180,14 @@ const UsersListPlace = ({ route, ...props }) => {
                   //       messageImg: item.userImg,
                   //     });
                   //   }}>
-                    <UserChatInfo
-                      currentUserData={currentUserData}
-                      id={item.id}
-                      name={item.name}
-                      gender={item.gender}
-                      userImg={item.userImg}
-                      selectedTeams={item.selectedTeams}
-                    />
+                  <UserChatInfo
+                    currentUserData={currentUserData}
+                    id={item.id}
+                    name={item.name}
+                    gender={item.gender}
+                    userImg={item.userImg}
+                    selectedTeams={item.selectedTeams}
+                  />
                   // </TouchableOpacity>
                 )}
               />

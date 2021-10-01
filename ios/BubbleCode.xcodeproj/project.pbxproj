@@ -47,6 +47,7 @@
 		1D93BA68386B4E8A8024F5A7 /* FredokaOne-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "FredokaOne-Regular.ttf"; path = "../src/assets/fonts/FredokaOne-Regular.ttf"; sourceTree = "<group>"; };
 		1DBA14D0672FF9D2BCBFFD4E /* Pods-BubbleCode-BubbleCodeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BubbleCode-BubbleCodeTests.release.xcconfig"; path = "Target Support Files/Pods-BubbleCode-BubbleCodeTests/Pods-BubbleCode-BubbleCodeTests.release.xcconfig"; sourceTree = "<group>"; };
 		1E42B23BDB494E4D80D371F8 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
+		349D22A92704AD23000ACF0D /* BubbleCode.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = BubbleCode.entitlements; path = BubbleCode/BubbleCode.entitlements; sourceTree = "<group>"; };
 		355484F4DF544307AAC9AF9B /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		45539B07F0534F3CA4AF7AFD /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
 		455E14F7CC184B788E9ED912 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
@@ -110,6 +111,7 @@
 		13B07FAE1A68108700A75B9A /* BubbleCode */ = {
 			isa = PBXGroup;
 			children = (
+				349D22A92704AD23000ACF0D /* BubbleCode.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -555,6 +557,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = BubbleCode/BubbleCode.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = BubbleCode/Info.plist;
@@ -581,6 +584,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = BubbleCode/BubbleCode.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = BubbleCode/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
