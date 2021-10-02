@@ -23,6 +23,7 @@ const SearchBar = ({ ...props }) => {
           onPress={(data, details = null) => {
             // 'details' is provided when fetchDetails = true
             console.log(data, details);
+            const city = city.description.split(",")[0];
             props.navigation.navigate("UsersListPlace");
           }}
           fetchDetails

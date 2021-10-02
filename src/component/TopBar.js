@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Image } from "react-native";
 const TopBar = ({ children }) => {
   return (
     <View style={styles.container}>
-      <View style={styles.side}>{children}</View>
+      {/* {children && <View style={styles.side}>{children}</View>} */}
 
       <View style={styles.center}>
         <Image
@@ -13,7 +13,7 @@ const TopBar = ({ children }) => {
           source={require("./../assets/images/logo-bubble.png")}
         />
       </View>
-      <View style={styles.side}></View>
+      {/* <View style={styles.side}></View> */}
     </View>
   );
 };

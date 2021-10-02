@@ -26,20 +26,18 @@ const Message = ({ ...props }) => {
 
   let [data, setData] = useState([]);
   let [accepted, setAccepted] = useState([]);
-  let [searchAccepted, setSearchAccepted] = useState([])
+  let [searchAccepted, setSearchAccepted] = useState([]);
 
   let [userId, setuserId] = useState([]);
   let [loading, setLoading] = useState(true);
   let [imageLoad, SetImageLoad] = useState(true);
   let [renderSearch, setRenderSearch] = useState(false);
   let [renderAccepted, setRenderAccepted] = useState(true);
-  const [defaultSearchValue, setDefaultSearchValue] = useState("")
-
-
+  const [defaultSearchValue, setDefaultSearchValue] = useState("");
 
   useEffect(async () => {
     let isMounted = true;
-    var data2
+    var data2;
 
     if (isMounted)
       auth.onAuthStateChanged(async (user) => {
@@ -94,7 +92,7 @@ const Message = ({ ...props }) => {
         }
       });
 
-    console.log(accepted)
+    console.log(accepted);
 
     return () => {
       isMounted = false;
@@ -110,36 +108,47 @@ const Message = ({ ...props }) => {
       //   console.log(accepted[val].name)
       // });
       const result = accepted.filter((val) => {
-        return val.name.toString().toLowerCase().indexOf(searchText.toString().toLowerCase()) !== -1 ||
-          val.gender.toString().toLowerCase().indexOf(searchText.toString().toLowerCase()) !== -1;
-      })
+        return (
+          val.name
+            .toString()
+            .toLowerCase()
+            .indexOf(searchText.toString().toLowerCase()) !== -1 ||
+          val.gender
+            .toString()
+            .toLowerCase()
+            .indexOf(searchText.toString().toLowerCase()) !== -1
+        );
+      });
       if (searchText.length > 0) {
-        setRenderAccepted(false)
-        setRenderSearch(true)
-        setDefaultSearchValue(searchText)
-        setSearchAccepted(result)
+        setRenderAccepted(false);
+        setRenderSearch(true);
+        setDefaultSearchValue(searchText);
+        setSearchAccepted(result);
       } else {
-        setRenderAccepted(true)
-        setRenderSearch(false)
-        setDefaultSearchValue(searchText)
-        setSearchAccepted(result)
+        setRenderAccepted(true);
+        setRenderSearch(false);
+        setDefaultSearchValue(searchText);
+        setSearchAccepted(result);
       }
     }
-  }
-
-
+  };
 
   return (
     <LinearGradient
       colors={["#FFC1DD", "#ffffff"]}
       style={styles.linearGradient}>
       <SafeAreaView>
-        <TopBar />
+        <View style={styles.Logo}>
+          <Image
+            style={{ height: 100, width: 130 }}
+            resizeMode="contain"
+            source={require("./../../assets/images/logo-bubble.png")}
+          />
+        </View>
         <View
           style={{
-            flexDirection: "row",
             alignItems: "center",
-            justifyContent: "center",
+            marginTop: 30,
           }}>
           <Text style={styles.ChatUserName}>MES CONVERSATIONS</Text>
         </View>
@@ -218,7 +227,7 @@ const Message = ({ ...props }) => {
               )}
 
               <H1>All Chats</H1>
-              {renderAccepted &&
+              {renderAccepted && (
                 <FlatList
                   data={accepted}
                   keyExtractor={(item) => item.id}
@@ -292,8 +301,8 @@ const Message = ({ ...props }) => {
                                     item.gender === "male"
                                       ? "male"
                                       : item.gender === "female"
-                                        ? "female"
-                                        : "male-female"
+                                      ? "female"
+                                      : "male-female"
                                   }
                                   size={30}
                                   color={"#000"}
@@ -311,8 +320,8 @@ const Message = ({ ...props }) => {
                     </View>
                   )}
                 />
-              }
-              {renderSearch &&
+              )}
+              {renderSearch && (
                 <FlatList
                   data={searchAccepted}
                   keyExtractor={(item) => item.id}
@@ -386,8 +395,8 @@ const Message = ({ ...props }) => {
                                     item.gender === "male"
                                       ? "male"
                                       : item.gender === "female"
-                                        ? "female"
-                                        : "male-female"
+                                      ? "female"
+                                      : "male-female"
                                   }
                                   size={30}
                                   color={"#000"}
@@ -405,7 +414,7 @@ const Message = ({ ...props }) => {
                     </View>
                   )}
                 />
-              }
+              )}
             </>
           )}
         </View>
@@ -451,7 +460,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
     marginTop: 15,
-    color : 'black',
+    color: "black",
     padding: 15,
     backgroundColor: "#fff",
     borderRadius: 20,
@@ -485,5 +494,9 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     marginHorizontal: 10,
     marginVertical: 5,
+  },
+  Logo: {
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

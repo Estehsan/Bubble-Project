@@ -8,6 +8,7 @@ import {
   Modal,
   FlatList,
   ScrollView,
+  TextInput,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import LocationTab from "../../component/LocationTab";
@@ -15,7 +16,7 @@ import TopBar from "../../component/TopBar";
 import ListContainer from "./../../component/ListContainer";
 import SearchBar from "./../../component/SearchBar";
 import { auth, firestore } from "../../db/firebase";
-import { getDistance } from 'geolib';
+import { getDistance } from "geolib";
 
 // linear-gradient(0deg, #FFFFFF 0%, #FFC1DD 78.9%)
 
@@ -61,20 +62,19 @@ const Drink = ({ navigation }) => {
   const [userMarker, setUserMarker] = useState({});
   const [kilo, setKilo] = useState(true);
   const [light, setLight] = useState(true);
-
+  const [city, setCity] = useState("");
 
   useEffect(() => {
-
     let isMounted = true;
     if (isMounted)
-
       auth.onAuthStateChanged((user) => {
         if (user) {
           var uid = user.uid;
           // console.log(uid)
-          firestore.collection("users").doc(uid)
+          firestore
+            .collection("users")
+            .doc(uid)
             .onSnapshot(async (doc) => {
-
               let docs = {
                 key: user.uid,
                 title: doc.data().userName,
@@ -83,14 +83,11 @@ const Drink = ({ navigation }) => {
                   longitude: doc.data().longitude,
                   latitude: doc.data().latitude,
                 },
-              }
+              };
 
-
-              await setUserMarker(docs)
+              await setUserMarker(docs);
               // console.log(docs)
-
-            })
-
+            });
         } else {
           // User is signed out
           // ...
@@ -99,11 +96,10 @@ const Drink = ({ navigation }) => {
 
     return () => {
       isMounted = false;
-    }
-  }, [])
+    };
+  }, []);
 
   useEffect(async () => {
-
     let isMounted = true;
 
     if (isMounted)
@@ -129,39 +125,27 @@ const Drink = ({ navigation }) => {
         var data = [];
         if (kilo === true) {
           for (var i = 0; i < docs.length; i++) {
-            var dis = await getDistance(
-              userMarker.latlng,
-              docs[i].latlng,
-            )
+            var dis = await getDistance(userMarker.latlng, docs[i].latlng);
 
-            dis = dis / 1000
+            dis = dis / 1000;
 
             // console.log(dis)
             if (dis < 10) {
-              data.push(docs[i])
+              data.push(docs[i]);
             }
-
-
           }
         } else {
           for (var i = 0; i < docs.length; i++) {
-            var dis = await getDistance(
-              userMarker.latlng,
-              docs[i].latlng,
-            )
+            var dis = await getDistance(userMarker.latlng, docs[i].latlng);
 
-            dis = dis / 1000
+            dis = dis / 1000;
 
             // console.log(dis)
             if (dis < 1) {
-              data.push(docs[i])
+              data.push(docs[i]);
             }
-
-
           }
-
         }
-
 
         setLocationData(data);
         console.log(data);
@@ -170,25 +154,31 @@ const Drink = ({ navigation }) => {
 
     return () => {
       isMounted = false;
-    }
+    };
   }, [userMarker, kilo]);
 
   // console.log(locationData);
   return (
-
     <LinearGradient
       colors={["#FFC1DD", "#ffffff"]}
-      style={styles.linearGradient}
-    >
+      style={styles.linearGradient}>
       <ScrollView>
         <SafeAreaView>
           <View>
             <TopBar />
           </View>
           <View style={{ marginTop: 30 }}>
-            <LocationTab ChangeKilo={e => setKilo(e)} ChangeLight={e => setLight(e)} />
+            <LocationTab
+              ChangeKilo={(e) => setKilo(e)}
+              ChangeLight={(e) => setLight(e)}
+            />
           </View>
-          <SearchBar />
+          <TextInput
+            placeholder="Search for friends ..."
+            // onChangeText={(e) => handleSearchBar(e)}
+            // value={defaultSearchValue}
+            style={styles.inputField}
+          />
           <View style={{ marginTop: 10 }}>
             {/* {locationData && (
             <FlatList
@@ -232,10 +222,9 @@ const Drink = ({ navigation }) => {
                         location: item.description,
                         code: item.schedules,
                         img: item.photo,
-                        latlng: item.latlng
+                        latlng: item.latlng,
                       })
-                    }
-                  >
+                    }>
                     <ListContainer
                       title={item.title}
                       place={item.address}
@@ -259,4 +248,15 @@ export default Drink;
 
 const styles = StyleSheet.create({
   linearGradient: { flex: 1 },
+  inputField: {
+    flexDirection: "row",
+    alignContent: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    marginTop: 15,
+    color: "black",
+    padding: 15,
+    backgroundColor: "#fff",
+    borderRadius: 20,
+  },
 });
