@@ -147,7 +147,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
     await setModalVisible(checker);
   }, [checker]);
 
-  useEffect(() => {}, [check]);
+  useEffect(() => { }, [check]);
 
   let uid_merge = (uid1, uid2) => {
     if (uid1 < uid2) {
@@ -225,6 +225,24 @@ const ChatUser = ({ navigation, route, ...props }) => {
         id: currentUserId,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       });
+
+      firestore
+        .collection("users")
+        .doc(messageId)
+        .collection("friends")
+        .doc(currentUserId)
+        .update({
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        })
+
+        firestore
+        .collection("users")
+        .doc(currentUserId)
+        .collection("friends")
+        .doc(messageId)
+        .update({
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        })
       // let timestamp = Math.floor(Date.now() / 1000);
 
       // console.log(userId)
@@ -246,7 +264,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
 
       const { userId } = await OneSignal.getDeviceState();
 
-      if (notificationId != "" && notificationId != userId) {
+      if (notificationId != "" || notificationId != undefined || notificationId != userId) {
         let externalUserId = notificationId; // You will supply the external user id to the OneSignal SDK
 
         // Setting External User Id with Callback Available in SDK Version 3.9.3+

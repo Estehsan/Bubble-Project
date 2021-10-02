@@ -27,6 +27,8 @@ const Message = ({ ...props }) => {
 
   let [data, setData] = useState([]);
   let [accepted, setAccepted] = useState([]);
+  let [accepted2, setAccepted2] = useState([]);
+
   let [searchAccepted, setSearchAccepted] = useState([]);
 
   let [userId, setuserId] = useState([]);
@@ -72,6 +74,7 @@ const Message = ({ ...props }) => {
             .collection("users")
             .doc(uid)
             .collection("friends")
+            .orderBy("createdAt", "desc")
             .onSnapshot(async (querySnapshot) => {
               let docs = querySnapshot.docs.map((doc) => ({
                 id: doc.id,
@@ -80,7 +83,6 @@ const Message = ({ ...props }) => {
                 image: doc.data().image,
                 // status: doc.data().status
               }));
-
               await setAccepted(docs);
               console.log(data);
               setLoading(false);
@@ -304,8 +306,8 @@ const Message = ({ ...props }) => {
                                     item.gender === "male"
                                       ? "male"
                                       : item.gender === "female"
-                                      ? "female"
-                                      : "male-female"
+                                        ? "female"
+                                        : "male-female"
                                   }
                                   size={30}
                                   color={"#000"}
@@ -397,8 +399,8 @@ const Message = ({ ...props }) => {
                                       item.gender === "male"
                                         ? "male"
                                         : item.gender === "female"
-                                        ? "female"
-                                        : "male-female"
+                                          ? "female"
+                                          : "male-female"
                                     }
                                     size={30}
                                     color={"#000"}
