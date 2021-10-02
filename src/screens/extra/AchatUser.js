@@ -8,6 +8,7 @@ import {
   Modal,
   TouchableOpacity,
   Pressable,
+  ScrollView,
   Alert,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
@@ -155,197 +156,203 @@ const AchatUser = ({ ...props }) => {
       colors={["#FFC1DD", "#ffffff"]}
       style={styles.linearGradient}>
       <SafeAreaView>
-        <View>
+        <View style={{ width: "100%", height: 100 }}>
           <TopBar />
         </View>
-
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            marginVertical: 10,
-          }}>
-          <Text style={styles.ChatUserName}>MON FLEURISTE BUBBLE</Text>
-        </View>
-        <View style={styles.TopBarExtra}>
-          <Image
-            style={{ height: 70, width: 70, borderRadius: 70, marginRight: 10 }}
-            resizeMode="contain"
-            source={require("./../../assets/images/rose.png")}
-          />
-          <Text style={styles.topFont}>
-            Mon solde de des sucreries
-            {"\n"} disponibles :
-          </Text>
-          <Text style={styles.threeFont}>{candy}</Text>
-        </View>
-        <View style={styles.mainBox}>
-          <View style={styles.boxes}>
-            <Text style={styles.BoxText}>1 DES BONBONS</Text>
-            <Text> {""}</Text>
-
-            <View style={styles.BoxImage}>
-              <Image
-                style={{ height: 35, width: 35, borderRadius: 35 }}
-                resizeMode="contain"
-                source={require("./../../assets/images/rose.png")}
-              />
-            </View>
-          </View>
-          <View style={styles.boxes}>
-            <Text style={styles.BoxText}>PACK DE 5 DES SUCRERIES</Text>
-            <View style={styles.BoxImage}>
-              <Image
-                style={{ height: 35, width: 35, borderRadius: 35 }}
-                resizeMode="contain"
-                source={require("./../../assets/images/rose.png")}
-              />
-              <Image
-                style={{ height: 35, width: 35, borderRadius: 35 }}
-                resizeMode="contain"
-                source={require("./../../assets/images/rose.png")}
-              />
-              <Image
-                style={{ height: 35, width: 35, borderRadius: 35 }}
-                resizeMode="contain"
-                source={require("./../../assets/images/rose.png")}
-              />
-            </View>
-          </View>
-          <View style={styles.boxes}>
-            <Text style={styles.BoxText}>PACK DE 10 DES SUCRERIES</Text>
-            <View style={styles.BoxImage}>
-              <Image
-                style={{ height: 35, width: 35, borderRadius: 35 }}
-                resizeMode="contain"
-                source={require("./../../assets/images/rose.png")}
-              />
-              <Image
-                style={{ height: 35, width: 35, borderRadius: 35 }}
-                resizeMode="contain"
-                source={require("./../../assets/images/rose.png")}
-              />
-              <Image
-                style={{ height: 35, width: 35, borderRadius: 35 }}
-                resizeMode="contain"
-                source={require("./../../assets/images/rose.png")}
-              />
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.mainBoxExtra}>
-          <View style={styles.part}>
-            <Text style={styles.BoxText}>0,99 €</Text>
-            <View>
-              <TouchableOpacity
-                onPress={() => {
-                  setTotal(total + 0.99);
-                  setCount(count + +1);
-                }}>
-                <View style={styles.priceBtn}>
-                  <Text>+</Text>
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => {
-                  setTotal(() => {
-                    // let num = total - (0.99)
-
-                    // if (num > 0) {
-                    //   return num
-                    // }
-
-                    // else {
-                    //   return 0
-                    // }
-                    return 0;
-                  });
-                  setCount(0);
-                }}>
-                <View style={styles.priceBtn}>
-                  <Text>-</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View style={styles.part}>
-            <Text style={styles.BoxText}>2,99 €</Text>
-            <View>
-              <TouchableOpacity
-                onPress={() => {
-                  setTotal(total + +2.99);
-                  setCount(count + +5);
-                }}>
-                <View style={styles.priceBtn}>
-                  <Text>+</Text>
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => {
-                  setTotal(0);
-                  setCount(0);
-                }}>
-                <View style={styles.priceBtn}>
-                  <Text>-</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View style={styles.part}>
-            <Text style={styles.BoxText}>4,99 €</Text>
-            <View>
-              <TouchableOpacity
-                onPress={() => {
-                  setTotal(total + +4.99);
-                  setCount(count + +10);
-                }}>
-                <View style={styles.priceBtn}>
-                  <Text>+</Text>
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => {
-                  setTotal(0);
-                  setCount(0);
-                }}>
-                <View style={styles.priceBtn}>
-                  <Text>-</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-        <View style={{ justifyContent: "center", flexDirection: "row" }}>
-          <TouchableOpacity style={styles.btnMontant}>
-            <Text>Montant total : </Text>
-            <Text style={styles.montantText}>
-              {Math.round(total * 100) / 100} €
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={{ justifyContent: "center", flexDirection: "row" }}>
-          <TouchableOpacity
-            onPress={() => {
-              dummyBuy();
+        <ScrollView>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              marginVertical: 10,
             }}>
-            <View style={styles.btn}>
-              <Text style={styles.f}>Payer</Text>
+            <Text style={styles.ChatUserName}>MON FLEURISTE BUBBLE</Text>
+          </View>
+          <View style={styles.TopBarExtra}>
+            <Image
+              style={{
+                height: 70,
+                width: 70,
+                borderRadius: 70,
+                marginRight: 10,
+              }}
+              resizeMode="contain"
+              source={require("./../../assets/images/rose.png")}
+            />
+            <Text style={styles.topFont}>
+              Mon solde de des sucreries
+              {"\n"} disponibles :
+            </Text>
+            <Text style={styles.threeFont}>{candy}</Text>
+          </View>
+          <View style={styles.mainBox}>
+            <View style={styles.boxes}>
+              <Text style={styles.BoxText}>1 DES BONBONS</Text>
+              <Text> {""}</Text>
+
+              <View style={styles.BoxImage}>
+                <Image
+                  style={{ height: 35, width: 35, borderRadius: 35 }}
+                  resizeMode="contain"
+                  source={require("./../../assets/images/rose.png")}
+                />
+              </View>
             </View>
-          </TouchableOpacity>
-        </View>
-        {/* <View style={{justifyContent: 'center', flexDirection: 'row'}}>
+            <View style={styles.boxes}>
+              <Text style={styles.BoxText}>PACK DE 5 DES SUCRERIES</Text>
+              <View style={styles.BoxImage}>
+                <Image
+                  style={{ height: 35, width: 35, borderRadius: 35 }}
+                  resizeMode="contain"
+                  source={require("./../../assets/images/rose.png")}
+                />
+                <Image
+                  style={{ height: 35, width: 35, borderRadius: 35 }}
+                  resizeMode="contain"
+                  source={require("./../../assets/images/rose.png")}
+                />
+                <Image
+                  style={{ height: 35, width: 35, borderRadius: 35 }}
+                  resizeMode="contain"
+                  source={require("./../../assets/images/rose.png")}
+                />
+              </View>
+            </View>
+            <View style={styles.boxes}>
+              <Text style={styles.BoxText}>PACK DE 10 DES SUCRERIES</Text>
+              <View style={styles.BoxImage}>
+                <Image
+                  style={{ height: 35, width: 35, borderRadius: 35 }}
+                  resizeMode="contain"
+                  source={require("./../../assets/images/rose.png")}
+                />
+                <Image
+                  style={{ height: 35, width: 35, borderRadius: 35 }}
+                  resizeMode="contain"
+                  source={require("./../../assets/images/rose.png")}
+                />
+                <Image
+                  style={{ height: 35, width: 35, borderRadius: 35 }}
+                  resizeMode="contain"
+                  source={require("./../../assets/images/rose.png")}
+                />
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.mainBoxExtra}>
+            <View style={styles.part}>
+              <Text style={styles.BoxText}>0,99 €</Text>
+              <View>
+                <TouchableOpacity
+                  onPress={() => {
+                    setTotal(total + 0.99);
+                    setCount(count + +1);
+                  }}>
+                  <View style={styles.priceBtn}>
+                    <Text>+</Text>
+                  </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    setTotal(() => {
+                      // let num = total - (0.99)
+
+                      // if (num > 0) {
+                      //   return num
+                      // }
+
+                      // else {
+                      //   return 0
+                      // }
+                      return 0;
+                    });
+                    setCount(0);
+                  }}>
+                  <View style={styles.priceBtn}>
+                    <Text>-</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.part}>
+              <Text style={styles.BoxText}>2,99 €</Text>
+              <View>
+                <TouchableOpacity
+                  onPress={() => {
+                    setTotal(total + +2.99);
+                    setCount(count + +5);
+                  }}>
+                  <View style={styles.priceBtn}>
+                    <Text>+</Text>
+                  </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    setTotal(0);
+                    setCount(0);
+                  }}>
+                  <View style={styles.priceBtn}>
+                    <Text>-</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.part}>
+              <Text style={styles.BoxText}>4,99 €</Text>
+              <View>
+                <TouchableOpacity
+                  onPress={() => {
+                    setTotal(total + +4.99);
+                    setCount(count + +10);
+                  }}>
+                  <View style={styles.priceBtn}>
+                    <Text>+</Text>
+                  </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    setTotal(0);
+                    setCount(0);
+                  }}>
+                  <View style={styles.priceBtn}>
+                    <Text>-</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+          <View style={{ justifyContent: "center", flexDirection: "row" }}>
+            <TouchableOpacity style={styles.btnMontant}>
+              <Text>Montant total : </Text>
+              <Text style={styles.montantText}>
+                {Math.round(total * 100) / 100} €
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={{ justifyContent: "center", flexDirection: "row" }}>
+            <TouchableOpacity
+              onPress={() => {
+                dummyBuy();
+              }}>
+              <View style={styles.btn}>
+                <Text style={styles.f}>Payer</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          {/* <View style={{justifyContent: 'center', flexDirection: 'row'}}>
           <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
             <View style={styles.btn}>
               <Text style={styles.f}>Payer</Text>
             </View>
           </TouchableOpacity>
         </View> */}
+        </ScrollView>
       </SafeAreaView>
     </LinearGradient>
   );

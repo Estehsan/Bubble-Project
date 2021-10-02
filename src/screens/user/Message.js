@@ -7,6 +7,7 @@ import {
   FlatList,
   TouchableOpacity,
   SafeAreaView,
+  ScrollView,
   ActivityIndicator,
   TextInput,
 } from "react-native";
@@ -145,36 +146,37 @@ const Message = ({ ...props }) => {
             source={require("./../../assets/images/logo-bubble.png")}
           />
         </View>
-        <View
-          style={{
-            alignItems: "center",
-            marginTop: 30,
-          }}>
-          <Text style={styles.ChatUserName}>MES CONVERSATIONS</Text>
-        </View>
-        <View>
-          <TextInput
-            placeholder="Search for friends ..."
-            onChangeText={(e) => handleSearchBar(e)}
-            value={defaultSearchValue}
-            style={styles.inputField}
-          />
-        </View>
-        <View>
-          {loading ? (
-            <ActivityIndicator
-              style={{
-                alignItems: "center",
-                alignContent: "center",
-                justifyContent: "center",
-                top: 200,
-              }}
-              size="large"
-              color="#000"
+        <ScrollView>
+          <View
+            style={{
+              alignItems: "center",
+              marginTop: 30,
+            }}>
+            <Text style={styles.ChatUserName}>MES CONVERSATIONS</Text>
+          </View>
+          <View>
+            <TextInput
+              placeholder="Search for friends ..."
+              onChangeText={(e) => handleSearchBar(e)}
+              value={defaultSearchValue}
+              style={styles.inputField}
             />
-          ) : (
-            <>
-              {data ? (
+          </View>
+          <View>
+            {loading ? (
+              <ActivityIndicator
+                style={{
+                  alignItems: "center",
+                  alignContent: "center",
+                  justifyContent: "center",
+                  top: 200,
+                }}
+                size="large"
+                color="#000"
+              />
+            ) : (
+              <>
+                {/* {data ? (
                 <>
                   <H1>Message Request </H1>
                   <FlatList
@@ -224,18 +226,19 @@ const Message = ({ ...props }) => {
                 <>
                   <H1>No Request</H1>
                 </>
-              )}
+              )} */}
 
-              <H1>All Chats</H1>
-              {renderAccepted && (
-                <FlatList
-                  data={accepted}
-                  keyExtractor={(item) => item.id}
-                  renderItem={({ item }) => (
-                    // console.log(item)
-                    <View style={styles.Container}>
-                      <View style={styles.main}>
+                <H1></H1>
+
+                {renderAccepted && (
+                  <FlatList
+                    data={accepted}
+                    keyExtractor={(item) => item.id}
+                    renderItem={({ item }) => (
+                      // console.log(item)
+                      <View style={styles.Container}>
                         <TouchableOpacity
+                          style={styles.main}
                           onPress={() => {
                             props.navigation.navigate("ChatUser", {
                               currentUserId: userId,
@@ -317,107 +320,107 @@ const Message = ({ ...props }) => {
                           </View>
                         </TouchableOpacity>
                       </View>
-                    </View>
-                  )}
-                />
-              )}
-              {renderSearch && (
-                <FlatList
-                  data={searchAccepted}
-                  keyExtractor={(item) => item.id}
-                  renderItem={({ item }) => (
-                    // console.log(item)
-                    <View style={styles.Container}>
-                      <View style={styles.main}>
-                        <TouchableOpacity
-                          onPress={() => {
-                            props.navigation.navigate("ChatUser", {
-                              currentUserId: userId,
-                              messageId: item.id,
-                              name: item.name,
-                              gender: item.gender,
-                              messageImg: item.image,
-                            });
-                          }}>
-                          <View style={styles.lContainer}>
-                            {item.image ? (
-                              <View
-                                style={{
-                                  backgroundColor: "silver",
-                                  height: 55,
-                                  width: 55,
-                                  borderRadius: 55,
-                                }}>
-                                <Image
+                    )}
+                  />
+                )}
+                {renderSearch && (
+                  <FlatList
+                    data={searchAccepted}
+                    keyExtractor={(item) => item.id}
+                    renderItem={({ item }) => (
+                      // console.log(item)
+                      <View style={styles.Container}>
+                        <View style={styles.main}>
+                          <TouchableOpacity
+                            onPress={() => {
+                              props.navigation.navigate("ChatUser", {
+                                currentUserId: userId,
+                                messageId: item.id,
+                                name: item.name,
+                                gender: item.gender,
+                                messageImg: item.image,
+                              });
+                            }}>
+                            <View style={styles.lContainer}>
+                              {item.image ? (
+                                <View
                                   style={{
+                                    backgroundColor: "silver",
                                     height: 55,
                                     width: 55,
                                     borderRadius: 55,
-                                  }}
-                                  source={{ uri: item.image }}
-                                />
-                              </View>
-                            ) : (
-                              <View
-                                style={{
-                                  backgroundColor: "silver",
-                                  height: 50,
-                                  width: 50,
-                                  borderRadius: 50,
-                                }}>
-                                <Image
+                                  }}>
+                                  <Image
+                                    style={{
+                                      height: 55,
+                                      width: 55,
+                                      borderRadius: 55,
+                                    }}
+                                    source={{ uri: item.image }}
+                                  />
+                                </View>
+                              ) : (
+                                <View
                                   style={{
+                                    backgroundColor: "silver",
                                     height: 50,
                                     width: 50,
                                     borderRadius: 50,
-                                  }}
-                                  source={{
-                                    uri: "https://www.w3schools.com/howto/img_avatar.png",
-                                  }}
-                                />
-                              </View>
-                            )}
+                                  }}>
+                                  <Image
+                                    style={{
+                                      height: 50,
+                                      width: 50,
+                                      borderRadius: 50,
+                                    }}
+                                    source={{
+                                      uri: "https://www.w3schools.com/howto/img_avatar.png",
+                                    }}
+                                  />
+                                </View>
+                              )}
 
-                            <View style={styles.HeadingView}>
-                              <View>
-                                <Text
-                                  style={styles.heading}
-                                  numberOfLines={1}
-                                  ellipsizeMode={"tail"}>
-                                  {item.name}
-                                </Text>
-                              </View>
+                              <View style={styles.HeadingView}>
+                                <View>
+                                  <Text
+                                    style={styles.heading}
+                                    numberOfLines={1}
+                                    ellipsizeMode={"tail"}>
+                                    {item.name}
+                                  </Text>
+                                </View>
 
-                              <View>
-                                <Ionicons
-                                  style={styles.position}
-                                  name={
-                                    item.gender === "male"
-                                      ? "male"
-                                      : item.gender === "female"
-                                      ? "female"
-                                      : "male-female"
-                                  }
-                                  size={30}
-                                  color={"#000"}
-                                />
+                                <View>
+                                  <Ionicons
+                                    style={styles.position}
+                                    name={
+                                      item.gender === "male"
+                                        ? "male"
+                                        : item.gender === "female"
+                                        ? "female"
+                                        : "male-female"
+                                    }
+                                    size={30}
+                                    color={"#000"}
+                                  />
+                                </View>
                               </View>
-                            </View>
-                            {/* <View style={styles.rContainer}>
+                              {/* <View style={styles.rContainer}>
                          <View style={styles.btn}>
                            <Text>Content</Text>
                          </View>
                        </View> */}
-                          </View>
-                        </TouchableOpacity>
+                            </View>
+                          </TouchableOpacity>
+                        </View>
                       </View>
-                    </View>
-                  )}
-                />
-              )}
-            </>
-          )}
-        </View>
+                    )}
+                  />
+                )}
+              </>
+            )}
+          </View>
+        </ScrollView>
       </SafeAreaView>
     </LinearGradient>
   );
