@@ -8,6 +8,7 @@ import {
   Modal,
   Pressable,
   FlatList,
+  Alert,
 } from "react-native";
 import Colors from "./../assets/colors/Colors";
 import Entypo from "react-native-vector-icons/Entypo";
@@ -15,6 +16,8 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import { block } from "react-native-reanimated";
+import { firestore } from "../db/firebase";
+import firebase from "firebase/app";
 
 const UserChatInfo = ({
   currentUserData,
@@ -25,8 +28,21 @@ const UserChatInfo = ({
   selectedTeams,
 }) => {
   const [quitmodal, setQuitModal] = useState(false);
+  const [notificationModel, setNotificationModel] = useState(false)
+  const [candy, setCandy] = useState(0)
   const [commonTeams, setCommonTeams] = useState([]);
+  const [notification, setNotification] = useState([]);
   const navigation = useNavigation();
+
+
+  useEffect(() => {
+    firestore.collection("users").doc(currentUserData.id).onSnapshot((doc) => {
+      setNotification(doc.data().notification)
+      setCandy(doc.data().candy)
+    })
+    console.log(notification)
+  }, [])
+
 
   let mutualInterest = () => {
     let count = 0;
@@ -55,11 +71,30 @@ const UserChatInfo = ({
         }
       }
     }
-
-    // console.log(currentUserData.id , id , name , gender)
-
     setQuitModal(true);
   };
+
+
+  let addNotification = async () => {
+
+    if (candy > 0) {
+      await firestore.collection("users").doc(currentUserData.id).update({
+        notification: firebase.firestore.FieldValue.arrayUnion(id),
+        candy: firebase.firestore.FieldValue.increment(-1)
+      })
+
+      await firestore.collection("users").doc(id).update({
+        notification: firebase.firestore.FieldValue.arrayUnion(currentUserData.id)
+      })
+      setNotificationModel(false)
+    }
+
+    else{
+      Alert.alert("You Don't have enough candy")
+      setNotificationModel(false)
+
+    }
+  }
 
   return (
     <View style={styles.Container}>
@@ -89,6 +124,41 @@ const UserChatInfo = ({
                 setCommonTeams([]);
               }}>
               <Text style={styles.textStyle}>Close</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={notificationModel}
+        onRequestClose={() => {
+          setNotificationModel(!notificationModel);
+        }}
+        contentContainerStyle={styles.modalStyle}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>By Sending candy you can recieve notification messages from this User
+              and cannot be returned back are you sure to continue
+            </Text>
+
+            {/* <FlatList
+              data={commonTeams}
+              renderItem={({ item }) => <Text>{commonTeams}</Text>}
+            /> */}
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => {
+                addNotification()
+              }}>
+              <Text style={styles.textStyle}>Yes</Text>
+            </Pressable>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => {
+                setNotificationModel(!notificationModel);
+              }}>
+              <Text style={styles.textStyle}>No</Text>
             </Pressable>
           </View>
         </View>
@@ -127,22 +197,30 @@ const UserChatInfo = ({
           <Text>{gender}</Text>
         </View>
         <View style={styles.rContainer}>
-          <TouchableOpacity
-            style={styles.ListOfUsers}
-            onPress={() => {
-              navigation.navigate("ChatUser", {
-                currentUserId: currentUserData.id,
-                messageId: id,
-                name: name,
-                gender: gender,
-                messageImg: userImg,
-              });
-            }}>
-            <Image
-              style={{ height: 50, width: 50, borderRadius: 50 }}
-              resizeMode="contain"
-              source={require("./../assets/images/rose.png")}
-            />
+          {notification.includes(id) ? <View style={{flex: 1}}></View>
+            :
+            <TouchableOpacity
+              style={styles.ListOfUsers}
+              onPress={() => {
+                setNotificationModel(true)
+              }}>
+              <Image
+                style={{ height: 50, width: 50, borderRadius: 50 }}
+                resizeMode="contain"
+                source={require("./../assets/images/rose.png")}
+              />
+            </TouchableOpacity>
+          }
+          <TouchableOpacity onPress={() => {
+            navigation.navigate("ChatUser", {
+              currentUserId: currentUserData.id,
+              messageId: id,
+              name: name,
+              gender: gender,
+              messageImg: userImg,
+            });
+          }}>
+            <Text style={styles.messageButton}>Bubbler</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -164,7 +242,7 @@ const styles = StyleSheet.create({
     zIndex: -1,
     elevation: -1,
     backgroundColor: "#fff",
-    width: "80%",
+    width: "90%",
     padding: 20,
     marginBottom: 20,
     height: 80,
@@ -187,7 +265,11 @@ const styles = StyleSheet.create({
   },
   lContainer: { flex: 1 },
   center: { flex: 2 },
-  rContainer: { flex: 1, alignItems: "flex-end" },
+  rContainer: {
+    flex: 2
+    , flexDirection: "row",
+    alignItems: "center",
+  },
   Badge: {
     height: 30,
     width: 30,
@@ -196,8 +278,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     position: "absolute",
-    left: 25,
-    top: 3,
+    left: 20,
+    top: 2,
   },
   modalText: {
     margin: 15,
@@ -247,4 +329,15 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   ListOfUsers: {},
+  messageButton: {
+    padding: 5,
+    borderWidth: 1,
+    borderRadius: 20,
+    textAlign: "center",
+  },
+  Headinghai: {
+    fontFamily: "FredokaOne-Regular",
+    fontSize: 25,
+    color: "#fff",
+  },
 });

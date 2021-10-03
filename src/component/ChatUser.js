@@ -58,6 +58,8 @@ const ChatUser = ({ navigation, route, ...props }) => {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [quitmodal, setQuitModal] = useState(false);
+  const [notification, setNotification] = useState([]);
+
 
   const scrollViewRef = useRef();
   const width = useWindowDimensions().width;
@@ -84,6 +86,12 @@ const ChatUser = ({ navigation, route, ...props }) => {
   useEffect(async () => {
     let merge = uid_merge(currentUserId, messageId);
     get_messages(merge);
+
+    firestore.collection("users").doc(currentUserId).onSnapshot((doc) => {
+      setNotification(doc.data().notification)
+    })
+
+
     let datum = await firestore
       .collection("users")
       .doc(currentUserId)
@@ -235,7 +243,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         })
 
-        firestore
+      firestore
         .collection("users")
         .doc(currentUserId)
         .collection("friends")
@@ -243,62 +251,46 @@ const ChatUser = ({ navigation, route, ...props }) => {
         .update({
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         })
-      // let timestamp = Math.floor(Date.now() / 1000);
-
-      // console.log(userId)
-
-      // const notificationObj = {
-      //   contents: {
-      //     en: `${currentName} :  ${message}`
-      //   },
-      //   include_player_ids: [userId]
-      // };
-
-      // const jsonString = JSON.stringify(notificationObj);
-
-      // OneSignal.postNotification(jsonString, (success) => {
-      //   console.log("Success:", success);
-      // }, (error) => {
-      //   console.log("Error:", error);
-      // });
-
+    
       const { userId } = await OneSignal.getDeviceState();
 
-      if (notificationId != "" || notificationId != undefined || notificationId != userId) {
-        let externalUserId = notificationId; // You will supply the external user id to the OneSignal SDK
+      if (notification.includes(messageId)) {
+        if (notificationId != "" || notificationId != undefined || notificationId != userId) {
+          let externalUserId = notificationId; // You will supply the external user id to the OneSignal SDK
 
-        // Setting External User Id with Callback Available in SDK Version 3.9.3+
-        OneSignal.setExternalUserId(externalUserId, (results) => {
-          // The results will contain push and email success statuses
-          console.log("Results of setting external user id");
-          console.log(results);
+          // Setting External User Id with Callback Available in SDK Version 3.9.3+
+          OneSignal.setExternalUserId(externalUserId, (results) => {
+            // The results will contain push and email success statuses
+            console.log("Results of setting external user id");
+            console.log(results);
 
-          // Push can be expected in almost every situation with a success status, but
-          // as a pre-caution its good to verify it exists
-          if (results.push && results.push.success) {
-            console.log("Results of setting external user id push status:");
-            console.log(results.push.success);
-          }
-        });
+            // Push can be expected in almost every situation with a success status, but
+            // as a pre-caution its good to verify it exists
+            if (results.push && results.push.success) {
+              console.log("Results of setting external user id push status:");
+              console.log(results.push.success);
+            }
+          });
 
-        const notification = {
-          contents: {
-            en: `${currentName} :  ${message}`,
-          },
-          include_player_ids: [externalUserId],
-        };
+          const notification = {
+            contents: {
+              en: `${currentName} :  ${message}`,
+            },
+            include_player_ids: [externalUserId],
+          };
 
-        const jsonStri = JSON.stringify(notification);
+          const jsonStri = JSON.stringify(notification);
 
-        OneSignal.postNotification(
-          jsonStri,
-          (success) => {
-            console.log("Success:", success);
-          },
-          (error) => {
-            console.log("Error:", error);
-          }
-        );
+          await OneSignal.postNotification(
+            jsonStri,
+            (success) => {
+              console.log("Success:", success);
+            },
+            (error) => {
+              console.log("Error:", error);
+            }
+          );
+        }
       }
       setMessage("");
       setLoading(false);
