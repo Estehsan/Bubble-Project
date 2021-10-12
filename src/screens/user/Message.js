@@ -158,7 +158,7 @@ const Message = ({ ...props }) => {
           </View>
           <View>
             <TextInput
-              placeholder="Search for friends ..."
+              placeholder="Rechercher"
               onChangeText={(e) => handleSearchBar(e)}
               value={defaultSearchValue}
               style={styles.inputField}

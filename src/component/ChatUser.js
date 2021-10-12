@@ -254,7 +254,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
     
       const { userId } = await OneSignal.getDeviceState();
 
-      if (notification.includes(messageId)) {
+      if (notification && notification.includes(messageId)) {
         if (notificationId != "" || notificationId != undefined || notificationId != userId) {
           let externalUserId = notificationId; // You will supply the external user id to the OneSignal SDK
 
@@ -388,7 +388,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
                   style={styles.input}
                   onChangeText={setMessage}
                   value={message}
-                  placeholder="date de naissance"
+                  placeholder="Message ..."
                   keyboardType="default"
                 />
 
@@ -428,7 +428,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
                       onPress={() => {
                         setQuitModal(true);
                       }}>
-                      <WP>Quitter la conversation</WP>
+                      <WP>Quitter</WP>
                     </TouchableOpacity>
                   </View>
                   <View style={styles.btn}>

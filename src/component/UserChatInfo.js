@@ -138,8 +138,7 @@ const UserChatInfo = ({
         contentContainerStyle={styles.modalStyle}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>By Sending candy you can recieve notification messages from this User
-              and cannot be returned back are you sure to continue
+            <Text style={styles.modalText}>En envoyant un bonbon vous pouvez envoyer une notification à cette personne. Souhaitez-vous continuer ?
             </Text>
 
             {/* <FlatList
@@ -197,7 +196,7 @@ const UserChatInfo = ({
           <Text>{gender}</Text>
         </View>
         <View style={styles.rContainer}>
-          {notification.includes(id) ? <View style={{flex: 1}}></View>
+          {notification && notification.includes(id) ? <View style={{flex: 1}}></View>
             :
             <TouchableOpacity
               style={styles.ListOfUsers}
