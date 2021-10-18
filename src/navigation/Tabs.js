@@ -30,6 +30,7 @@ import UsersListPlace from "../screens/user/Drink/UsersListPlace";
 import ChatUser from "../component/ChatUser";
 
 import { connect } from "react-redux";
+import PlacesDetails from "../screens/user/Drink/PlacesDetails";
 
 const Stack = createBottomTabNavigator();
 
@@ -43,16 +44,15 @@ function BottomTabNavigator() {
         showLabel: false,
         style: {
           position: "absolute",
-          marginHorizontal: '10%',
-          marginVertical: '10%',
+          marginHorizontal: "10%",
+          marginVertical: "10%",
           elevation: 0,
           alignContent: "center",
 
           borderRadius: 30,
           ...styles.shadow,
         },
-      }}
-    >
+      }}>
       <Stack.Screen
         name="Home"
         component={Home}
@@ -129,8 +129,7 @@ function Tabs() {
   return (
     <All.Navigator
       screenOptions={screenOptionStyle}
-      initialRouteName="AuthLoading"
-    >
+      initialRouteName="AuthLoading">
       <All.Screen
         name="AuthLoading"
         component={AuthLoading}
@@ -161,6 +160,8 @@ function Tabs() {
       <All.Screen name="Drink" component={Drink} />
       <All.Screen name="Message" component={Message} />
       <All.Screen name="UsersListPlace" component={UsersListPlace} />
+      <All.Screen name="PlacesDetails" component={PlacesDetails} />
+
       <All.Screen
         options={{ headerShown: true }}
         name="ChatUser"
@@ -184,9 +185,9 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   position: {
-    top: '40%',
+    top: "40%",
   },
   position2: {
-    top: '0%',
+    top: "0%",
   },
 });

@@ -153,7 +153,23 @@ const UsersListPlace = ({ route, ...props }) => {
           <View style={{ marginTop: 30 }}></View>
           <View style={{ marginTop: 10 }}>
             <TouchableOpacity
-              onPress={() => props.navigation.navigate("UsersListPlace")}>
+              onPress={() =>
+                props.navigation.navigate("PlacesDetails", {
+                  id,
+                  title,
+                  place,
+                  location,
+                  code,
+                  img,
+                  latlng,
+                  // title: title,
+                  // id: id,
+                  // place: place,
+                  // location: location,
+                  // code: code,
+                  // img: img,
+                })
+              }>
               <ListContainer
                 id={id}
                 title={title}
