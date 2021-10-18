@@ -50,7 +50,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
   let [getRequest, setGetRequest] = useState("");
   let [checker, setChecker] = useState(false);
 
-  let [loading, setLoading] = useState(true);
+  let [loading, setLoading] = useState(null);
 
   let [check, setCheck] = useState(0);
 
@@ -59,7 +59,6 @@ const ChatUser = ({ navigation, route, ...props }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [quitmodal, setQuitModal] = useState(false);
   const [notification, setNotification] = useState([]);
-
 
   const scrollViewRef = useRef();
   const width = useWindowDimensions().width;
@@ -84,13 +83,16 @@ const ChatUser = ({ navigation, route, ...props }) => {
   }, [navigation]);
 
   useEffect(async () => {
+    setLoading(true);
     let merge = uid_merge(currentUserId, messageId);
     get_messages(merge);
 
-    firestore.collection("users").doc(currentUserId).onSnapshot((doc) => {
-      setNotification(doc.data().notification)
-    })
-
+    firestore
+      .collection("users")
+      .doc(currentUserId)
+      .onSnapshot((doc) => {
+        setNotification(doc.data().notification);
+      });
 
     let datum = await firestore
       .collection("users")
@@ -110,12 +112,9 @@ const ChatUser = ({ navigation, route, ...props }) => {
       .doc(messageId)
       .get()
       .then((doc) => {
-        setLoading(true);
         if (doc.exists) {
           setNotificationId(doc.data().notificationId);
         }
-
-        setLoading(false);
       })
       .catch((error) => {
         console.log("Error getting documents: ", error);
@@ -127,11 +126,8 @@ const ChatUser = ({ navigation, route, ...props }) => {
       .collection("friends")
       .doc(currentUserId)
       .onSnapshot(async (doc) => {
-        setLoading(true);
-
         if (doc.exists) {
           setGetRequest(doc.data().status);
-          setLoading(false);
         }
 
         // console.log(doc.data())
@@ -144,18 +140,16 @@ const ChatUser = ({ navigation, route, ...props }) => {
       .doc(messageId)
       .onSnapshot(async (doc) => {
         if (doc.exists) {
-          setLoading(true);
-
           await setRequest(doc.data().status);
           await setChecker(doc.data().requestGetter);
-          console.log(doc.data());
-          setLoading(false);
+          console.log("This ==> ", doc.data());
         }
       });
     await setModalVisible(checker);
+    setLoading(false);
   }, [checker]);
 
-  useEffect(() => { }, [check]);
+  useEffect(() => {}, [check]);
 
   let uid_merge = (uid1, uid2) => {
     if (uid1 < uid2) {
@@ -180,11 +174,8 @@ const ChatUser = ({ navigation, route, ...props }) => {
           message: doc.data().message,
         }));
         {
-          setLoading(true);
-
           docs && setChats(docs);
           // console.log(docs)
-          setLoading(false);
         }
         // console.log(docs)
       });
@@ -227,7 +218,6 @@ const ChatUser = ({ navigation, route, ...props }) => {
   let send_message = async () => {
     if (message.length > 0) {
       let merge = uid_merge(currentUserId, messageId);
-      setLoading(true);
       firestore.collection(`message`).doc(merge).collection(`chat`).add({
         message: message,
         id: currentUserId,
@@ -241,7 +231,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
         .doc(currentUserId)
         .update({
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        })
+        });
 
       firestore
         .collection("users")
@@ -250,12 +240,16 @@ const ChatUser = ({ navigation, route, ...props }) => {
         .doc(messageId)
         .update({
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        })
-    
+        });
+
       const { userId } = await OneSignal.getDeviceState();
 
       if (notification && notification.includes(messageId)) {
-        if (notificationId != "" || notificationId != undefined || notificationId != userId) {
+        if (
+          notificationId != "" ||
+          notificationId != undefined ||
+          notificationId != userId
+        ) {
           let externalUserId = notificationId; // You will supply the external user id to the OneSignal SDK
 
           // Setting External User Id with Callback Available in SDK Version 3.9.3+
@@ -293,133 +287,121 @@ const ChatUser = ({ navigation, route, ...props }) => {
         }
       }
       setMessage("");
-      setLoading(false);
     }
   };
   return (
     <LinearGradient
       colors={["#FFC1DD", "#ffffff"]}
       style={styles.linearGradient}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS == "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={90}
-        style={styles.container}>
-        {route.params ? (
-          <>
-            {chats && (
-              // console.log(chats)
-              <FlatList
-                data={chats}
-                inverted
-                keyExtractor={(item, index) => {
-                  return item.id;
-                }}
-                renderItem={({ item }) => (
-                  // console.log(item)
-                  <View
-                    style={{
-                      padding: 10,
-                    }}>
-                    {item.userid == currentUserId ? (
-                      <View style={styles.rMessage}>
-                        <Text
-                          style={{
-                            color: "#fff",
-                            direction: "rtl",
-                          }}>
-                          {item.message}
-                        </Text>
-                      </View>
-                    ) : (
-                      <>
-                        <View
-                          style={{
-                            display: "flex",
-                            marginVertical: 5,
-                          }}>
-                          {messageImg ? (
-                            <Image
-                              style={{
-                                height: 35,
-                                width: 35,
-                                borderRadius: 35,
-                                marginRight: 10,
-                              }}
-                              source={{ uri: messageImg }}
-                            />
-                          ) : (
-                            <Image
-                              style={{
-                                height: 35,
-                                width: 35,
-                                borderRadius: 35,
-                              }}
-                              source={{
-                                uri: "https://www.w3schools.com/howto/img_avatar.png",
-                              }}
-                            />
-                          )}
-                          <View style={styles.sMessage}>
-                            <Text
-                              style={{
-                                color: "#fff",
-                              }}>
-                              {item.message}
-                            </Text>
-                          </View>
+      {!loading ? (
+        <KeyboardAvoidingView
+          behavior={Platform.OS == "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={90}
+          style={styles.container}>
+          {route.params ? (
+            <>
+              {chats && (
+                // console.log(chats)
+                <FlatList
+                  data={chats}
+                  inverted
+                  keyExtractor={(item, index) => {
+                    return item.id;
+                  }}
+                  renderItem={({ item }) => (
+                    // console.log(item)
+                    <View
+                      style={{
+                        padding: 10,
+                      }}>
+                      {item.userid == currentUserId ? (
+                        <View style={styles.rMessage}>
+                          <Text
+                            style={{
+                              color: "#fff",
+                              direction: "rtl",
+                            }}>
+                            {item.message}
+                          </Text>
                         </View>
-                      </>
-                    )}
-                  </View>
-                )}
-              />
-            )}
-          </>
-        ) : (
-          <View />
-        )}
-
-        <View style={styles.Footer}>
-          {getRequest != "decline" && request != "decline" ? (
-            // getRequest != "accept" &&
-            <View>
-              <View style={styles.fieldContainer}>
-                <TextInput
-                  style={styles.input}
-                  onChangeText={setMessage}
-                  value={message}
-                  placeholder="Message ..."
-                  keyboardType="default"
+                      ) : (
+                        <>
+                          <View
+                            style={{
+                              display: "flex",
+                              marginVertical: 5,
+                            }}>
+                            {messageImg ? (
+                              <Image
+                                style={{
+                                  height: 35,
+                                  width: 35,
+                                  borderRadius: 35,
+                                  marginRight: 10,
+                                }}
+                                source={{ uri: messageImg }}
+                              />
+                            ) : (
+                              <Image
+                                style={{
+                                  height: 35,
+                                  width: 35,
+                                  borderRadius: 35,
+                                }}
+                                source={{
+                                  uri: "https://www.w3schools.com/howto/img_avatar.png",
+                                }}
+                              />
+                            )}
+                            <View style={styles.sMessage}>
+                              <Text
+                                style={{
+                                  color: "#fff",
+                                }}>
+                                {item.message}
+                              </Text>
+                            </View>
+                          </View>
+                        </>
+                      )}
+                    </View>
+                  )}
                 />
-
-                <TouchableOpacity
-                  style={{ alignContent: "center" }}
-                  onPress={() => {
-                    send_message();
-                    Keyboard.dismiss();
-                  }}>
-                  <Icon name="arrow-up-circle" size={32} />
-                </TouchableOpacity>
-              </View>
-            </View>
+              )}
+            </>
           ) : (
-            <Text style={{ textAlign: "center", fontSize: 20 }}>
-              Request declined send request again to continue
-            </Text>
+            <View />
           )}
-          {/* Add Activity  */}
-          {loading ? (
-            <ActivityIndicator
-              style={{
-                alignItems: "center",
-                alignContent: "center",
-                justifyContent: "center",
-                top: 200,
-              }}
-              size="large"
-              color="#000"
-            />
-          ) : (
+
+          <View style={styles.Footer}>
+            {getRequest != "decline" && request != "decline" ? (
+              // getRequest != "accept" &&
+              <View>
+                <View style={styles.fieldContainer}>
+                  <TextInput
+                    style={styles.input}
+                    onChangeText={setMessage}
+                    value={message}
+                    placeholder="Message ..."
+                    keyboardType="default"
+                  />
+
+                  <TouchableOpacity
+                    style={{ alignContent: "center" }}
+                    onPress={() => {
+                      send_message();
+                      Keyboard.dismiss();
+                    }}>
+                    <Icon name="arrow-up-circle" size={32} />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ) : (
+              <Text style={{ textAlign: "center", fontSize: 20 }}>
+                Request declined send request again to continue
+              </Text>
+            )}
+            {/* Add Activity  */}
             <View>
               {getRequest != "accept" || request != "accept" ? (
                 <View style={styles.bottombtn}>
@@ -428,7 +410,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
                       onPress={() => {
                         setQuitModal(true);
                       }}>
-                      <WP>Quitter</WP>
+                      {loading ? <WP>Ruko</WP> : <WP>Quitter</WP>}
                     </TouchableOpacity>
                   </View>
                   <View style={styles.btn}>
@@ -482,10 +464,20 @@ const ChatUser = ({ navigation, route, ...props }) => {
                 <View />
               )}
             </View>
-          )}
+          </View>
+        </KeyboardAvoidingView>
+      ) : (
+        <View style={styles.centerpe}>
+          <ActivityIndicator
+            //visibility of Overlay Loading Spinner
+            visible={loading}
+            //Text with the Spinner
+            textContent={"Loading..."}
+            //Text style of the Spinner Text
+            textStyle={styles.spinnerTextStyle}
+          />
         </View>
-      </KeyboardAvoidingView>
-
+      )}
       <Modal
         animationType="fade"
         transparent={true}
@@ -496,23 +488,23 @@ const ChatUser = ({ navigation, route, ...props }) => {
         contentContainerStyle={styles.modalStyle}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.Headinghai}>FELICITATIONS</Text>
+            <Text style={styles.Headinghai}>Êtes-vous sur(e) ?</Text>
             <Text style={styles.Headinghai}></Text>
 
             <Text style={styles.modalText}>
-              XX vous propose de continuer ...
+              Voulez-vous quitter définitivement cette conversation ?{" "}
             </Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => leaveChat()}>
-              <Text style={styles.textStyle}>Accepter</Text>
+              <Text style={styles.textStyle}>Oui</Text>
             </Pressable>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => {
                 setQuitModal(!quitmodal);
               }}>
-              <Text style={styles.textStyle}>Decliner</Text>
+              <Text style={styles.textStyle}>Non</Text>
             </Pressable>
           </View>
         </View>
@@ -555,7 +547,6 @@ const ChatUser = ({ navigation, route, ...props }) => {
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => {
-                setLoading(true);
                 firestore
                   .collection("users")
                   .doc(currentUserId)
@@ -570,7 +561,6 @@ const ChatUser = ({ navigation, route, ...props }) => {
                 setGetRequest("decline");
                 setChecker(false);
                 setCheck(check + 1);
-                setLoading(false);
               }}>
               <Text style={styles.textStyle}>Reject</Text>
             </Pressable>
@@ -705,5 +695,10 @@ const styles = StyleSheet.create({
     fontFamily: "FredokaOne-Regular",
     fontSize: 25,
     color: "#fff",
+  },
+  centerpe: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
