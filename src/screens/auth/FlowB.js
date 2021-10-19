@@ -6,14 +6,16 @@ import {
   SafeAreaView,
   Image,
   TextInput,
-  TouchableOpacity, Button,
-  ActivityIndicator, Platform,
+  TouchableOpacity,
+  Button,
+  ActivityIndicator,
+  Platform,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import InputF from "../../component/InputF";
 import { nameValidator } from "../../helpers/nameValidator";
 import TopBar from "./../../component/TopBar";
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 // This is signUp SCREEN
 
@@ -22,21 +24,18 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 // }
 
 const FlowA = ({ ...props }) => {
+  const [FirstName, setFirstName] = useState({ value: "", error: "" });
+  const [errorText, setErrorText] = useState("");
 
-  const [FirstName, setFirstName] = useState({ value: '', error: '' });
-  const [errorText, setErrorText] = useState('');
-
-
-  // DatePicker 
+  // DatePicker
   const [date, setDate] = useState(new Date());
-  const [mode, setMode] = useState('date');
+  const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
   const [showDate, setShowDate] = useState(false);
 
-
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
-    setShow(Platform.OS === 'ios');
+    setShow(Platform.OS === "ios");
     setDate(currentDate);
   };
 
@@ -46,120 +45,126 @@ const FlowA = ({ ...props }) => {
   };
 
   const showDatepicker = () => {
-    showMode('date');
-    setShowDate(true)
+    showMode("date");
+    setShowDate(true);
   };
   // Date Picker End
 
   return (
     <>
-      <LinearGradient colors={["#DD488C", "#000"]} style={styles.linearGradient}>
+      <LinearGradient
+        colors={["#DD488C", "#000"]}
+        style={styles.linearGradient}>
         <SafeAreaView style={styles.main}>
-          <TopBar />
-
+          <View style={styles.center}>
+            <Image
+              style={{ height: 100, width: 130 }}
+              resizeMode="contain"
+              source={require("./../../assets/images/logo-bubble.png")}
+            />
+          </View>
           <View style={styles.Profile}>
             <Text style={styles.h1}>INSCRIPTION </Text>
           </View>
           <View style={styles.Form}>
-
-
-
-            <InputF onChangeText={(e) => setFirstName({ value: e, error: '' })}
+            <InputF
+              onChangeText={(e) => setFirstName({ value: e, error: "" })}
               value={FirstName.value}
               error={FirstName.error}
               errorText={FirstName.error}
               placeholder="Pseudo"
-              keyboardType="default" />
-
+              keyboardType="default"
+            />
 
             {/* DataPicker Start */}
 
-            {
-              show ? (
-                <View style={{
+            {show ? (
+              <View
+                style={{
                   width: "100%",
-                  color : 'black'
+                  color: "black",
                 }}>
-
-                  <DateTimePicker
-                    style={{ marginHorizontal: "15%", backgroundColor: 'white', color:  'black',}}
-                    testID="dateTimePicker"
-                    value={date}
-                    mode={mode}
-                    is24Hour={true}
-                    display="default"
-                    onChange={onChange}
-                  />
-                </View>
-              ) : (
-
-
-                <View style={{
+                <DateTimePicker
+                  style={{
+                    marginHorizontal: "15%",
+                    backgroundColor: "white",
+                    color: "black",
+                  }}
+                  testID="dateTimePicker"
+                  value={date}
+                  mode={mode}
+                  is24Hour={true}
+                  display="default"
+                  onChange={onChange}
+                />
+              </View>
+            ) : (
+              <View
+                style={{
                   width: "100%",
-                  alignItems: 'center'
-
+                  alignItems: "center",
                 }}>
-                  <TouchableOpacity style={{
+                <TouchableOpacity
+                  style={{
                     width: "70%",
                     borderRadius: 20,
                     height: 40,
                     justifyContent: "space-between",
                     paddingHorizontal: 60,
-                    alignContent: 'center',
-                    justifyContent: 'center',
+                    alignContent: "center",
+                    justifyContent: "center",
                     backgroundColor: "#fff",
                     color: "black",
                   }}
-                    onPress={showDatepicker}
-                  >
-                    <Text style={{ opacity: 0.5 }}>{showDate ? date.toDateString() : <Text>Date de naissance</Text>}</Text>
-                  </TouchableOpacity>
-                </View>
-
-
-              )
-            }
+                  onPress={showDatepicker}>
+                  <Text style={{ opacity: 0.5 }}>
+                    {showDate ? (
+                      date.toDateString()
+                    ) : (
+                      <Text>Date de naissance</Text>
+                    )}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
 
             {/* DatePickerEnd */}
-            {errorText ?
+            {errorText ? (
               <View style={styles.Error}>
-                <Text style={{ color: 'white' }}>{errorText}</Text>
+                <Text style={{ color: "white" }}>{errorText}</Text>
               </View>
-              : null}
+            ) : null}
 
             <TouchableOpacity
               onPress={() => {
                 // const emailError = emailValidator(email.value)
 
-                const firstNameError = nameValidator(FirstName.value)
-
+                const firstNameError = nameValidator(FirstName.value);
 
                 if (firstNameError) {
-                  setFirstName({ ...FirstName, error: firstNameError })
-
+                  setFirstName({ ...FirstName, error: firstNameError });
                 }
 
-
-
-
                 if (!firstNameError)
-
-
-                  props.navigation.push("MonProfil", { name: FirstName.value, date: date });
-              }}
-            >
-              <View style={{ alignItems: 'center', justifyContent: 'center', marginVertical: 20 }}>
+                  props.navigation.push("MonProfil", {
+                    name: FirstName.value,
+                    date: date,
+                  });
+              }}>
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginVertical: 20,
+                }}>
                 <View style={styles.btnopacity}>
-
                   <Text style={styles.f}>VALIDER</Text>
                 </View>
               </View>
-
             </TouchableOpacity>
           </View>
         </SafeAreaView>
-      </LinearGradient >
-
+      </LinearGradient>
     </>
   );
 };
@@ -167,9 +172,15 @@ const FlowA = ({ ...props }) => {
 export default FlowA;
 
 const styles = StyleSheet.create({
-  main: {
+  linearGradient: {
     flex: 1,
-    display: "flex",
+  },
+  main: {
+    justifyContent: "center",
+    flex: 1,
+  },
+  center: {
+    alignItems: "center",
   },
   h1: {
     fontFamily: "FredokaOne-Regular",
@@ -186,8 +197,6 @@ const styles = StyleSheet.create({
   },
   Profile: { alignItems: "center", marginVertical: 30 },
 
-  linearGradient: { flex: 1 },
-
   input: {
     width: "70%",
     borderRadius: 20,
@@ -196,7 +205,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 60,
     backgroundColor: "#fff",
-    color: "black"
+    color: "black",
   },
   btn: {
     paddingHorizontal: 20,
@@ -217,7 +226,7 @@ const styles = StyleSheet.create({
     fontFamily: "FredokaOne-Regular",
   },
   Error: {
-    marginHorizontal: '16%',
-    marginTop: 10
-  }
+    marginHorizontal: "16%",
+    marginTop: 10,
+  },
 });
