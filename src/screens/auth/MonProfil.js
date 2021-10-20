@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import ImagePicker from "react-native-image-crop-picker";
-import CheckBox from '@react-native-community/checkbox';
+import CheckBox from "@react-native-community/checkbox";
 
 import { AsyncStorage } from "@react-native-async-storage/async-storage";
 import {
   StyleSheet,
   Text,
   View,
-
   ScrollView,
   SafeAreaView,
   Image,
@@ -38,21 +37,19 @@ import Colors from "../../assets/colors/Colors";
 
 const MonProfil = ({ route, ...props }) => {
   const { name, date } = route.params;
-  const [email, setEmail] = useState({ value: '', error: '' });
+  const [email, setEmail] = useState({ value: "", error: "" });
   const [number, setNumber] = useState("");
   const [userProfileImage, setUserProfileImage] = useState(null);
   const [gender, setGender] = useState("");
-  const [password, setPassword] = useState({ value: '', error: '' });
+  const [password, setPassword] = useState({ value: "", error: "" });
   const [UserProfileImageConfig, setUserProfileImageConfig] = useState(null);
   const [contentType, setcontentType] = useState(null);
   const [selectedTeams, setSelectedTeams] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const [isSelected, setSelection] = useState(false);
-  const [toggleCheckBox, setToggleCheckBox] = useState(false)
+  const [toggleCheckBox, setToggleCheckBox] = useState(false);
 
-
-  const [errorText, setErrorText] = useState('');
-
+  const [errorText, setErrorText] = useState("");
 
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -133,10 +130,10 @@ const MonProfil = ({ route, ...props }) => {
       width: 300,
       height: 400,
       cropping: true,
-    }).then(image => {
+    }).then((image) => {
       console.log(image);
     });
-  }
+  };
 
   return (
     <LinearGradient colors={["#DD488C", "#000"]} style={styles.linearGradient}>
@@ -146,28 +143,35 @@ const MonProfil = ({ route, ...props }) => {
           <Text style={styles.h1}>MON PROFIL</Text>
         </View>
         <View style={styles.Form}>
-
-
-
-          <InputF onChangeText={(e) => setEmail({ value: e, error: '' })}
+          <InputF
+            onChangeText={(e) => setEmail({ value: e, error: "" })}
             value={email.value}
             error={email.error}
             errorText={email.error}
             placeholder="Email"
-            keyboardType="default" />
+            keyboardType="default"
+          />
 
-
-          <InputF onChangeText={(e) => setEmail({ value: e, error: '' })}
+          <InputF
+            onChangeText={(e) => setEmail({ value: e, error: "" })}
             secureTextEntry={true}
-            onChangeText={(e) => setPassword({ value: e, error: '' })}
+            onChangeText={(e) => setPassword({ value: e, error: "" })}
             value={password.value}
             error={password.error}
             errorText={password.error}
             placeholder="Mot de passe"
-            keyboardType="default" />
+            keyboardType="default"
+          />
 
-          <View style={{ backgroundColor: 'white', width: "70%", borderRadius: 30, paddingHorizontal: 10, marginBottom: 15, paddingVertical: 0 }}>
-
+          <View
+            style={{
+              backgroundColor: "white",
+              width: "70%",
+              borderRadius: 30,
+              paddingHorizontal: 10,
+              marginBottom: 15,
+              paddingVertical: 0,
+            }}>
             <SelectBox
               label=""
               inputPlaceholder="Centres d'intéret"
@@ -175,16 +179,13 @@ const MonProfil = ({ route, ...props }) => {
               selectedValues={selectedTeams}
               onMultiSelect={onMultiChange()}
               onTapClose={onMultiChange()}
-              containerStyle={{ paddingHorizontal: 20, marginBottom: 2, }}
-              optionsLabelStyle={{ paddingHorizontal: 10, }}
+              containerStyle={{ paddingHorizontal: 20, marginBottom: 2 }}
+              optionsLabelStyle={{ paddingHorizontal: 10 }}
               labelStyle={{ height: 6 }}
               multiOptionContainerStyle={{ backgroundColor: Colors.darkPink }}
               isMulti
             />
           </View>
-
-
-
 
           <View style={styles.SelectGender}>
             <TouchableOpacity onPress={() => setGender("mix")}>
@@ -195,6 +196,7 @@ const MonProfil = ({ route, ...props }) => {
                   size={60}
                   color={gender === "mix" ? "pink" : "#000"}
                 />
+                <Text>Autre</Text>
               </View>
             </TouchableOpacity>
 
@@ -206,6 +208,7 @@ const MonProfil = ({ route, ...props }) => {
                   size={60}
                   color={gender === "male" ? "pink" : "#000"}
                 />
+                <Text>Femme</Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => setGender("female")}>
@@ -216,46 +219,48 @@ const MonProfil = ({ route, ...props }) => {
                   size={60}
                   color={gender === "female" ? "pink" : "#000"}
                 />
+                <Text>Homme</Text>
               </View>
             </TouchableOpacity>
           </View>
 
           {userProfileImage === null ? (
-
-            <View style={{ display: 'flex', flexDirection: 'row' }}><TouchableOpacity
-              onpress={TakeImgFromCamera}
-              style={styles.uploadImg}
-            >
-              <Ionicons style={styles.position} name="md-camera" size={60} />
-            </TouchableOpacity>
-              <TouchableOpacity onPress={TakeImgFromGallery}
-
-                style={styles.uploadImg}
-              >
-                <Ionicons style={styles.position} name="md-download-outline" size={50} />
+            <View style={{ display: "flex", flexDirection: "row" }}>
+              <TouchableOpacity
+                onpress={TakeImgFromCamera}
+                style={styles.uploadImg}>
+                <Ionicons style={styles.position} name="md-camera" size={60} />
               </TouchableOpacity>
-            </View >
+              <TouchableOpacity
+                onPress={TakeImgFromGallery}
+                style={styles.uploadImg}>
+                <Ionicons
+                  style={styles.position}
+                  name="md-download-outline"
+                  size={50}
+                />
+              </TouchableOpacity>
+            </View>
           ) : (
             <View style={styles.uploadImg}>
               <TouchableOpacity onPress={TakeImgFromGallery}>
-
                 <Image
-                  style={{ height: 80, width: 80, borderRadius: 50, ...Colors.customShadow }}
+                  style={{
+                    height: 80,
+                    width: 80,
+                    borderRadius: 50,
+                    ...Colors.customShadow,
+                  }}
                   resizeMode="cover"
                   source={{
                     uri: userProfileImage,
                   }}
                 />
-
               </TouchableOpacity>
             </View>
-
-
-          )
-          }
+          )}
 
           <View style={styles.CB}>
-
             <View>
               <CheckBox
                 disabled={false}
@@ -268,27 +273,22 @@ const MonProfil = ({ route, ...props }) => {
               />
             </View>
             <View>
-              <Text style={{ color: 'white', marginHorizontal: 10, }}>Accepter les termes et conditions</Text>
+              <Text style={{ color: "white", marginHorizontal: 10 }}>
+                Accepter les termes et conditions
+              </Text>
             </View>
-
           </View>
-
-
 
           <TouchableOpacity
             onPress={async () => {
+              const emailError = emailValidator(email.value);
 
-              const emailError = emailValidator(email.value)
-
-              const passwordError = passwordValidator(password.value)
-
+              const passwordError = passwordValidator(password.value);
 
               if (emailError || passwordError) {
-                setEmail({ ...email, error: emailError })
-                setPassword({ ...password, error: passwordError })
-
+                setEmail({ ...email, error: emailError });
+                setPassword({ ...password, error: passwordError });
               }
-
 
               if (
                 email.value != "" &&
@@ -297,7 +297,7 @@ const MonProfil = ({ route, ...props }) => {
                 gender != "" &&
                 name != "" &&
                 date != "" &&
-                toggleCheckBox != 'false' &&
+                toggleCheckBox != "false" &&
                 selectedTeams.length > 0
               ) {
                 var userDetails = {
@@ -319,18 +319,13 @@ const MonProfil = ({ route, ...props }) => {
                   console.log(userDetails);
                   props.navigation.push("Home");
                   setLoading(false);
-
                 } catch (err) {
                   console.log(err);
                 }
+              } else {
+                Alert.alert("fields can not be empty");
               }
-
-              else {
-                Alert.alert("fields can not be empty")
-              }
-            }}
-          >
-
+            }}>
             <View style={styles.btn}>
               <Text style={styles.f}>VALIDER MON PROFIL</Text>
             </View>
@@ -343,10 +338,10 @@ const MonProfil = ({ route, ...props }) => {
           </TouchableOpacity> */}
         </View>
       </ScrollView>
-    </LinearGradient >
+    </LinearGradient>
   );
   function onMultiChange() {
-    console.log(selectedTeams.length)
+    console.log(selectedTeams.length);
     return (item) => setSelectedTeams(xorBy(selectedTeams, [item], "id"));
   }
 
@@ -389,7 +384,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 60,
     backgroundColor: "#fff",
-    color: "black"
+    color: "black",
   },
   btn: {
     paddingHorizontal: 20,
@@ -433,10 +428,10 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   CB: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     marginVertical: 10,
-    flexDirection: 'row',
-  }
+    flexDirection: "row",
+  },
 });
