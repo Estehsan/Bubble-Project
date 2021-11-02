@@ -31,6 +31,7 @@ import ChatUser from "../component/ChatUser";
 
 import { connect } from "react-redux";
 import PlacesDetails from "../screens/user/Drink/PlacesDetails";
+import Scan from "../screens/extra/Scan";
 
 const Stack = createBottomTabNavigator();
 
@@ -161,6 +162,7 @@ function Tabs() {
       <All.Screen name="Message" component={Message} />
       <All.Screen name="UsersListPlace" component={UsersListPlace} />
       <All.Screen name="PlacesDetails" component={PlacesDetails} />
+      <All.Screen name="Scan" component={Scan} />
 
       <All.Screen
         options={{ headerShown: true }}

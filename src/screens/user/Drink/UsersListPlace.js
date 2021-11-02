@@ -49,10 +49,10 @@ const UsersListPlace = ({ route, ...props }) => {
 
   useEffect(() => {
     // QRCODE START
-    const arr = JSON.stringify([title, place, location, code, img]);
+    // const arr = JSON.stringify([title, place, location, code, img]);
 
     RNQRGenerator.generate({
-      value: arr,
+      value: id,
       height: 300,
       width: 300,
       base64: true,
@@ -162,6 +162,7 @@ const UsersListPlace = ({ route, ...props }) => {
                   code,
                   img,
                   latlng,
+                  qrimage,
                   // title: title,
                   // id: id,
                   // place: place,

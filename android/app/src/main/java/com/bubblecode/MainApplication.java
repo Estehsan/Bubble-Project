@@ -1,5 +1,6 @@
 package com.bubblecode;
 import com.showlocationservicesdialogbox.LocationServicesDialogBoxPackage;
+import org.reactnative.camera.RNCameraPackage;
 
 import android.app.Application;
 import android.content.Context;

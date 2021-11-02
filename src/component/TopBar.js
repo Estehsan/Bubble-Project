@@ -1,10 +1,11 @@
 import React from "react";
 import { StyleSheet, Text, View, Image } from "react-native";
+import Entypo from "react-native-vector-icons/Entypo";
 
 const TopBar = ({ children }) => {
   return (
     <View style={styles.container}>
-      {/* {children && <View style={styles.side}>{children}</View>} */}
+      {children && <View style={styles.side}>{children}</View>}
 
       <View style={styles.center}>
         <Image
@@ -13,7 +14,7 @@ const TopBar = ({ children }) => {
           source={require("./../assets/images/logo-bubble.png")}
         />
       </View>
-      {/* <View style={styles.side}></View> */}
+      {children && <View style={styles.side}></View>}
     </View>
   );
 };
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
     flexDirection: "row-reverse",
     display: "flex",
     height: 100,
-    justifyContent: "space-around",
+    justifyContent: "space-evenly",
     alignItems: "center",
     width: "100%",
   },
@@ -34,5 +35,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "70%",
   },
-  side: { backgroundColor: "red", width: "15%" },
+  side: { width: "15%" },
 });

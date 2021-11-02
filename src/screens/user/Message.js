@@ -306,8 +306,8 @@ const Message = ({ ...props }) => {
                                     item.gender === "male"
                                       ? "male"
                                       : item.gender === "female"
-                                        ? "female"
-                                        : "male-female"
+                                      ? "female"
+                                      : "male-female"
                                   }
                                   size={30}
                                   color={"#000"}
@@ -399,8 +399,8 @@ const Message = ({ ...props }) => {
                                       item.gender === "male"
                                         ? "male"
                                         : item.gender === "female"
-                                          ? "female"
-                                          : "male-female"
+                                        ? "female"
+                                        : "male-female"
                                     }
                                     size={30}
                                     color={"#000"}

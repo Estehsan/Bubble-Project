@@ -1,22 +1,13 @@
-import * as firebase from 'firebase';
+import * as firebase from "firebase";
 import "firebase/auth";
 import "firebase/database";
 import "firebase/firestore";
 import "firebase/storage";
-import messaging from '@react-native-firebase/messaging';
-import OneSignal from "react-native-onesignal"
+import messaging from "@react-native-firebase/messaging";
+import OneSignal from "react-native-onesignal";
+import { FIREBASE_CONFIG } from "./keys";
 
-
-
-var firebaseConfig = {
-  apiKey: "AIzaSyDe6BeaQ565phuRr3XaSyxTE2H45G50j3U",
-  authDomain: "bubble-6f15d.firebaseapp.com",
-  projectId: "bubble-6f15d",
-  storageBucket: "bubble-6f15d.appspot.com",
-  messagingSenderId: "744912611069",
-  appId: "1:744912611069:web:8f44dfe45629faf2894094",
-  measurementId: "G-4YC4STKFS9",
-};
+var firebaseConfig = FIREBASE_CONFIG;
 
 let app;
 if (firebase.apps.length === 0) {
@@ -32,15 +23,24 @@ const firestore = firebase.firestore();
 const auth = firebase.auth();
 const storage = firebase.storage();
 
-
-firestore.settings({ experimentalForceLongPolling: true , merge : true});
+firestore.settings({ experimentalForceLongPolling: true, merge: true });
 
 const signUp = (userDetails) => {
-
-  const { email, password, userProfileImage, gender, name, DOB, UserProfileImageConfig, contentType, selectedTeams, navigation } = userDetails;
+  const {
+    email,
+    password,
+    userProfileImage,
+    gender,
+    name,
+    DOB,
+    UserProfileImageConfig,
+    contentType,
+    selectedTeams,
+    navigation,
+  } = userDetails;
   const metadata = {
-    contentType: contentType
-  }
+    contentType: contentType,
+  };
   return new Promise((resolve, reject) => {
     auth
       .createUserWithEmailAndPassword(email, password)
@@ -54,8 +54,9 @@ const signUp = (userDetails) => {
           uid = user.uid;
         }
 
-        const filename = userProfileImage.substring(userProfileImage.lastIndexOf('/') + 1);
-
+        const filename = userProfileImage.substring(
+          userProfileImage.lastIndexOf("/") + 1
+        );
 
         const blob = await new Promise((resolve, reject) => {
           const xhr = new XMLHttpRequest();
@@ -70,8 +71,7 @@ const signUp = (userDetails) => {
           xhr.send(null);
         });
 
-        const { userId } = await OneSignal.getDeviceState()
-
+        const { userId } = await OneSignal.getDeviceState();
 
         storage
           .ref()
@@ -95,26 +95,22 @@ const signUp = (userDetails) => {
                   latitude: 0,
                   longitude: 0,
                   candy: 3,
-                  notificationId : userId,
-                }
+                  notificationId: userId,
+                };
                 let user = firestore
                   .collection("users")
                   .doc(uid)
-                  .set(userDetailsForDb)
-                console.log(user)
+                  .set(userDetailsForDb);
+                console.log(user);
                 // navigation.push("Home")
-                resolve(userDetailsForDb)
-
+                resolve(userDetailsForDb);
               })
               .catch((error) => {
                 // Handle Errors here.
                 let errorCode = error.code;
                 let errorMessage = error.message;
-                console.log(
-                  "Error in getDownloadURL function",
-                  errorMessage
-                );
-                reject(errorMessage)
+                console.log("Error in getDownloadURL function", errorMessage);
+                reject(errorMessage);
               });
           })
           .catch((error) => {
@@ -122,7 +118,7 @@ const signUp = (userDetails) => {
             let errorCode = error.code;
             let errorMessage = error.message;
             console.log("Error in Image Uploading", errorMessage);
-            reject(errorMessage)
+            reject(errorMessage);
           });
       })
       .catch((error) => {
@@ -132,7 +128,7 @@ const signUp = (userDetails) => {
         // ..
       });
   });
-}
+};
 
 function logIn({ userLoginDetails, ...props }) {
   const { userLoginEmail, userLoginPassword } = userLoginDetails;
@@ -155,6 +151,4 @@ function logIn({ userLoginDetails, ...props }) {
     });
 }
 
-export { messaging, auth, firestore, storage,logIn, signUp };
-
-
+export { messaging, auth, firestore, storage, logIn, signUp };

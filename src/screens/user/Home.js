@@ -27,7 +27,9 @@ import TopBar from "../../component/TopBar";
 import LinearGradient from "react-native-linear-gradient";
 import Geolocation from "@react-native-community/geolocation";
 import { auth, firestore } from "../../db/firebase";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Entypo from "react-native-vector-icons/Entypo";
+
 import MapStyleNight from "./MapStyles/MapStyleNight";
 import MapStyleDay from "./MapStyles/MapStyleDay";
 
@@ -231,7 +233,12 @@ const Home = ({ ...props }) => {
       colors={["#FFC1DD", "#ffffff"]}
       style={styles.linearGradient}>
       <SafeAreaView style={styles.main}>
-        <TopBar />
+        <TopBar>
+          <TouchableOpacity onPress={() => props.navigation.navigate("Scan")}>
+            <MaterialCommunityIcons name="qrcode-scan" size={35} />
+          </TouchableOpacity>
+        </TopBar>
+
         <View style={{ marginTop: 30 }}>
           <LocationTab
             ChangeKilo={(e) => setKilo(e)}

@@ -4,10 +4,12 @@ import LinearGradient from "react-native-linear-gradient";
 import Colors from "../../../assets/colors/Colors";
 import H1 from "../../../component/basic/H1";
 import H2 from "../../../component/basic/H2";
+import P from "../../../component/basic/P";
 import TopBar from "../../../component/TopBar";
 
 const PlacesDetails = ({ route }) => {
-  const { id, title, place, location, code, img, latlng } = route.params;
+  const { id, title, place, location, code, img, latlng, qrimage } =
+    route.params;
   return (
     <LinearGradient
       colors={["#FFC1DD", "#ffffff"]}
@@ -20,6 +22,10 @@ const PlacesDetails = ({ route }) => {
                 style={{ height: 100, width: 130 }}
                 resizeMode="contain"
                 source={require("./../../../assets/images/logo-bubble.png")}
+              />
+              <Image
+                style={{ height: 60, width: 60 }}
+                source={{ uri: qrimage }}
               />
             </View>
           </View>
@@ -53,6 +59,15 @@ const PlacesDetails = ({ route }) => {
             <H2>{place}</H2>
             <H2>{location}</H2>
             <H2>{code}</H2>
+            <View style={{ width: "80%" }}>
+              <P>
+                Lorem iHsum dolor sit amet, consectetur adipiscing elit. Sed ex
+                felis, lobortis nec felis a, venenatis semper metus. Vivamus
+                fringilla sed lorem id finibus. Integer tristique felis magna, a
+                iaculis nisi scelerisque at. Maecenas lectus justo, blandit sed
+                mollis vel,
+              </P>
+            </View>
           </View>
         </View>
       </SafeAreaView>

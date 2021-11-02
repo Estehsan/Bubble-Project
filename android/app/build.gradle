@@ -158,7 +158,9 @@ android {
         versionName "1.0"
         targetSdkVersion 30
         vectorDrawables.useSupportLibrary = true
-multiDexEnabled true   //add this
+        multiDexEnabled true   //add this
+          missingDimensionStrategy 'react-native-camera', 'general' 
+
 
         // playServicesVersion = "17.2.1" // or find latest version
         // androidMapsUtilsVersion = "2.2.0"
@@ -211,6 +213,9 @@ multiDexEnabled true   //add this
 
 dependencies {
     compileOnly project(':react-native-android-location-services-dialog-box')
+
+
+    implementation project(':react-native-camera')
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
