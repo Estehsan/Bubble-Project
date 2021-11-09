@@ -167,7 +167,7 @@ const AchatUser = ({ ...props }) => {
               justifyContent: "center",
               marginVertical: 10,
             }}>
-            <Text style={styles.ChatUserName}>MON FLEURISTE BUBBLE</Text>
+            <Text style={styles.ChatUserName}>LES FRIANDISES BUBBLE</Text>
           </View>
           <View style={styles.TopBarExtra}>
             <Image
@@ -181,14 +181,14 @@ const AchatUser = ({ ...props }) => {
               source={require("./../../assets/images/rose.png")}
             />
             <Text style={styles.topFont}>
-              Mon solde de des sucreries
+              Mon solde de des bonbons
               {"\n"} disponibles :
             </Text>
             <Text style={styles.threeFont}>{candy}</Text>
           </View>
           <View style={styles.mainBox}>
             <View style={styles.boxes}>
-              <Text style={styles.BoxText}>1 DES BONBONS</Text>
+              <Text style={styles.BoxText}>1 BONBON</Text>
               <Text> {""}</Text>
 
               <View style={styles.BoxImage}>
@@ -200,7 +200,7 @@ const AchatUser = ({ ...props }) => {
               </View>
             </View>
             <View style={styles.boxes}>
-              <Text style={styles.BoxText}>PACK DE 5 DES SUCRERIES</Text>
+              <Text style={styles.BoxText}>PACK DE 5 BONBONS</Text>
               <View style={styles.BoxImage}>
                 <Image
                   style={{ height: 35, width: 35, borderRadius: 35 }}
@@ -220,7 +220,7 @@ const AchatUser = ({ ...props }) => {
               </View>
             </View>
             <View style={styles.boxes}>
-              <Text style={styles.BoxText}>PACK DE 10 DES SUCRERIES</Text>
+              <Text style={styles.BoxText}>PACK DE 10 BONBONS</Text>
               <View style={styles.BoxImage}>
                 <Image
                   style={{ height: 35, width: 35, borderRadius: 35 }}
@@ -383,6 +383,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginTop: 15,
     alignContent: "center",
+    textAlign: "center",
   },
   montantText: {
     fontFamily: "FredokaOne-Regular",

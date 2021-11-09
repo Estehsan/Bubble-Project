@@ -226,7 +226,7 @@ const Profile = (props) => {
               style={styles.input}
               onChangeText={setFirstName}
               value={FirstName}
-              placeholder="Prénom"
+              placeholder="Pseudo"
               keyboardType="default"
             />
            {

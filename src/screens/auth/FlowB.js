@@ -64,7 +64,7 @@ const FlowA = ({ ...props }) => {
             />
           </View>
           <View style={styles.Profile}>
-            <Text style={styles.h1}>INSCRIPTION </Text>
+            <Text style={styles.h1}>S'inscrire </Text>
           </View>
           <View style={styles.Form}>
             <InputF

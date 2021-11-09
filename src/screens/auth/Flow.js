@@ -25,13 +25,13 @@ function Flow(props) {
         <View style={styles.Form}>
           <TouchableOpacity onPress={() => props.navigation.push("FlowA")}>
             <View style={styles.btn}>
-              <Text style={styles.f}>CONNEXION</Text>
+              <Text style={styles.f}>Se connecter</Text>
             </View>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => props.navigation.navigate("FlowB")}>
             <View style={styles.btn}>
-              <Text style={styles.f}>INSCRIPTION</Text>
+              <Text style={styles.f}>S'inscrire</Text>
 
 
             </View>
