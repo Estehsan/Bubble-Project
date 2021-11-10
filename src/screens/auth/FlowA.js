@@ -82,7 +82,7 @@ const FlowA = ({ ...props }) => {
     };
   };
   return (
-    <LinearGradient colors={["#DD488C", "#000"]} style={styles.linearGradient}>
+    <LinearGradient colors={["#000", "#DD488C"]} style={styles.linearGradient}>
       <SafeAreaView style={styles.main}>
         <View style={styles.center}>
           <Image

@@ -14,6 +14,8 @@ import {
 import Colors from "../../assets/colors/Colors";
 import Entypo from "react-native-vector-icons/Entypo";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import EvilIcons from "react-native-vector-icons/EvilIcons";
+
 import { auth, firestore } from "../../db/firebase";
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "../../component/TopBar";
@@ -156,13 +158,14 @@ const Message = ({ ...props }) => {
             }}>
             <Text style={styles.ChatUserName}>MES CONVERSATIONS</Text>
           </View>
-          <View>
+          <View style={styles.searchIcon}>
             <TextInput
               placeholder="Rechercher"
               onChangeText={(e) => handleSearchBar(e)}
               value={defaultSearchValue}
               style={styles.inputField}
             />
+            <EvilIcons name="search" size={30} color={"#000"} />
           </View>
           <View>
             {loading ? (
@@ -459,17 +462,7 @@ const styles = StyleSheet.create({
     borderRadius: 60,
     alignItems: "center",
   },
-  inputField: {
-    flexDirection: "row",
-    alignContent: "center",
-    justifyContent: "space-between",
-    width: "100%",
-    marginTop: 15,
-    color: "black",
-    padding: 15,
-    backgroundColor: "#fff",
-    borderRadius: 20,
-  },
+
   headng: {
     fontFamily: "FredokaOne-Bold",
     fontSize: 40,
@@ -503,5 +496,24 @@ const styles = StyleSheet.create({
   Logo: {
     justifyContent: "center",
     alignItems: "center",
+  },
+  searchIcon: {
+    flexDirection: "row",
+    backgroundColor: "white",
+    borderRadius: 30,
+    alignItems: "center",
+    alignItems: "center",
+    width: "90%",
+    paddingHorizontal: 20,
+    marginHorizontal: "3%",
+    height: 50,
+    marginVertical: 10,
+  },
+  inputField: {
+    width: "90%",
+    color: "black",
+    padding: 15,
+    backgroundColor: "#fff",
+    borderRadius: 20,
   },
 });

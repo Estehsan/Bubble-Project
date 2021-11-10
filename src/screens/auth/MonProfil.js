@@ -136,7 +136,7 @@ const MonProfil = ({ route, ...props }) => {
   };
 
   return (
-    <LinearGradient colors={["#DD488C", "#000"]} style={styles.linearGradient}>
+    <LinearGradient colors={["#000", "#DD488C"]} style={styles.linearGradient}>
       <ScrollView style={styles.main}>
         <TopBar />
         <View style={styles.Profile}>

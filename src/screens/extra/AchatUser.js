@@ -155,11 +155,11 @@ const AchatUser = ({ ...props }) => {
     <LinearGradient
       colors={["#FFC1DD", "#ffffff"]}
       style={styles.linearGradient}>
-      <SafeAreaView>
-        <View style={{ width: "100%", height: 100 }}>
-          <TopBar />
-        </View>
+      <SafeAreaView style={styles.linearGradient}>
         <ScrollView>
+          <View style={{ width: "100%", height: 100 }}>
+            <TopBar />
+          </View>
           <View
             style={{
               flexDirection: "row",
