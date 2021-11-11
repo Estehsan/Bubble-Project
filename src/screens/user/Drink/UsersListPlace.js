@@ -139,7 +139,7 @@ const UsersListPlace = ({ route, ...props }) => {
     <LinearGradient
       colors={["#FFC1DD", "#ffffff"]}
       style={styles.linearGradient}>
-      <SafeAreaView>
+      <SafeAreaView style={styles.Safe}>
         <ScrollView>
           <View>
             <TopBar>
@@ -220,5 +220,5 @@ export default UsersListPlace;
 
 const styles = StyleSheet.create({
   linearGradient: { flex: 1 },
-  ListOfUsers: {},
+  Safe: { flex: 1, paddingBottom: 10 },
 });

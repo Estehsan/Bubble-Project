@@ -435,6 +435,7 @@ export default Message;
 
 const styles = StyleSheet.create({
   linearGradient: {
+    paddingBottom: 20,
     flex: 1,
   },
   Container: {

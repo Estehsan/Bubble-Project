@@ -7,8 +7,7 @@ import { Provider, connect } from "react-redux";
 import store from "./src/redux/store";
 import { LogBox } from "react-native";
 import SplashScreen from "react-native-splash-screen";
-import Purchases from 'react-native-purchases';
-
+import Purchases from "react-native-purchases";
 
 const App = () => {
   useEffect(async () => {

@@ -64,6 +64,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
   const width = useWindowDimensions().width;
   useLayoutEffect(() => {
     navigation.setOptions({
+      tabBarVisible: false,
       headerStyle: {
         backgroundColor: "#fFC1DD",
       },

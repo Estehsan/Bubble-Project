@@ -3,12 +3,11 @@ import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "../../component/TopBar";
 import { auth, messaging, firestore } from "../../db/firebase";
-import OneSignal from "react-native-onesignal"
-
+import OneSignal from "react-native-onesignal";
 
 const AuthLoading = ({ navigation }) => {
   useEffect(async () => {
-    const { userId } = await OneSignal.getDeviceState()
+    const { userId } = await OneSignal.getDeviceState();
     auth.onAuthStateChanged(async (user) => {
       if (user) {
         let datum = await firestore
@@ -16,13 +15,13 @@ const AuthLoading = ({ navigation }) => {
           .doc(user.uid)
           .get()
           .then(async (doc) => {
-            if (doc.data().notificationId != userId || !doc.data().notificationId) {
-              await firestore
-                .collection("users")
-                .doc(user.uid)
-                .update({
-                  notificationId: userId
-                })
+            if (
+              doc.data().notificationId != userId ||
+              !doc.data().notificationId
+            ) {
+              await firestore.collection("users").doc(user.uid).update({
+                notificationId: userId,
+              });
             }
             navigation.reset({ routes: [{ name: "Home" }] });
           })

@@ -33,11 +33,11 @@ import { connect } from "react-redux";
 import PlacesDetails from "../screens/user/Drink/PlacesDetails";
 import Scan from "../screens/extra/Scan";
 
-const Stack = createBottomTabNavigator();
+const Tab = createBottomTabNavigator();
 
-function BottomTabNavigator() {
+function Tabs() {
   return (
-    <Stack.Navigator
+    <Tab.Navigator
       initialRouteName="Home"
       tabBarOptions={{
         activeTintColor: "#DD488C",
@@ -54,9 +54,9 @@ function BottomTabNavigator() {
           ...styles.shadow,
         },
       }}>
-      <Stack.Screen
+      <Tab.Screen
         name="Home"
-        component={Home}
+        component={AllScreens}
         options={{
           tabBarIcon: ({ color }) => (
             <MIcon
@@ -68,7 +68,7 @@ function BottomTabNavigator() {
           ),
         }}
       />
-      {/* <Stack.Screen
+      {/* <Tab.Screen
         name="AchatUser"
         component={AchatUser}
         options={{
@@ -77,7 +77,7 @@ function BottomTabNavigator() {
           ),
         }}
       /> */}
-      <Stack.Screen
+      <Tab.Screen
         name="Message"
         component={Message}
         options={{
@@ -91,7 +91,7 @@ function BottomTabNavigator() {
           ),
         }}
       />
-      <Stack.Screen
+      <Tab.Screen
         name="Drink"
         component={Drink}
         options={{
@@ -105,7 +105,7 @@ function BottomTabNavigator() {
           ),
         }}
       />
-      <Stack.Screen
+      <Tab.Screen
         name="Profile"
         component={Profile}
         options={{
@@ -119,14 +119,15 @@ function BottomTabNavigator() {
           ),
         }}
       />
-    </Stack.Navigator>
+    </Tab.Navigator>
   );
 }
 const All = createStackNavigator();
 const screenOptionStyle = {
   headerShown: false,
 };
-function Tabs() {
+
+function AllScreens() {
   return (
     <All.Navigator
       screenOptions={screenOptionStyle}
@@ -139,7 +140,7 @@ function Tabs() {
       <All.Screen
         name="Flow"
         component={Flow}
-        options={{ headerShown: false }}
+        options={{ headerShown: false, tabBarVisible: false }}
       />
       <All.Screen
         name="FlowA"
@@ -149,19 +150,18 @@ function Tabs() {
       <All.Screen
         name="FlowB"
         component={FlowB}
-        options={{ headerShown: false }}
+        options={{ headerShown: false, tabBarVisible: false }}
       />
       <All.Screen
         name="Reset"
         component={Reset}
         options={{ headerShown: false }}
       />
-      <All.Screen name="Home" component={BottomTabNavigator} />
-      <All.Screen name="Message" component={BottomTabNavigator} />
-      <All.Screen name="Drink" component={BottomTabNavigator} />
-      <All.Screen name="Profile" component={BottomTabNavigator} />
-
+      <All.Screen name="Home" component={Home} />
       <All.Screen name="MonProfil" component={MonProfil} />
+      {/* <All.Screen name="Drink" component={Drink} />
+      <All.Screen name="Message" component={Message} /> */}
+
       <All.Screen name="UsersListPlace" component={UsersListPlace} />
       <All.Screen name="PlacesDetails" component={PlacesDetails} />
       <All.Screen name="Scan" component={Scan} />
@@ -172,6 +172,7 @@ function Tabs() {
         component={ChatUser}
       />
       <All.Screen name="Fiche" component={Fiche} />
+      <All.Screen name="Profile" component={Profile} />
       <All.Screen name="AchatUser" component={AchatUser} />
     </All.Navigator>
   );
