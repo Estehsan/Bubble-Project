@@ -10,13 +10,14 @@ import {
   Button,
   ActivityIndicator,
   Platform,
+  ImageBackground,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import InputF from "../../component/InputF";
 import { nameValidator } from "../../helpers/nameValidator";
 import TopBar from "./../../component/TopBar";
 import DateTimePicker from "@react-native-community/datetimepicker";
-
+import ValiderBtn from "./../../component/basic/ValiderBtn";
 // This is signUp SCREEN
 
 // let handlecheck = (email, password) => {
@@ -64,7 +65,7 @@ const FlowA = ({ ...props }) => {
             />
           </View>
           <View style={styles.Profile}>
-            <Text style={styles.h1}>S'inscrire </Text>
+            <Text style={styles.h1}>S'inscrire</Text>
           </View>
           <View style={styles.Form}>
             <InputF
@@ -96,6 +97,7 @@ const FlowA = ({ ...props }) => {
                   is24Hour={true}
                   display="default"
                   onChange={onChange}
+                  dateFormat="dayofweek day month"
                 />
               </View>
             ) : (
@@ -134,34 +136,31 @@ const FlowA = ({ ...props }) => {
                 <Text style={{ color: "white" }}>{errorText}</Text>
               </View>
             ) : null}
-
-            <TouchableOpacity
-              onPress={() => {
-                // const emailError = emailValidator(email.value)
-
-                const firstNameError = nameValidator(FirstName.value);
-
-                if (firstNameError) {
-                  setFirstName({ ...FirstName, error: firstNameError });
-                }
-
-                if (!firstNameError)
-                  props.navigation.push("MonProfil", {
-                    name: FirstName.value,
-                    date: date,
-                  });
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                marginVertical: 20,
               }}>
-              <View
-                style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginVertical: 20,
+              <TouchableOpacity
+                onPress={() => {
+                  // const emailError = emailValidator(email.value)
+
+                  const firstNameError = nameValidator(FirstName.value);
+
+                  if (firstNameError) {
+                    setFirstName({ ...FirstName, error: firstNameError });
+                  }
+
+                  if (!firstNameError)
+                    props.navigation.push("MonProfil", {
+                      name: FirstName.value,
+                      date: date,
+                    });
                 }}>
-                <View style={styles.btnopacity}>
-                  <Text style={styles.f}>VALIDER</Text>
-                </View>
-              </View>
-            </TouchableOpacity>
+                <ValiderBtn />
+              </TouchableOpacity>
+            </View>
           </View>
         </SafeAreaView>
       </LinearGradient>

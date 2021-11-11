@@ -19,6 +19,7 @@ import { passwordValidator } from "./../../helpers/passwordValidator";
 import CustomModal from "../../component/basic/CustomModal";
 import WP from "./../../component/basic/WP";
 import Modal from "react-native-modal";
+import ValiderBtn from "../../component/basic/ValiderBtn";
 
 // const handleLogIn = async (email, password) => {
 
@@ -119,9 +120,7 @@ const FlowA = ({ ...props }) => {
           </TouchableOpacity>
 
           <TouchableOpacity onPress={onLoginPress}>
-            <View style={styles.btnopacity}>
-              <Text style={styles.f}>VALIDER</Text>
-            </View>
+            <ValiderBtn />
           </TouchableOpacity>
         </View>
         {/* {error === null ?

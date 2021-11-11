@@ -17,6 +17,7 @@ import ListContainer from "./../../component/ListContainer";
 import SearchBar from "./../../component/SearchBar";
 import { auth, firestore } from "../../db/firebase";
 import { getDistance } from "geolib";
+import EvilIcons from "react-native-vector-icons/EvilIcons";
 
 // linear-gradient(0deg, #FFFFFF 0%, #FFC1DD 78.9%)
 
@@ -173,12 +174,16 @@ const Drink = ({ navigation }) => {
               ChangeLight={(e) => setLight(e)}
             />
           </View>
-          <TextInput
-            placeholder="Rechercher"
-            // onChangeText={(e) => handleSearchBar(e)}
-            // value={defaultSearchValue}
-            style={styles.inputField}
-          />
+          <View style={styles.searchIcon}>
+            <TextInput
+              placeholder="Rechercher"
+              onChangeText={(e) => handleSearchBar(e)}
+              // value={defaultSearchValue}
+              style={styles.inputField}
+            />
+            <EvilIcons name="search" size={30} color={"#000"} />
+          </View>
+
           <View style={{ marginTop: 10 }}>
             {/* {locationData && (
             <FlatList
@@ -254,6 +259,25 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
     marginTop: 15,
+    color: "black",
+    padding: 15,
+    backgroundColor: "#fff",
+    borderRadius: 20,
+  },
+  searchIcon: {
+    flexDirection: "row",
+    backgroundColor: "white",
+    borderRadius: 30,
+    alignItems: "center",
+    alignItems: "center",
+    width: "90%",
+    paddingHorizontal: 20,
+    marginHorizontal: "3%",
+    height: 50,
+    marginVertical: 10,
+  },
+  inputField: {
+    width: "90%",
     color: "black",
     padding: 15,
     backgroundColor: "#fff",

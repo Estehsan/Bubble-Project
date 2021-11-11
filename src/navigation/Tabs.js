@@ -157,9 +157,11 @@ function Tabs() {
         options={{ headerShown: false }}
       />
       <All.Screen name="Home" component={BottomTabNavigator} />
+      <All.Screen name="Message" component={BottomTabNavigator} />
+      <All.Screen name="Drink" component={BottomTabNavigator} />
+      <All.Screen name="Profile" component={BottomTabNavigator} />
+
       <All.Screen name="MonProfil" component={MonProfil} />
-      <All.Screen name="Drink" component={Drink} />
-      <All.Screen name="Message" component={Message} />
       <All.Screen name="UsersListPlace" component={UsersListPlace} />
       <All.Screen name="PlacesDetails" component={PlacesDetails} />
       <All.Screen name="Scan" component={Scan} />
@@ -170,7 +172,6 @@ function Tabs() {
         component={ChatUser}
       />
       <All.Screen name="Fiche" component={Fiche} />
-      <All.Screen name="Profile" component={Profile} />
       <All.Screen name="AchatUser" component={AchatUser} />
     </All.Navigator>
   );

@@ -258,15 +258,13 @@ const AchatUser = ({ ...props }) => {
                 <TouchableOpacity
                   onPress={() => {
                     setTotal(() => {
-                      // let num = total - (0.99)
+                      let num = total - 0.99;
 
-                      // if (num > 0) {
-                      //   return num
-                      // }
-
-                      // else {
-                      //   return 0
-                      // }
+                      if (num > 0) {
+                        return num;
+                      } else {
+                        return 0;
+                      }
                       return 0;
                     });
                     setCount(0);
@@ -292,8 +290,17 @@ const AchatUser = ({ ...props }) => {
 
                 <TouchableOpacity
                   onPress={() => {
-                    setTotal(0);
-                    setCount(0);
+                    setTotal(() => {
+                      let num = total - 2.99;
+
+                      if (num > 0) {
+                        return num;
+                      } else {
+                        return 0;
+                      }
+                      return 0;
+                    });
+                    setCount(count - 5);
                   }}>
                   <View style={styles.priceBtn}>
                     <Text>-</Text>
@@ -316,7 +323,16 @@ const AchatUser = ({ ...props }) => {
 
                 <TouchableOpacity
                   onPress={() => {
-                    setTotal(0);
+                    setTotal(() => {
+                      let num = total - 4.99;
+
+                      if (num > 0) {
+                        return num;
+                      } else {
+                        return 0;
+                      }
+                      return 0;
+                    });
                     setCount(0);
                   }}>
                   <View style={styles.priceBtn}>

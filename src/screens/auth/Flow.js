@@ -32,8 +32,6 @@ function Flow(props) {
           <TouchableOpacity onPress={() => props.navigation.navigate("FlowB")}>
             <View style={styles.btn}>
               <Text style={styles.f}>S'inscrire</Text>
-
-
             </View>
           </TouchableOpacity>
         </View>

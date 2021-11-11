@@ -348,14 +348,13 @@ const Profile = (props) => {
 export default Profile;
 
 const styles = StyleSheet.create({
+  linearGradient: { flex: 1 },
+
   main: {
     flex: 1,
-    display: "flex",
-    paddingBottom: 100,
   },
   h1: {
     fontFamily: "FredokaOne-Regular",
-
     color: "#fff",
     fontSize: 30,
   },
@@ -373,7 +372,6 @@ const styles = StyleSheet.create({
   },
   Profile: { alignItems: "center", marginVertical: 10 },
 
-  linearGradient: { flex: 1 },
   Form: {
     alignItems: "center",
   },
