@@ -317,7 +317,7 @@ const MonProfil = ({ route, ...props }) => {
                   setLoading(true);
                   const SignUpReturn = await signUp(userDetails);
                   console.log(userDetails);
-                  props.navigation.push("Home");
+                  // props.navigation.push("Home");
                   setLoading(false);
                 } catch (err) {
                   console.log(err);

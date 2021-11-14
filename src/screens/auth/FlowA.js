@@ -54,7 +54,7 @@ const FlowA = ({ ...props }) => {
             setLoading(true);
             // Signed in
             var user = userCredential.user;
-            props.navigation.replace("Home");
+            props.navigation.replace("AuthLoading");
             setLoading(false);
 
             console.log(user);

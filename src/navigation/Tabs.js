@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { Platform, StyleSheet, Text, View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -32,6 +32,7 @@ import ChatUser from "../component/ChatUser";
 import { connect } from "react-redux";
 import PlacesDetails from "../screens/user/Drink/PlacesDetails";
 import Scan from "../screens/extra/Scan";
+import { auth } from "../db/firebase";
 
 const Tab = createBottomTabNavigator();
 
@@ -129,20 +130,18 @@ const screenOptionStyle = {
 
 function AllScreens() {
   return (
-    <All.Navigator
-      screenOptions={screenOptionStyle}
-      initialRouteName="AuthLoading">
-      <All.Screen
+    <All.Navigator screenOptions={screenOptionStyle} initialRouteName="Home">
+      {/* <All.Screen
         name="AuthLoading"
         component={AuthLoading}
         options={{ headerShown: false }}
-      />
-      <All.Screen
+      /> */}
+      {/* <All.Screen
         name="Flow"
-        component={Flow}
+        component={AuthNavi}
         options={{ headerShown: false, tabBarVisible: false }}
-      />
-      <All.Screen
+      /> */}
+      {/* <All.Screen
         name="FlowA"
         component={FlowA}
         options={{ headerShown: false }}
@@ -156,7 +155,7 @@ function AllScreens() {
         name="Reset"
         component={Reset}
         options={{ headerShown: false }}
-      />
+      /> */}
       <All.Screen name="Home" component={Home} />
       <All.Screen name="MonProfil" component={MonProfil} />
       {/* <All.Screen name="Drink" component={Drink} />
@@ -177,6 +176,23 @@ function AllScreens() {
     </All.Navigator>
   );
 }
+// const AuthScreens = createStackNavigator();
+
+// const AuthNavi = () => {
+//   return (
+//     <AuthScreens.Navigator
+//       initialRouteName="AuthLoading"
+//       screenOptions={{
+//         headerShown: false,
+//       }}>
+//       <AuthScreens.Screen name="AuthLoading" component={AuthLoading} />
+//       <AuthScreens.Screen name="Flow" component={Flow} />
+//       <AuthScreens.Screen name="FlowA" component={FlowA} />
+//       <AuthScreens.Screen name="FlowB" component={FlowB} />
+//       <AuthScreens.Screen name="Reset" component={Reset} />
+//     </AuthScreens.Navigator>
+//   );
+// };
 
 export default Tabs;
 

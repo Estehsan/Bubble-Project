@@ -23,13 +23,13 @@ const AuthLoading = ({ navigation }) => {
                 notificationId: userId,
               });
             }
-            navigation.reset({ routes: [{ name: "Home" }] });
+            // navigation.reset({ routes: [{ name: "Home" }] });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);
           });
       } else {
-        navigation.reset({ routes: [{ name: "Flow" }] });
+        // navigation.reset({ routes: [{ name: "Flow" }] });
       }
     });
   }, []);
