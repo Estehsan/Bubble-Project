@@ -94,7 +94,7 @@ const signUp = (userDetails) => {
                   userProfileImageUrl: userProfileImageUrl,
                   latitude: 0,
                   longitude: 0,
-                  candy: 3,
+                  candy: 0,
                   notificationId: userId,
                 };
                 let user = firestore
