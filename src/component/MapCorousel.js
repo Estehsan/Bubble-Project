@@ -57,7 +57,7 @@ const MapCorousel = ({
         <View style={styles.rContainer}>
           <H2 numberOfLines={2}>{title}</H2>
           <P style={{ flexWrap: "wrap" }}>{location}</P>
-          <P>{place.substring(0, 50)}...</P>
+          {place && <P>{place.substring(0, 50)}...</P>}
           <P>{code}</P>
           {/* <TouchableOpacity
             onPress={() => {

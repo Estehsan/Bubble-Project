@@ -21,9 +21,11 @@ const App = () => {
     Purchases.setup("zifxuZYCNFKPfOvPmTfCtFWrhgUhxezw");
     SplashScreen.hide();
 
+    setLoading(false);
+
     const { userId } = await OneSignal.getDeviceState();
     auth.onAuthStateChanged(async (user) => {
-      setLoading(true);
+      setLoading(false);
       if (user) {
         let datum = await firestore
           .collection("users")

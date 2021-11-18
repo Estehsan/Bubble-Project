@@ -183,19 +183,19 @@ const ChatUser = ({ navigation, route, ...props }) => {
     console.log(checker);
   };
   let leaveChat = async () => {
-    await firestore
-      .collection("users")
-      .doc(messageId)
-      .collection("friends")
-      .doc(currentUserId)
-      .delete();
+    // await firestore
+    //   .collection("users")
+    //   .doc(messageId)
+    //   .collection("friends")
+    //   .doc(currentUserId)
+    //   .delete();
 
-    await firestore
-      .collection("users")
-      .doc(currentUserId)
-      .collection("friends")
-      .doc(messageId)
-      .delete();
+    // await firestore
+    //   .collection("users")
+    //   .doc(currentUserId)
+    //   .collection("friends")
+    //   .doc(messageId)
+    //   .delete();
 
     let merger = uid_merge(currentUserId, messageId);
 

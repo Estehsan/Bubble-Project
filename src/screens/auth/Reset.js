@@ -80,7 +80,7 @@ const Reset = ({ ...props }) => {
 
                 <TopBar />
                 <View style={styles.Profile}>
-                    <Text style={styles.h1}>Reset Password </Text>
+                    <Text style={styles.h1}>Mot de passe oublié </Text>
                 </View>
                 <View style={styles.Form}>
 
@@ -98,7 +98,7 @@ const Reset = ({ ...props }) => {
                         < View style={styles.btnopacity}>
 
 
-                            <Text style={styles.f}>Reset</Text>
+                            <Text style={styles.f}>Valider</Text>
                         </View>
 
                     </TouchableOpacity>
@@ -106,7 +106,7 @@ const Reset = ({ ...props }) => {
                         < View style={styles.btnopacity}>
 
 
-                            <Text style={styles.f}>Go Back To login</Text>
+                            <Text style={styles.f}>Retour</Text>
                         </View>
 
                     </TouchableOpacity>

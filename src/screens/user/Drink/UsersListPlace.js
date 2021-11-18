@@ -140,7 +140,7 @@ const UsersListPlace = ({ route, ...props }) => {
       colors={["#FFC1DD", "#ffffff"]}
       style={styles.linearGradient}>
       <SafeAreaView style={styles.Safe}>
-        <ScrollView>
+        <ScrollView >
           <View>
             <TopBar>
               <Image
@@ -184,6 +184,7 @@ const UsersListPlace = ({ route, ...props }) => {
 
             {userData && (
               <FlatList
+              style={{paddingBottom: 100}}
                 data={userData}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
