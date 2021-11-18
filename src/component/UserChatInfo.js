@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect  } from "react";
 import {
   StyleSheet,
   Text,
@@ -152,7 +152,7 @@ const UserChatInfo = ({
         contentContainerStyle={styles.modalStyle}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.Headinghai}>COMMON</Text>
+            <Text style={styles.Headinghai}>COMMUN</Text>
             <Text style={styles.Headinghai}></Text>
 
             {/* <FlatList
@@ -193,14 +193,14 @@ const UserChatInfo = ({
               onPress={() => {
                 addNotification()
               }}>
-              <Text style={styles.textStyle}>Yes</Text>
+              <Text style={styles.textStyle}>Oui</Text>
             </Pressable>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => {
                 setNotificationModel(!notificationModel);
               }}>
-              <Text style={styles.textStyle}>No</Text>
+              <Text style={styles.textStyle}>Non</Text>
             </Pressable>
           </View>
         </View>
@@ -236,7 +236,7 @@ const UserChatInfo = ({
               size={20}
             />
           </View>
-          <Text>{gender}</Text>
+          <Text>{gender == "male" ? "Homme" : gender == "female" ? "Femme" : "Autre"}</Text>
         </View>
         <View style={styles.rContainer}>
           {/* {
@@ -373,10 +373,11 @@ const styles = StyleSheet.create({
   },
   ListOfUsers: {},
   messageButton: {
-    padding: 5,
+    padding: 10,
     borderWidth: 1,
     borderRadius: 20,
     textAlign: "center",
+    marginLeft: 10
   },
   Headinghai: {
     fontFamily: "FredokaOne-Regular",

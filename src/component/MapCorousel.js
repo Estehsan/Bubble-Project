@@ -57,7 +57,7 @@ const MapCorousel = ({
         <View style={styles.rContainer}>
           <H2 numberOfLines={2}>{title}</H2>
           <P style={{ flexWrap: "wrap" }}>{location}</P>
-          <P>{place}</P>
+          <P>{place.substring(0, 50)}...</P>
           <P>{code}</P>
           {/* <TouchableOpacity
             onPress={() => {
@@ -81,6 +81,7 @@ const styles = StyleSheet.create({
   rContainer: {
     flex: 1,
     paddingHorizontal: 15,
+    paddingTop: 15
   },
   main: {
     backgroundColor: "#fff",
@@ -110,6 +111,7 @@ const styles = StyleSheet.create({
     height: "100%",
     width: 110,
     resizeMode: "cover",
-    // borderBottomStartRadius: 40,
+    borderBottomStartRadius: 10,
+    borderTopStartRadius: 10,
   },
 });

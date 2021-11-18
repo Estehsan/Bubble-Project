@@ -35,18 +35,18 @@ const ListContainer = ({
           )}
         </View>
         <View style={styles.rContainer}>
-          <H2 ellipsizeMode="tail" numberOfLines={1}>
+          <H2 ellipsizeMode="tail" numberOfLines={2}>
             {title}
           </H2>
           <P ellipsizeMode="tail" numberOfLines={1}>
             {location}
           </P>
-          <P ellipsizeMode="tail" numberOfLines={1}>
+          <P ellipsizeMode="tail" numberOfLines={3}>
             {place}
           </P>
-          <P ellipsizeMode="tail" numberOfLines={1}>
+          {/* <P ellipsizeMode="tail" numberOfLines={1}>
             {code}
-          </P>
+          </P> */}
           <Image source={{ uri: qrimage }} />
           <TouchableOpacity
             onPress={() => {
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   rContainer: {
-    width: "70%",
+    width: "50%",
   },
   lContainer: { paddingHorizontal: 13 },
 });

@@ -37,6 +37,18 @@ import { auth } from "../db/firebase";
 const Tab = createBottomTabNavigator();
 
 function Tabs() {
+  getTabBarVisibility = (route) => {
+    const routeName = route.state
+      ? route.state.routes[route.state.index].name
+      : '';
+  
+    if (routeName === 'ChatUser') {
+      return false;
+    }
+  
+    return true;
+  }
+
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -58,7 +70,9 @@ function Tabs() {
       <Tab.Screen
         name="Home"
         component={AllScreens}
-        options={{
+        
+        options={({ route }) => ({
+          tabBarVisible: this.getTabBarVisibility(route),
           tabBarIcon: ({ color }) => (
             <MIcon
               style={Platform.OS == "ios" ? styles.position : styles.position2}
@@ -67,7 +81,7 @@ function Tabs() {
               color={color}
             />
           ),
-        }}
+        })}
       />
       {/* <Tab.Screen
         name="AchatUser"
@@ -128,6 +142,7 @@ const screenOptionStyle = {
   headerShown: false,
 };
 
+
 function AllScreens() {
   return (
     <All.Navigator screenOptions={screenOptionStyle} initialRouteName="Home">
@@ -166,10 +181,15 @@ function AllScreens() {
       <All.Screen name="Scan" component={Scan} />
 
       <All.Screen
-        options={{ headerShown: true }}
+        options={{
+          headerShown: true,
+          tabBarVisible: false
+        }}
+        
         name="ChatUser"
         component={ChatUser}
       />
+      
       <All.Screen name="Fiche" component={Fiche} />
       <All.Screen name="Profile" component={Profile} />
       <All.Screen name="AchatUser" component={AchatUser} />

@@ -213,8 +213,8 @@ const ChatUser = ({ navigation, route, ...props }) => {
     setGetRequest("");
     setRequest("");
     setQuitModal(!quitmodal);
-    Alert.alert("You have leaved the room");
-    navigation.navigate("Message");
+    Alert.alert("Vous avez quitté la conversation");
+    navigation.navigate("Home");
   };
   let send_message = async () => {
     if (message.length > 0) {
@@ -399,7 +399,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
               </View>
             ) : (
               <Text style={{ textAlign: "center", fontSize: 20 }}>
-                Request declined send request again to continue
+                Demande refusée. Renvoyer une demande pour continuer.
               </Text>
             )}
             {/* Add Activity  */}
@@ -411,7 +411,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
                       onPress={() => {
                         setQuitModal(true);
                       }}>
-                      {loading ? <WP>Ruko</WP> : <WP>Quitter</WP>}
+                      {loading ? <WP>Chargement</WP> : <WP>Quitter</WP>}
                     </TouchableOpacity>
                   </View>
                   <View style={styles.btn}>
@@ -449,11 +449,11 @@ const ChatUser = ({ navigation, route, ...props }) => {
                           setRequest("accept");
 
                           Alert.alert(
-                            "You have continue the chat wait for other user to continue"
+                            "Vous avez accepté, attendez que l'autre personne accepte."
                           );
                         } else {
                           Alert.alert(
-                            "You have Already continue a Chat wait for other user"
+                            "Vous avez accepté, attendez que l'autre personne accepte."
                           );
                         }
                       }}>
@@ -521,7 +521,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>
-              Request Continue to chat with this user ?
+              Voulez-vous continuer la conversation ?
             </Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
@@ -537,13 +537,13 @@ const ChatUser = ({ navigation, route, ...props }) => {
                     requestGetter: false,
                   })
                   .then(() => {
-                    Alert.alert("Request Accepted");
+                    Alert.alert("Demande acceptée");
                     setGetRequest("accept");
                     setChecker(false);
                     setCheck(check + 1);
                   });
               }}>
-              <Text style={styles.textStyle}>Accept</Text>
+              <Text style={styles.textStyle}>Accepter</Text>
             </Pressable>
             <Pressable
               style={[styles.button, styles.buttonClose]}
@@ -558,12 +558,12 @@ const ChatUser = ({ navigation, route, ...props }) => {
                     status: "decline",
                     requestGetter: false,
                   });
-                Alert.alert("user declined");
+                Alert.alert("Demande refusée");
                 setGetRequest("decline");
                 setChecker(false);
                 setCheck(check + 1);
               }}>
-              <Text style={styles.textStyle}>Reject</Text>
+              <Text style={styles.textStyle}>Refus</Text>
             </Pressable>
           </View>
         </View>
@@ -670,7 +670,8 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 20,
-    padding: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
     elevation: 2,
     margin: 10,
   },

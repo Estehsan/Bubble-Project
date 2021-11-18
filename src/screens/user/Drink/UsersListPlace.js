@@ -163,6 +163,7 @@ const UsersListPlace = ({ route, ...props }) => {
                   img,
                   latlng,
                   qrimage,
+
                   // title: title,
                   // id: id,
                   // place: place,

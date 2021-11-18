@@ -301,7 +301,7 @@ const Home = ({ ...props }) => {
                   key={item.key}
                   title={item.title}
                   place={item.description}
-                  location={item.location}
+                  location={item.address}
                   code={item.code}
                   latlng={item.latlng}
                 />
