@@ -13,11 +13,11 @@ const AuthScreens = createStackNavigator();
 const AuthNavi = () => {
   return (
     <AuthScreens.Navigator
-      initialRouteName="Flow"
+      initialRouteName="AuthLoading"
       screenOptions={{
         headerShown: false,
       }}>
-      {/* <AuthScreens.Screen name="AuthLoading" component={AuthLoading} /> */}
+      <AuthScreens.Screen name="AuthLoading" component={AuthLoading} />
       <AuthScreens.Screen name="Flow" component={Flow} />
       <AuthScreens.Screen name="MonProfil" component={MonProfil} />
 

@@ -137,207 +137,219 @@ const MonProfil = ({ route, ...props }) => {
 
   return (
     <LinearGradient colors={["#000", "#DD488C"]} style={styles.linearGradient}>
-      <ScrollView style={styles.main}>
-        <TopBar />
-        <View style={styles.Profile}>
-          <Text style={styles.h1}>MON PROFIL</Text>
-        </View>
-        <View style={styles.Form}>
-          <InputF
-            onChangeText={(e) => setEmail({ value: e, error: "" })}
-            value={email.value}
-            error={email.error}
-            errorText={email.error}
-            placeholder="Email"
-            keyboardType="default"
-          />
-
-          <InputF
-            onChangeText={(e) => setEmail({ value: e, error: "" })}
-            secureTextEntry={true}
-            onChangeText={(e) => setPassword({ value: e, error: "" })}
-            value={password.value}
-            error={password.error}
-            errorText={password.error}
-            placeholder="Mot de passe"
-            keyboardType="default"
-          />
-
-          <View
-            style={{
-              backgroundColor: "white",
-              width: "70%",
-              borderRadius: 30,
-              paddingHorizontal: 10,
-              marginBottom: 15,
-              paddingVertical: 0,
-            }}>
-            <SelectBox
-              label=""
-              inputPlaceholder="Centres d'intéret"
-              options={K_OPTIONS}
-              selectedValues={selectedTeams}
-              onMultiSelect={onMultiChange()}
-              onTapClose={onMultiChange()}
-              containerStyle={{ paddingHorizontal: 20, marginBottom: 2 }}
-              optionsLabelStyle={{ paddingHorizontal: 10 }}
-              labelStyle={{ height: 6 }}
-              multiOptionContainerStyle={{ backgroundColor: Colors.darkPink }}
-              isMulti
+      <SafeAreaView style={styles.main}>
+        <ScrollView>
+          <TopBar />
+          <View style={styles.Profile}>
+            <Text style={styles.h1}>MON PROFIL</Text>
+          </View>
+          <View style={styles.Form}>
+            <InputF
+              onChangeText={(e) => setEmail({ value: e, error: "" })}
+              value={email.value}
+              error={email.error}
+              errorText={email.error}
+              placeholder="Email"
+              keyboardType="default"
             />
-          </View>
 
-          <View style={styles.SelectGender}>
-            <TouchableOpacity onPress={() => setGender("mix")}>
-              <View>
-                <Ionicons
-                  style={styles.position}
-                  name="male-female"
-                  size={60}
-                  color={gender === "mix" ? "pink" : "#000"}
-                />
-                <Text>Autre</Text>
-              </View>
-            </TouchableOpacity>
+            <InputF
+              onChangeText={(e) => setEmail({ value: e, error: "" })}
+              secureTextEntry={true}
+              onChangeText={(e) => setPassword({ value: e, error: "" })}
+              value={password.value}
+              error={password.error}
+              errorText={password.error}
+              placeholder="Mot de passe"
+              keyboardType="default"
+            />
 
-            <TouchableOpacity onPress={() => setGender("male")}>
-              <View>
-                <Ionicons
-                  style={styles.position}
-                  name="female"
-                  size={60}
-                  color={gender === "male" ? "pink" : "#000"}
-                />
-                <Text>Femme</Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setGender("female")}>
-              <View>
-                <Ionicons
-                  style={styles.position}
-                  name="male"
-                  size={60}
-                  color={gender === "female" ? "pink" : "#000"}
-                />
-                <Text>Homme</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          {userProfileImage === null ? (
-            <View style={{ display: "flex", flexDirection: "row" }}>
-              <TouchableOpacity
-                onpress={TakeImgFromCamera}
-                style={styles.uploadImg}>
-                <Ionicons style={styles.position} name="md-camera" size={60} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={TakeImgFromGallery}
-                style={styles.uploadImg}>
-                <Ionicons
-                  style={styles.position}
-                  name="md-download-outline"
-                  size={50}
-                />
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <View style={styles.uploadImg}>
-              <TouchableOpacity onPress={TakeImgFromGallery}>
-                <Image
-                  style={{
-                    height: 80,
-                    width: 80,
-                    borderRadius: 50,
-                    ...Colors.customShadow,
-                  }}
-                  resizeMode="cover"
-                  source={{
-                    uri: userProfileImage,
-                  }}
-                />
-              </TouchableOpacity>
-            </View>
-          )}
-
-          <View style={styles.CB}>
-            <View>
-              <CheckBox
-                disabled={false}
-                onFillColor={Colors.darkPink}
-                onTintColor="white"
-                onCheckColor="white"
-                tintColor={Colors.textB}
-                value={toggleCheckBox}
-                onValueChange={(newValue) => setToggleCheckBox(newValue)}
+            <View
+              style={{
+                backgroundColor: "white",
+                width: "70%",
+                borderRadius: 30,
+                paddingHorizontal: 10,
+                marginBottom: 15,
+                paddingVertical: 0,
+              }}>
+              <SelectBox
+                label=""
+                inputPlaceholder="Centres d'intéret"
+                options={K_OPTIONS}
+                selectedValues={selectedTeams}
+                onMultiSelect={onMultiChange()}
+                onTapClose={onMultiChange()}
+                containerStyle={{ paddingHorizontal: 20, marginBottom: 2 }}
+                optionsLabelStyle={{ paddingHorizontal: 10 }}
+                labelStyle={{ height: 6 }}
+                multiOptionContainerStyle={{ backgroundColor: Colors.darkPink }}
+                isMulti
               />
             </View>
-            <View>
-              <Text style={{ color: "white", marginHorizontal: 10 }}>
-                Accepter les termes et conditions
-              </Text>
+
+            <View style={styles.SelectGender}>
+              <TouchableOpacity onPress={() => setGender("mix")}>
+                <View>
+                  <Ionicons
+                    style={styles.position}
+                    name="male-female"
+                    size={60}
+                    color={gender === "mix" ? "pink" : "#000"}
+                  />
+                  <Text>Autre</Text>
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => setGender("male")}>
+                <View>
+                  <Ionicons
+                    style={styles.position}
+                    name="female"
+                    size={60}
+                    color={gender === "male" ? "pink" : "#000"}
+                  />
+                  <Text>Femme</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setGender("female")}>
+                <View>
+                  <Ionicons
+                    style={styles.position}
+                    name="male"
+                    size={60}
+                    color={gender === "female" ? "pink" : "#000"}
+                  />
+                  <Text>Homme</Text>
+                </View>
+              </TouchableOpacity>
             </View>
-          </View>
 
-          <TouchableOpacity
-            onPress={async () => {
-              const emailError = emailValidator(email.value);
+            {userProfileImage === null ? (
+              <View style={{ display: "flex", flexDirection: "row" }}>
+                <TouchableOpacity
+                  onpress={TakeImgFromCamera}
+                  style={styles.uploadImg}>
+                  <Ionicons
+                    style={styles.position}
+                    name="md-camera"
+                    size={60}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={TakeImgFromGallery}
+                  style={styles.uploadImg}>
+                  <Ionicons
+                    style={styles.position}
+                    name="md-download-outline"
+                    size={50}
+                  />
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <View style={styles.uploadImg}>
+                <TouchableOpacity onPress={TakeImgFromGallery}>
+                  <Image
+                    style={{
+                      height: 80,
+                      width: 80,
+                      borderRadius: 50,
+                      ...Colors.customShadow,
+                    }}
+                    resizeMode="cover"
+                    source={{
+                      uri: userProfileImage,
+                    }}
+                  />
+                </TouchableOpacity>
+              </View>
+            )}
 
-              const passwordError = passwordValidator(password.value);
+            <View style={styles.CB}>
+              <View>
+                <CheckBox
+                  disabled={false}
+                  onFillColor={Colors.darkPink}
+                  onTintColor="white"
+                  onCheckColor="white"
+                  tintColor={Colors.textB}
+                  value={toggleCheckBox}
+                  onValueChange={(newValue) => setToggleCheckBox(newValue)}
+                />
+              </View>
+              <View>
+                <Text style={{ color: "white", marginHorizontal: 10 }}>
+                  Accepter les termes et conditions
+                </Text>
+              </View>
+            </View>
 
-              if (emailError || passwordError) {
-                setEmail({ ...email, error: emailError });
-                setPassword({ ...password, error: passwordError });
-              }
+            <TouchableOpacity
+              onPress={async () => {
+                const emailError = emailValidator(email.value);
 
-              if (
-                email.value != "" &&
-                password.value != "" &&
-                userProfileImage != null &&
-                gender != "" &&
-                name != "" &&
-                date != "" &&
-                toggleCheckBox != "false" &&
-                selectedTeams.length > 0
-              ) {
-                var userDetails = {
-                  email: email.value,
-                  password: password.value,
-                  userProfileImage: userProfileImage,
-                  gender: gender,
-                  name: name,
-                  DOB: date,
-                  UserProfileImageConfig: UserProfileImageConfig,
-                  contentType: contentType,
-                  selectedTeams: selectedTeams,
-                  navigation: props.navigation,
-                };
+                const passwordError = passwordValidator(password.value);
 
-                try {
-                  setLoading(true);
-                  const SignUpReturn = await signUp(userDetails);
-                  console.log(userDetails);
-                  // props.navigation.push("Home");
-                  setLoading(false);
-                } catch (err) {
-                  console.log(err);
+                if (emailError || passwordError) {
+                  setEmail({ ...email, error: emailError });
+                  setPassword({ ...password, error: passwordError });
                 }
-              } else {
-                Alert.alert("fields can not be empty");
-              }
-            }}>
-            <View style={styles.btn}>
-              <Text style={styles.f}>VALIDER MON PROFIL</Text>
-            </View>
-          </TouchableOpacity>
 
-          {/* <TouchableOpacity onPress={() => props.navigation.navigate("FlowB")}>
+                if (
+                  email.value != "" &&
+                  password.value != "" &&
+                  userProfileImage != null &&
+                  gender != "" &&
+                  name != "" &&
+                  date != "" &&
+                  toggleCheckBox != "false" &&
+                  selectedTeams.length > 0
+                ) {
+                  var userDetails = {
+                    email: email.value,
+                    password: password.value,
+                    userProfileImage: userProfileImage,
+                    gender: gender,
+                    name: name,
+                    DOB: date,
+                    UserProfileImageConfig: UserProfileImageConfig,
+                    contentType: contentType,
+                    selectedTeams: selectedTeams,
+                    navigation: props.navigation,
+                  };
+
+                  try {
+                    setLoading(true);
+                    const SignUpReturn = await signUp(userDetails);
+                    console.log(userDetails);
+                    // props.navigation.reset({
+                    //   index: 0,
+                    //   routes: [{ name: "Home" }],
+                    // });
+                    console.log(
+                      "====>     AUTH LOADING IS WORKING FROM MON PROFILE"
+                    );
+                    setLoading(false);
+                  } catch (err) {
+                    console.log(err);
+                  }
+                } else {
+                  Alert.alert("fields can not be empty");
+                }
+              }}>
+              <View style={styles.btn}>
+                <Text style={styles.f}>VALIDER MON PROFIL</Text>
+              </View>
+            </TouchableOpacity>
+
+            {/* <TouchableOpacity onPress={() => props.navigation.navigate("FlowB")}>
             <View style={styles.btnopacity}>
               <Text style={styles.f}>VALIDER</Text>
             </View>
           </TouchableOpacity> */}
-        </View>
-      </ScrollView>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     </LinearGradient>
   );
   function onMultiChange() {
@@ -355,7 +367,6 @@ export default MonProfil;
 const styles = StyleSheet.create({
   main: {
     flex: 1,
-    display: "flex",
   },
   h1: {
     fontFamily: "FredokaOne-Regular",

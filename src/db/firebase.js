@@ -102,7 +102,7 @@ const signUp = (userDetails) => {
                   .doc(uid)
                   .set(userDetailsForDb);
                 console.log(user);
-                // navigation.push("Home")
+                // navigation.push("AuthLoading");
                 resolve(userDetailsForDb);
               })
               .catch((error) => {

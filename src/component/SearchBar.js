@@ -10,6 +10,7 @@ import {
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import Icon from "react-native-vector-icons/Ionicons";
+import { GOOGLE_PLACEHOLDER_KEY } from "../db/keys";
 import SearchFlatList from "./SearchFlatList";
 
 const SearchBar = ({ ...props }) => {
@@ -31,7 +32,7 @@ const SearchBar = ({ ...props }) => {
             textInput: styles.inputField,
           }}
           query={{
-            key: "AIzaSyCI4_jhTZcxnYHla6xmzgatq4s_blaURno",
+            key: GOOGLE_PLACEHOLDER_KEY,
             language: "en",
           }}
           currentLocation={true}
