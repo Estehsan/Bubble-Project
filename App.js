@@ -18,7 +18,7 @@ const App = () => {
 
   useEffect(async () => {
     Purchases.setDebugLogsEnabled(true);
-    Purchases.setup("public_sdk_key");
+    Purchases.setup("zifxuZYCNFKPfOvPmTfCtFWrhgUhxezw");
     SplashScreen.hide();
 
     const { userId } = await OneSignal.getDeviceState();
@@ -46,12 +46,11 @@ const App = () => {
           });
       } else {
         setLoading(true);
-
         setUser(false);
         setLoading(false);
       }
     });
-  }, []);
+  }, [user]);
 
   return (
     <Provider store={store}>
