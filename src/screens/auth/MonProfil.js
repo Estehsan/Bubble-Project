@@ -189,6 +189,29 @@ const MonProfil = ({ route, ...props }) => {
             </View>
 
             <View style={styles.SelectGender}>
+              <TouchableOpacity onPress={() => setGender("male")}>
+                <View>
+                  <Ionicons
+                    style={styles.position}
+                    name="male"
+                    size={60}
+                    color={gender === "male" ? "pink" : "#000"}
+                  />
+                  <Text>Homme</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setGender("female")}>
+                <View>
+                  <Ionicons
+                    style={styles.position}
+                    name="female"
+                    size={60}
+                    color={gender === "female" ? "pink" : "#000"}
+                  />
+                  <Text>Femme</Text>
+                </View>
+              </TouchableOpacity>
+
               <TouchableOpacity onPress={() => setGender("mix")}>
                 <View>
                   <Ionicons
@@ -198,29 +221,6 @@ const MonProfil = ({ route, ...props }) => {
                     color={gender === "mix" ? "pink" : "#000"}
                   />
                   <Text>Autre</Text>
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={() => setGender("male")}>
-                <View>
-                  <Ionicons
-                    style={styles.position}
-                    name="female"
-                    size={60}
-                    color={gender === "male" ? "pink" : "#000"}
-                  />
-                  <Text>Femme</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => setGender("female")}>
-                <View>
-                  <Ionicons
-                    style={styles.position}
-                    name="male"
-                    size={60}
-                    color={gender === "female" ? "pink" : "#000"}
-                  />
-                  <Text>Homme</Text>
                 </View>
               </TouchableOpacity>
             </View>

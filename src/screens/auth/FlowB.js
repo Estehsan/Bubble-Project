@@ -18,6 +18,9 @@ import { nameValidator } from "../../helpers/nameValidator";
 import TopBar from "./../../component/TopBar";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import ValiderBtn from "./../../component/basic/ValiderBtn";
+
+import { TextInputMask } from "react-native-masked-text";
+
 // This is signUp SCREEN
 
 // let handlecheck = (email, password) => {
@@ -26,13 +29,9 @@ import ValiderBtn from "./../../component/basic/ValiderBtn";
 
 const FlowA = ({ ...props }) => {
   const [FirstName, setFirstName] = useState({ value: "", error: "" });
-  const [errorText, setErrorText] = useState("");
+  const [DOB, setDOB] = useState();
 
-  // DatePicker
-  const [date, setDate] = useState(new Date());
-  const [mode, setMode] = useState("date");
-  const [show, setShow] = useState(false);
-  const [showDate, setShowDate] = useState(false);
+  const [errorText, setErrorText] = useState("");
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -44,12 +43,6 @@ const FlowA = ({ ...props }) => {
     setShow(true);
     setMode(currentMode);
   };
-
-  const showDatepicker = () => {
-    showMode("date");
-    setShowDate(true);
-  };
-  // Date Picker End
 
   return (
     <>
@@ -78,57 +71,26 @@ const FlowA = ({ ...props }) => {
             />
 
             {/* DataPicker Start */}
-
-            {show ? (
-              <View
-                style={{
-                  width: "100%",
-                  color: "black",
-                }}>
-                <DateTimePicker
-                  style={{
-                    marginHorizontal: "15%",
-                    backgroundColor: "white",
-                    color: "black",
-                  }}
-                  testID="dateTimePicker"
-                  value={date}
-                  mode={mode}
-                  is24Hour={true}
-                  display="default"
-                  onChange={onChange}
-                  dateFormat="dayofweek day month"
-                />
-              </View>
-            ) : (
-              <View
-                style={{
-                  width: "100%",
-                  alignItems: "center",
-                }}>
-                <TouchableOpacity
-                  style={{
-                    width: "70%",
-                    borderRadius: 20,
-                    height: 40,
-                    justifyContent: "space-between",
-                    paddingHorizontal: 60,
-                    alignContent: "center",
-                    justifyContent: "center",
-                    backgroundColor: "#fff",
-                    color: "black",
-                  }}
-                  onPress={showDatepicker}>
-                  <Text style={{ opacity: 0.5 }}>
-                    {showDate ? (
-                      date.toDateString()
-                    ) : (
-                      <Text>Date de naissance</Text>
-                    )}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
+            <View
+              style={{
+                width: "100%",
+                alignItems: "center",
+              }}>
+              <TextInputMask
+                placeholder="Date de naissance"
+                placeholderTextColor="black"
+                style={styles.input}
+                refInput={(ref) => (this.myDateText = ref)}
+                type={"datetime"}
+                value={DOB}
+                onChangeText={(e) => {
+                  setDOB(e);
+                }}
+                options={{
+                  format: "DD-MM-YYYY",
+                }}
+              />
+            </View>
 
             {/* DatePickerEnd */}
             {errorText ? (
@@ -155,7 +117,7 @@ const FlowA = ({ ...props }) => {
                   if (!firstNameError)
                     props.navigation.push("MonProfil", {
                       name: FirstName.value,
-                      date: date,
+                      date: DOB,
                     });
                 }}>
                 <ValiderBtn />
@@ -176,6 +138,7 @@ const styles = StyleSheet.create({
   },
   main: {
     justifyContent: "center",
+
     flex: 1,
   },
   center: {
@@ -203,6 +166,8 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: "space-between",
     paddingHorizontal: 60,
+    textAlign: "center",
+
     backgroundColor: "#fff",
     color: "black",
   },
