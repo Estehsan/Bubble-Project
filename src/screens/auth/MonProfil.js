@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import ImagePicker from "react-native-image-crop-picker";
 import CheckBox from "@react-native-community/checkbox";
+import { StackActions } from '@react-navigation/native';
+import { CommonActions } from '@react-navigation/native';
+
+
 
 import { AsyncStorage } from "@react-native-async-storage/async-storage";
 import {
@@ -132,6 +136,9 @@ const MonProfil = ({ route, ...props }) => {
       cropping: true,
     }).then((image) => {
       console.log(image);
+    })
+    .catch((error) => {
+      console.log(error)
     });
   };
 
@@ -180,7 +187,7 @@ const MonProfil = ({ route, ...props }) => {
                 selectedValues={selectedTeams}
                 onMultiSelect={onMultiChange()}
                 onTapClose={onMultiChange()}
-                containerStyle={{ paddingHorizontal: 20, marginBottom: 2 }}
+                containerStyle={{ paddingHorizontal: 10, marginBottom: 2 }}
                 optionsLabelStyle={{ paddingHorizontal: 10 }}
                 labelStyle={{ height: 6 }}
                 multiOptionContainerStyle={{ backgroundColor: Colors.darkPink }}
@@ -228,7 +235,7 @@ const MonProfil = ({ route, ...props }) => {
             {userProfileImage === null ? (
               <View style={{ display: "flex", flexDirection: "row" }}>
                 <TouchableOpacity
-                  onpress={TakeImgFromCamera}
+                  onPress={TakeImgFromCamera}
                   style={styles.uploadImg}>
                   <Ionicons
                     style={styles.position}
@@ -322,10 +329,16 @@ const MonProfil = ({ route, ...props }) => {
                     setLoading(true);
                     const SignUpReturn = await signUp(userDetails);
                     console.log(userDetails);
+
                     // props.navigation.reset({
                     //   index: 0,
                     //   routes: [{ name: "Home" }],
                     // });
+
+                    // props.navigation.dispatch(
+                    //   StackActions.popToTop()
+                    // );
+
                     console.log(
                       "====>     AUTH LOADING IS WORKING FROM MON PROFILE"
                     );
@@ -334,7 +347,7 @@ const MonProfil = ({ route, ...props }) => {
                     console.log(err);
                   }
                 } else {
-                  Alert.alert("fields can not be empty");
+                  Alert.alert("Veuillez remplir tous les champs");
                 }
               }}>
               <View style={styles.btn}>
@@ -354,6 +367,10 @@ const MonProfil = ({ route, ...props }) => {
   );
   function onMultiChange() {
     console.log(selectedTeams.length);
+    if(selectedTeams.length == 4){
+      selectedTeams.splice(-1)
+      alert("Vous ne pouvez choisir que 3 centres d'intérêts")
+    }
     return (item) => setSelectedTeams(xorBy(selectedTeams, [item], "id"));
   }
 

@@ -77,7 +77,7 @@ const FlowA = ({ ...props }) => {
                 alignItems: "center",
               }}>
               <TextInputMask
-                placeholder="Date de naissance"
+                placeholder="Date de naissance 27/06/1992"
                 placeholderTextColor="black"
                 style={styles.input}
                 refInput={(ref) => (this.myDateText = ref)}
@@ -87,7 +87,7 @@ const FlowA = ({ ...props }) => {
                   setDOB(e);
                 }}
                 options={{
-                  format: "DD-MM-YYYY",
+                  format: "DD/MM/YYYY",
                 }}
               />
             </View>
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     marginBottom: 19,
     height: 40,
     justifyContent: "space-between",
-    paddingHorizontal: 60,
+    paddingHorizontal: 20,
     textAlign: "center",
 
     backgroundColor: "#fff",

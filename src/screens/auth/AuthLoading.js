@@ -15,15 +15,13 @@ const AuthLoading = ({ navigation }) => {
           .doc(user.uid)
           .get()
           .then(async (doc) => {
-            if (
-              doc.data().notificationId != userId ||
-              !doc.data().notificationId
-            ) {
+            let data = doc.data()
+            if (data) {
               await firestore.collection("users").doc(user.uid).update({
                 notificationId: userId,
               });
             }
-            navigation.reset({ routes: [{ name: "Flow" }] });
+            //navigation.reset({ routes: [{ name: "Flow" }] });
           })
           .catch((error) => {
             console.log("Error getting documents: ", error);

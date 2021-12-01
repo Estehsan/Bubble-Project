@@ -37,7 +37,7 @@ import WP from "./basic/WP";
 
 // linear-gradient(0deg, #FFFFFF 0%, #FFC1DD 78.9%)
 const ChatUser = ({ navigation, route, ...props }) => {
-  const { currentUserId, messageId, name, gender, messageImg } = route.params;
+  const { currentUserId, messageId, name, gender, messageImg, candy } = route.params;
   // let [chatUser, setChatUser] = useState({})
   let [chats, setChats] = useState([]);
   let [message, setMessage] = useState("");
@@ -216,6 +216,16 @@ const ChatUser = ({ navigation, route, ...props }) => {
     Alert.alert("Vous avez quitté la conversation");
     navigation.navigate("Home");
   };
+
+  let send_candy = async () => {
+    if(candy > 0){
+      alert('Bonbon envoyé !')
+    }
+    else{
+      alert("Vous n'avez plus de bonbon")
+    }
+  }
+
   let send_message = async () => {
     if (message.length > 0) {
       let merge = uid_merge(currentUserId, messageId);
@@ -386,6 +396,18 @@ const ChatUser = ({ navigation, route, ...props }) => {
                     placeholder="Message ..."
                     keyboardType="default"
                   />
+
+                  <TouchableOpacity
+                    style={{ alignContent: "center" }}
+                    onPress={() => {
+                      send_candy();
+                    }}>
+                    <Image
+                      style={{ height: 30, width: 30, marginRight: 10 }}
+                      resizeMode="contain"
+                      source={require("./../assets/images/rose.png")}
+                    />
+                  </TouchableOpacity>
 
                   <TouchableOpacity
                     style={{ alignContent: "center" }}
@@ -599,6 +621,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingVertical: 10,
     paddingHorizontal: 10,
+    paddingRight: 50,
     height: 50,
     borderRadius: 50,
     backgroundColor: "white",

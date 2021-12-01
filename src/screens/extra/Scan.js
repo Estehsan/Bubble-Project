@@ -86,7 +86,7 @@ const Scan = ({ navigation }) => {
         {!scan && (
           <View style={styles.sectionContainer}>
             <TouchableOpacity onPress={startScan}>
-              <H2>Start Scan Again</H2>
+              <H2>Nouveau scan</H2>
             </TouchableOpacity>
           </View>
         )}
@@ -98,12 +98,12 @@ const Scan = ({ navigation }) => {
               this.scanner = node;
             }}
             onRead={this.onSuccess}
-            topContent={<H2>Scan your QRCode!</H2>}
+            topContent={<H2>Scanner le QRCode de l'établissement</H2>}
             bottomContent={
               <TouchableOpacity
-                style={styles.buttonTouchable}
-                onPress={() => setScan(false)}>
-                <Text style={styles.buttonText}>Cancel Scan</Text>
+                style={{marginBottom: 50}}
+                onPress={() => navigation.goBack()}>
+                <Text style={styles.buttonText}>Retour</Text>
               </TouchableOpacity>
             }
           />

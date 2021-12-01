@@ -60,6 +60,8 @@ const data = [
 
 const Drink = ({ navigation }) => {
   let [locationData, setLocationData] = useState([]);
+  let [locations, setLocations] = useState([]);
+
   const [userMarker, setUserMarker] = useState({});
   const [kilo, setKilo] = useState(true);
   const [light, setLight] = useState(true);
@@ -149,6 +151,7 @@ const Drink = ({ navigation }) => {
         }
 
         setLocationData(data);
+        setLocations(data)
         console.log(data);
         // }
       });
@@ -157,6 +160,40 @@ const Drink = ({ navigation }) => {
       isMounted = false;
     };
   }, [userMarker, kilo]);
+
+  let handleSearchBar = (event) => {
+    const searchText = event;
+    if (locationData) {
+      // Object.keys(accepted).map((val) => {
+      //   console.log(accepted[val].name)
+      // });
+      let locations = locationData.filter((val) => {
+        if(val.address != undefined && val.address){
+          return (
+            val.title
+              .toString()
+              .toLowerCase()
+              .indexOf(searchText.toString().toLowerCase()) !== -1 ||
+            val.address
+              .toString()
+              .toLowerCase()
+              .indexOf(searchText.toString().toLowerCase()) !== -1
+          );
+        }
+        else{
+          return (
+            val.title
+              .toString()
+              .toLowerCase()
+              .indexOf(searchText.toString().toLowerCase()) !== -1
+          );
+        }
+      });
+
+      setLocations(locations)
+      console.log(locations)
+    }
+  };
 
   // console.log(locationData);
   return (
@@ -168,12 +205,12 @@ const Drink = ({ navigation }) => {
           <View>
             <TopBar />
           </View>
-          <View style={{ marginTop: 30 }}>
+          {/* <View style={{ marginTop: 30 }}>
             <LocationTab
               ChangeKilo={(e) => setKilo(e)}
               ChangeLight={(e) => setLight(e)}
             />
-          </View>
+          </View> */}
           <View style={styles.searchIcon}>
             <TextInput
               placeholder="Rechercher"
@@ -184,7 +221,7 @@ const Drink = ({ navigation }) => {
             <EvilIcons name="search" size={30} color={"#000"} />
           </View>
 
-          <View style={{ marginTop: 10 }}>
+          <View style={{ marginTop: 10, paddingBottom: 100 }}>
             {/* {locationData && (
             <FlatList
               data={data}
@@ -213,22 +250,34 @@ const Drink = ({ navigation }) => {
               )}
             />
           )} */}
-            {locationData && (
+            {locations && (
               <FlatList
-                data={locationData}
+                data={locations}
                 keyExtractor={(item) => item.key}
                 renderItem={({ item }) => (
                   <TouchableOpacity
-                    onPress={() =>
-                      navigation.navigate("UsersListPlace", {
+                    onPress={() => {
+
+                      navigation.navigate("PlacesDetails", {
                         id: item.key,
                         title: item.title,
                         place: item.address,
                         location: item.description,
                         code: item.schedules,
-                        img: item.photo,
+                        img: item.img,
                         latlng: item.latlng,
                       })
+
+                      // navigation.navigate("UsersListPlace", {
+                      //   id: item.key,
+                      //   title: item.title,
+                      //   place: item.address,
+                      //   location: item.description,
+                      //   code: item.schedules,
+                      //   img: item.photo,
+                      //   latlng: item.latlng,
+                      // })
+                    }
                     }>
                     <ListContainer
                       title={item.title}
@@ -274,7 +323,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginHorizontal: "3%",
     height: 50,
-    marginVertical: 10,
+    marginTop: 20,
   },
   inputField: {
     width: "90%",

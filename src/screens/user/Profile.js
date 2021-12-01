@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import ImagePicker from "react-native-image-crop-picker";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "./../../component/TopBar";
@@ -27,6 +28,7 @@ const Profile = (props) => {
   const [userProfileImage, setUserProfileImage] = useState(null);
   const [UserProfileImageConfig, setUserProfileImageConfig] = useState(null);
 
+  const [pseudo, setPseudo] = useState("");
   const [gender, setGender] = useState("");
   const [candy, setCandy] = useState(0);
   const [FirstName, setFirstName] = useState(null);
@@ -50,6 +52,22 @@ const Profile = (props) => {
     setShow(true);
     setMode(currentMode);
   };
+
+  const formatDate = (d) => {
+    let day = date.getDate().toString()
+    let month = (date.getMonth()+1).toString()
+    let year = date.getFullYear().toString()
+
+    if(month.length == 1){
+      month = "0"+month
+    }
+
+    if(day.length == 1){
+      day = "0"+day
+    }
+
+    return day + "/" + month + "/" + year 
+  }
 
   const showDatepicker = () => {
     showMode("date");
@@ -85,9 +103,13 @@ const Profile = (props) => {
           .get()
           .then((doc) => {
             if (doc.exists) {
+              const timestamp = doc.data().userDateOfBirth.seconds
               setImage(doc.data().userProfileImageUrl);
               setSelectedTeams(doc.data().selectedTeams);
               setCandy(doc.data().candy);
+              setPseudo(doc.data().userName);
+              setGender(doc.data().userGender);
+              setDate(new Date(timestamp * 1000));
               // console.log(info)
             } else {
               // doc.data() will be undefined in this case
@@ -183,7 +205,7 @@ const Profile = (props) => {
         <ScrollView>
           <TopBar />
           <View style={styles.Profile}>
-            <Text style={styles.h1}>MON PROFIL</Text>
+            {/* <Text style={styles.h1}>MON PROFIL</Text> */}
 
             <TouchableOpacity onPress={TakeImgFromGallery} style={styles.Image}>
               {image ? (
@@ -217,8 +239,135 @@ const Profile = (props) => {
               )}
             </TouchableOpacity>
           </View>
+          <View style={styles.profileData}>
+            <Text style={{
+                color:"#fff",
+                textAlign:"center",
+                marginTop: 10,
+                fontWeight: "bold",
+                fontSize: 28,
+                fontFamily: "FredokaOne-Regular",
+              }}>
+              {pseudo}
+            </Text>
+
+            {gender == "female" && (
+              <View style={{
+                justifyContent: "center",
+                alignItems: "center",
+                display: "flex",
+                flexDirection: "row",
+              }}>
+                <Ionicons
+                    style={{
+                      marginTop: 20,
+                      marginRight: 10
+                    }}
+                    name="female"
+                    size={30}
+                    color={"#fff"}
+                  />
+                <Text style={{
+                  color:"#fff",
+                  textAlign:"center",
+                  marginTop: 20,
+                  fontWeight: "normal",
+                  fontSize: 20,
+                  fontFamily: "FredokaOne-Regular",
+                }}>
+                  Femme
+                </Text>
+              </View>    
+            )}
+
+            {gender == "male" && (
+              <View style={{
+                justifyContent: "center",
+                alignItems: "center",
+                display: "flex",
+                flexDirection: "row",
+              }}>
+                <Ionicons
+                    style={{
+                      marginTop: 20,
+                      marginRight: 10
+                    }}
+                    name="male"
+                    size={30}
+                    color={"#fff"}
+                  />
+                <Text style={{
+                  color:"#fff",
+                  textAlign:"center",
+                  marginTop: 20,
+                  fontWeight: "normal",
+                  fontSize: 20,
+                  fontFamily: "FredokaOne-Regular",
+                }}>
+                  Homme
+                </Text>
+              </View>    
+            )}
+
+            {gender == "mix" && (
+              <View style={{
+                justifyContent: "center",
+                alignItems: "center",
+                display: "flex",
+                flexDirection: "row",
+              }}>
+                <Ionicons
+                    style={{
+                      marginTop: 20,
+                      marginRight: 10
+                    }}
+                    name="male-female"
+                    size={30}
+                    color={"#fff"}
+                  />
+                <Text style={{
+                  color:"#fff",
+                  textAlign:"center",
+                  marginTop: 20,
+                  fontWeight: "normal",
+                  fontSize: 20,
+                  fontFamily: "FredokaOne-Regular",
+                }}>
+                  Autre
+                </Text>
+              </View>    
+            )}
+
+            <View style={{
+                justifyContent: "center",
+                alignItems: "center",
+                display: "flex",
+                flexDirection: "row",
+              }}>
+                <Ionicons
+                    style={{
+                      marginTop: 20,
+                      marginRight: 10,
+                    }}
+                    name="calendar"
+                    size={30}
+                    color={"#fff"}
+                  />
+                <Text style={{
+                  color:"#fff",
+                  textAlign:"center",
+                  marginTop: 20,
+                  fontWeight: "normal",
+                  fontSize: 20,
+                  fontFamily: "FredokaOne-Regular",
+                }}>
+                  {formatDate(date)}
+                </Text>
+              </View>  
+            
+          </View>
           <View style={styles.Form}>
-            <TextInput
+            {/* <TextInput
               style={styles.input}
               onChangeText={setFirstName}
               value={FirstName}
@@ -282,20 +431,21 @@ const Profile = (props) => {
               value={gender}
               placeholder="Genre"
               keyboardType="default"
-            />
-            <TouchableOpacity
+            /> */}
+            {/* <TouchableOpacity
               onPress={() => {
                 updateInfo();
               }}>
               <View style={styles.btn}>
                 <Text style={styles.f}>MODIFIER</Text>
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <View
               style={{
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "center",
+                marginTop: 40
               }}>
               <Image
                 style={{ height: 70, width: 70, borderRadius: 70 }}
@@ -370,7 +520,11 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 15,
   },
-  Profile: { alignItems: "center", marginVertical: 10 },
+  Profile: {
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginVertical: 10
+  },
 
   Form: {
     alignItems: "center",

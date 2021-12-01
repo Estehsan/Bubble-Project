@@ -51,26 +51,26 @@ const UsersListPlace = ({ route, ...props }) => {
     // QRCODE START
     // const arr = JSON.stringify([title, place, location, code, img]);
 
-    RNQRGenerator.generate({
-      value: id,
-      height: 300,
-      width: 300,
-      base64: true,
-      backgroundColor: "#FFC1DD",
-      color: "#DD488C",
-      correctionLevel: "M",
-      // padding: {
-      //   top: 0,
-      //   left: 0,
-      //   bottom: 0,
-      //   right: 0,
-      // }
-    })
-      .then((response) => {
-        console.log("Response:", response);
-        setQrimage(response.uri);
-      })
-      .catch((err) => console.log("Cannot create QR code", err));
+    // RNQRGenerator.generate({
+    //   value: id,
+    //   height: 300,
+    //   width: 300,
+    //   base64: true,
+    //   backgroundColor: "#FFC1DD",
+    //   color: "#DD488C",
+    //   correctionLevel: "M",
+    //   // padding: {
+    //   //   top: 0,
+    //   //   left: 0,
+    //   //   bottom: 0,
+    //   //   right: 0,
+    //   // }
+    // })
+    //   .then((response) => {
+    //     console.log("Response:", response);
+    //     setQrimage(response.uri);
+    //   })
+    //   .catch((err) => console.log("Cannot create QR code", err));
 
     // QRCODE END
     let isMounted = true;
@@ -101,6 +101,7 @@ const UsersListPlace = ({ route, ...props }) => {
                 id: doc.id,
                 name: doc.data().userName,
                 gender: doc.data().userGender,
+                dateOfBirth: (doc.data().userDateOfBirth != undefined && doc.data().userDateOfBirth) ? doc.data().userDateOfBirth.seconds : null,
                 userImg: doc.data().userProfileImageUrl,
                 selectedTeams: doc.data().selectedTeams,
                 latlng: {
@@ -108,15 +109,16 @@ const UsersListPlace = ({ route, ...props }) => {
                   latitude: doc.data().latitude,
                 },
               }));
+              
             var data = [];
             for (var i = 0; i < docs.length; i++) {
               var dis = getDistance(latlng, docs[i].latlng);
 
               dis = dis / 1000;
 
-              // console.log(dis)
+              console.log(dis)
 
-              if (dis < 10) {
+              if (dis < 5) {
                 data.push(docs[i]);
               }
             }
@@ -143,11 +145,11 @@ const UsersListPlace = ({ route, ...props }) => {
         <ScrollView >
           <View>
             <TopBar>
-              <Image
+              {/* <Image
                 style={{ height: 60, width: 60 }}
                 source={{ uri: qrimage }}
                 // source={{ uri: img }}
-              />
+              /> */}
             </TopBar>
           </View>
           <View style={{ marginTop: 30 }}></View>
@@ -162,7 +164,7 @@ const UsersListPlace = ({ route, ...props }) => {
                   code,
                   img,
                   latlng,
-                  qrimage,
+                  //qrimage,
 
                   // title: title,
                   // id: id,
@@ -204,6 +206,7 @@ const UsersListPlace = ({ route, ...props }) => {
                     id={item.id}
                     name={item.name}
                     gender={item.gender}
+                    dateOfBirth={item.dateOfBirth}
                     userImg={item.userImg}
                     selectedTeams={item.selectedTeams}
                   />

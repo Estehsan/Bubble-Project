@@ -21,29 +21,40 @@ const App = () => {
     Purchases.setup("zifxuZYCNFKPfOvPmTfCtFWrhgUhxezw");
     SplashScreen.hide();
 
+    console.log('-------> 0.1')
+
     setLoading(false);
 
     const { userId } = await OneSignal.getDeviceState();
     auth.onAuthStateChanged(async (user) => {
+
+      console.log('-------> 0.2')
+
       setLoading(false);
+
       if (user) {
+
         let datum = await firestore
           .collection("users")
           .doc(user.uid)
           .get()
           .then(async (doc) => {
+            let data = doc.data();
             if (
-              doc.data().notificationId != userId ||
-              !doc.data().notificationId
+              data &&
+              data != undefined
             ) {
+              console.log('------> 1')
               await firestore.collection("users").doc(user.uid).update({
                 notificationId: userId,
               });
             }
+            console.log('------> 2')
             setUser(true);
             setLoading(false);
           })
           .catch((error) => {
+            console.log('------> 3')
             console.log("Impossible de récupérer les documents: ", error);
           });
       } else {

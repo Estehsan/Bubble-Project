@@ -64,6 +64,7 @@ const Home = ({ ...props }) => {
     // },
   });
 
+  const mapRef = useRef(null);
   const width = useWindowDimensions().width;
 
   const flatlist = useRef();
@@ -74,6 +75,9 @@ const Home = ({ ...props }) => {
     if (isMounted)
       await auth.onAuthStateChanged(async (user) => {
         if (user) {
+          const latitudeDelta = 0.1522;
+          const longitudeDelta = 0.0921;
+
           var uid = user.uid;
           // console.log(uid)
           subscribe = await firestore
@@ -91,8 +95,8 @@ const Home = ({ ...props }) => {
                         : {
                             longitude: parseFloat(doc.data().longitude),
                             latitude: parseFloat(doc.data().latitude),
-                            latitudeDelta: 0.0922,
-                            longitudeDelta: 0.0421,
+                            latitudeDelta: latitudeDelta,
+                            longitudeDelta: longitudeDelta,
                           },
                     };
               }
@@ -106,8 +110,8 @@ const Home = ({ ...props }) => {
                     latlng: {
                       latitude: lat && lat,
                       longitude: long && long,
-                      latitudeDelta: 0.0922,
-                      longitudeDelta: 0.0421,
+                      latitudeDelta: latitudeDelta,
+                      longitudeDelta: longitudeDelta,
                     },
                   };
                   // console.log("initial region=> ", initialRegion.latlng.latitude)
@@ -139,7 +143,7 @@ const Home = ({ ...props }) => {
                     }
                   }
                 },
-                (error) => alert(JSON.stringify(error)),
+                (error) => console.log(error),
                 { enableHighAccuracy: false, timeout: 5000 }
               );
             });
@@ -159,7 +163,7 @@ const Home = ({ ...props }) => {
       isMounted = false;
       subscribe();
     };
-  }, [selectedPlaceId, kilo]);
+  }, [selectedPlaceId, kilo, light]);
 
   useEffect(async () => {
     let isMounted = true;
@@ -177,17 +181,35 @@ const Home = ({ ...props }) => {
             description: doc.data().description,
             schedules: doc.data().schedules,
             img: doc.data().photo,
+            open_type: doc.data().open_type,
             latlng: {
               longitude: doc.data().longitude,
               latitude: doc.data().latitude,
             },
           }));
 
+          let latitudeDelta;
+          let longitudeDelta;
+
           // 24.93986404097375, 67.04325282594995
           if (docs.length > 0) {
             var data = [];
+
+            
+
             if (kilo === true) {
+              latitudeDelta = 0.1522;
+              longitudeDelta = 0.0921;
+
               for (var i in docs) {
+                
+                if(light && docs[i].open_type != "night"){
+                  break;
+                }
+                if(!light && docs[i].open_type != "day"){
+                  break;
+                }
+
                 var dis = getDistance(userMarker.latlng, docs[i].latlng);
 
                 dis = dis / 1000;
@@ -199,7 +221,15 @@ const Home = ({ ...props }) => {
                 }
               }
             } else {
+              latitudeDelta = 0.015;
+              longitudeDelta = 0.0071;
+              
               for (var i = 0; i < docs.length; i++) {
+
+                if(light && docs[i].open_type != "night"){
+                  break;
+                }
+
                 var dis = getDistance(userMarker.latlng, docs[i].latlng);
 
                 dis = dis / 1000;
@@ -210,6 +240,15 @@ const Home = ({ ...props }) => {
                 }
               }
             }
+
+            const region = {
+              latitude: userMarker.latlng.latitude,
+              longitude: userMarker.latlng.longitude,
+              latitudeDelta: latitudeDelta,
+              longitudeDelta: longitudeDelta
+            };
+            mapRef.current.animateToRegion(region);
+
             if (data) {
               await setMarker(data);
               // console.log(marker)
@@ -234,26 +273,35 @@ const Home = ({ ...props }) => {
       style={styles.linearGradient}>
       <SafeAreaView style={styles.main}>
         <TopBar>
-          <TouchableOpacity onPress={() => props.navigation.navigate("Scan")}>
-            <MaterialCommunityIcons name="qrcode-scan" size={35} />
-          </TouchableOpacity>
+          {userMarker != null && userMarker != undefined && userMarker.latlng && (
+            <TouchableOpacity onPress={() => props.navigation.navigate("Scan")}>
+              <MaterialCommunityIcons name="qrcode-scan" size={35} />
+            </TouchableOpacity>
+          )}
+          
         </TopBar>
 
         <View style={{ marginTop: 30 }}>
-          <LocationTab
-            ChangeKilo={(e) => setKilo(e)}
-            ChangeLight={(e) => setLight(e)}
-          />
+          {userMarker != null && userMarker != undefined && userMarker.latlng && (
+            <LocationTab
+              ChangeKilo={(e) => setKilo(e)}
+              ChangeLight={(e) => setLight(e)}
+            />
+          )}
+          
         </View>
 
         {userMarker != null && userMarker != undefined && userMarker.latlng && (
           <View style={styles.map}>
             <StatusBar barStyle="dark-content" />
             <MapView
+            pitchEnabled={false} rotateEnabled={false} zoomEnabled={false} scrollEnabled={false}
               customMapStyle={light ? MapStyleNight : MapStyleDay}
               style={styles.mapContainer}
               provider={PROVIDER_GOOGLE}
-              initialRegion={userMarker.latlng}>
+              initialRegion={userMarker.latlng}
+              ref={mapRef}
+              >
               {marker.length > 0 ? (
                 marker.map((marker, key) => (
                   <Marker
@@ -262,11 +310,7 @@ const Home = ({ ...props }) => {
                     title={marker.title}
                     description={marker.description}
                     onPress={() => setSelectedPlaceId(marker.key)}>
-                    <Entypo
-                      color={marker.key == selectedPlaceId ? "black" : "red"}
-                      name="drink"
-                      size={40}
-                    />
+                    <Image source={require('../../assets/images/marker.png')} style={{height: 50, width:35 }} />
                   </Marker>
                 ))
               ) : (
@@ -312,7 +356,7 @@ const Home = ({ ...props }) => {
           <View style={styles.Corousel}>
             <View style={{ justifyContent: "center" }}>
               <Text style={{ alignSelf: "center", fontSize: 20 }}>
-                No bubble near suggested distance
+                Aucune Bubble à proximité
               </Text>
             </View>
           </View>
@@ -378,6 +422,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderRadius: 15,
     overflow: "hidden",
+    
   },
   mapContainer: {
     alignSelf: "center",
@@ -397,5 +442,6 @@ const styles = StyleSheet.create({
     zIndex: 1,
     elevation: 1,
     marginBottom: 100,
+    marginLeft: "10%",
   },
 });

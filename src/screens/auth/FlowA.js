@@ -101,7 +101,7 @@ const FlowA = ({ ...props }) => {
             value={email.value}
             error={email.error}
             errorText={email.error}
-            placeholder="email"
+            placeholder="Email"
             keyboardType="default"
           />
           <InputF
@@ -119,7 +119,7 @@ const FlowA = ({ ...props }) => {
             <WP>Mot de passe oublié ?</WP>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={onLoginPress}>
+          <TouchableOpacity style={{marginTop: 30}} onPress={onLoginPress}>
             <ValiderBtn />
           </TouchableOpacity>
         </View>

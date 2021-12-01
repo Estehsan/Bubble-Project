@@ -92,7 +92,7 @@ const Reset = ({ ...props }) => {
               <Text style={styles.f}>Valider</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => props.navigation.push("FlowB")}>
+          <TouchableOpacity onPress={() => props.navigation.goBack()}>
             <View style={styles.btnopacity}>
               <Text style={styles.f}>Retour</Text>
             </View>

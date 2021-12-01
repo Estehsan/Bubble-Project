@@ -6,6 +6,7 @@ const InputF = ({ errorText, description, ...props }) => {
     <View style={styles.container}>
       <TextInput
         placeholderTextColor="black"
+        autoCapitalize="none"
         style={[
           errorText
             ? { borderColor: "red", borderWidth: 2.5, ...styles.input }

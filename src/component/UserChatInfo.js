@@ -25,6 +25,7 @@ const UserChatInfo = ({
   currentUserData,
   id,
   gender,
+  dateOfBirth,
   name,
   userImg,
   selectedTeams,
@@ -37,6 +38,25 @@ const UserChatInfo = ({
   const [notificationId, setNotificationId] = useState("")
   const navigation = useNavigation();
 
+  let age = ""
+
+  if(dateOfBirth != undefined){
+    age = getAge(dateOfBirth * 1000) + " ans"
+  }
+  if(age == "0 ans"){
+    age = ""
+  }
+
+  function getAge(dateString) {
+    var today = new Date();
+    var birthDate = new Date(dateString);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
+}
 
   useEffect(() => {
     firestore.collection("users").doc(currentUserData.id).onSnapshot((doc) => {
@@ -107,7 +127,7 @@ const UserChatInfo = ({
 
       const notification = {
         contents: {
-          en: `Dear ${name}, ${currentUserData.userName} has invited you to have a Chat`,
+          en: `${currentUserData.userName} vous propose de discuter`,
         },
         include_player_ids: [externalUserId],
       };
@@ -130,7 +150,7 @@ const UserChatInfo = ({
     }
 
     else {
-      Alert.alert("You Don't have enough candy")
+      Alert.alert("Vous n'avez plus de bonbon")
       setNotificationModel(false)
 
     }
@@ -152,7 +172,7 @@ const UserChatInfo = ({
         contentContainerStyle={styles.modalStyle}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.Headinghai}>COMMUN</Text>
+            <Text style={styles.Headinghai}>MATCH</Text>
             <Text style={styles.Headinghai}></Text>
 
             {/* <FlatList
@@ -166,7 +186,12 @@ const UserChatInfo = ({
                 setQuitModal(!quitmodal);
                 setCommonTeams([]);
               }}>
-              <Text style={styles.textStyle}>Close</Text>
+              <Ionicons
+                style={styles.position}
+                name={"close"}
+                color="#fff"
+                size={20}
+              />
             </Pressable>
           </View>
         </View>
@@ -208,7 +233,7 @@ const UserChatInfo = ({
       {selectedTeams && mutualInterest() > 0 && (
         <View style={styles.Badge}>
           <TouchableOpacity onPress={() => renderTeamModal()}>
-            <Text style={{ color: "white" }}>{mutualInterest()}</Text>
+            <Text style={[{ color: "white" }]}>{mutualInterest()}</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -242,7 +267,7 @@ const UserChatInfo = ({
           {/* {
           notification && notification.includes(id) ? <View style={{ flex: 1 }}></View>
             : */}
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.ListOfUsers}
             onPress={() => {
               setNotificationModel(true)
@@ -252,7 +277,10 @@ const UserChatInfo = ({
               resizeMode="contain"
               source={require("./../assets/images/rose.png")}
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+          <View>
+            <Text>{age}</Text>
+          </View>
           {/* } */}
           <TouchableOpacity onPress={() => {
             navigation.navigate("ChatUser", {
@@ -260,7 +288,9 @@ const UserChatInfo = ({
               messageId: id,
               name: name,
               gender: gender,
+              dateOfBirth: dateOfBirth,
               messageImg: userImg,
+              candy: candy,
             });
           }}>
             <Text style={styles.messageButton}>Bubbler</Text>
@@ -309,9 +339,10 @@ const styles = StyleSheet.create({
   lContainer: { flex: 1 },
   center: { flex: 2 },
   rContainer: {
-    flex: 2
-    , flexDirection: "row",
+    flex: 2,
+    flexDirection: "row",
     alignItems: "center",
+    justifyContent: "flex-end"
   },
   Badge: {
     height: 30,
@@ -369,7 +400,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#F194FF",
   },
   buttonClose: {
-    backgroundColor: "white",
+    position:"absolute",
+    top: -10,
+    right: -10
   },
   ListOfUsers: {},
   messageButton: {

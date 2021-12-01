@@ -156,7 +156,7 @@ const Message = ({ ...props }) => {
               alignItems: "center",
               marginTop: 30,
             }}>
-            <Text style={styles.ChatUserName}>MES CONVERSATIONS</Text>
+            {/* <Text style={styles.ChatUserName}>MES CONVERSATIONS</Text> */}
           </View>
           <View style={styles.searchIcon}>
             <TextInput
@@ -233,7 +233,8 @@ const Message = ({ ...props }) => {
                 </>
               )} */}
 
-                <H1></H1>
+
+                {accepted.length == 0 && <Text style={{textAlign:"center"}}>Aucune conversation</Text>}
 
                 {renderAccepted && (
                   <FlatList

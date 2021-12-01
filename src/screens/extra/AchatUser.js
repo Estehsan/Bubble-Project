@@ -61,13 +61,13 @@ const AchatUser = ({ ...props }) => {
       try {
         const offerings = await Purchases.getOfferings();
         if (offerings.current !== null) {
-          console.log(offerings.current);
+          console.log("OFFERS : ", offerings);
           // Display current offering with offerings.current
           // setPackages(offerings.current.availablepackages)
         }
       } catch (e) {}
     };
-    // displayProduct()
+    //displayProduct()
 
     return () => {
       isMounted = false;
@@ -83,12 +83,12 @@ const AchatUser = ({ ...props }) => {
           candy: candy + count,
         })
         .then(() => {
-          Alert.alert("Purchase has been successful");
+          Alert.alert("Achat validé");
           props.navigation.goBack();
           console.log("success");
         });
     else {
-      Alert.alert("Nothing to pay");
+      Alert.alert("Vous n'avez pas ajouté de bonbons");
     }
   };
 
@@ -167,7 +167,7 @@ const AchatUser = ({ ...props }) => {
               justifyContent: "center",
               marginVertical: 10,
             }}>
-            <Text style={styles.ChatUserName}>LES FRIANDISES BUBBLE</Text>
+            <Text style={styles.ChatUserName}>CANDY SHOP</Text>
           </View>
           <View style={styles.TopBarExtra}>
             <Image
@@ -181,7 +181,7 @@ const AchatUser = ({ ...props }) => {
               source={require("./../../assets/images/rose.png")}
             />
             <Text style={styles.topFont}>
-              Mon solde de des bonbons
+              Mon solde de bonbons
               {"\n"} disponibles :
             </Text>
             <Text style={styles.threeFont}>{candy}</Text>

@@ -12,6 +12,8 @@ import Colors from "../assets/colors/Colors";
 import H2 from "./basic/H2";
 import P from "./basic/P";
 import { useNavigation } from "@react-navigation/native";
+import { getDistance } from "geolib";
+import Geolocation from "@react-native-community/geolocation";
 
 const MapCorousel = ({
   props,
@@ -29,19 +31,43 @@ const MapCorousel = ({
   const width = useWindowDimensions().width;
   const navigation = useNavigation();
 
+  var userLat;
+  var userLng;
+
+  let loc = Geolocation.getCurrentPosition(
+    async (position) => {
+      userLat = parseFloat(position.coords.latitude);
+      userLng = parseFloat(position.coords.longitude);
+    },
+    (error) => console.log(error),
+    { enableHighAccuracy: false, timeout: 5000 }
+  );
+
   return (
     <TouchableOpacity
       style={([styles.Container], { width: width - 60 })}
-      onPress={() =>
-        navigation.navigate("UsersListPlace", {
-          id: key,
-          title: title,
-          place: place,
-          location: location,
-          code: code,
-          img: img,
-          latlng: latlng,
-        })
+      onPress={() => {
+        var dis = getDistance({lat: userLat, lng: userLng}, latlng);
+
+        dis = dis / 1000;
+
+        if(dis < .250){
+          navigation.navigate("UsersListPlace", {
+            id: key,
+            title: title,
+            place: place,
+            location: location,
+            code: code,
+            img: img,
+            latlng: latlng,
+          })
+        }
+        else {
+          alert('Vous ne pouvez pas entrer dans cette bulle. Vous êtes trop loin.')
+        }
+
+        
+      }
       }>
       <View style={styles.main}>
         <View style={styles.lContainer}>
@@ -111,7 +137,7 @@ const styles = StyleSheet.create({
     height: "100%",
     width: 110,
     resizeMode: "cover",
-    borderBottomStartRadius: 10,
-    borderTopStartRadius: 10,
+    borderBottomStartRadius: 50,
+    borderTopStartRadius: 50,
   },
 });
