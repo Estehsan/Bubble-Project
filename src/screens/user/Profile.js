@@ -202,8 +202,10 @@ const Profile = (props) => {
   return (
     <LinearGradient colors={["#000", "#DD488C"]} style={styles.linearGradient}>
       <SafeAreaView style={styles.main}>
-        <ScrollView>
-          <TopBar />
+        <ScrollView style={{marginTop: -10}}>
+          <View >
+            <TopBar />
+          </View>
           <View style={styles.Profile}>
             {/* <Text style={styles.h1}>MON PROFIL</Text> */}
 

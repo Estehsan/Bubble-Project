@@ -302,7 +302,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
   };
   return (
     <LinearGradient
-      colors={["#FFC1DD", "#ffffff"]}
+      colors={ ["#000", "#DD488C"] }
       style={styles.linearGradient}>
       {!loading ? (
         <KeyboardAvoidingView

@@ -11,6 +11,8 @@ import {
   ActivityIndicator,
   Platform,
   ImageBackground,
+  TouchableWithoutFeedback,
+  Keyboard
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import InputF from "../../component/InputF";
@@ -49,82 +51,85 @@ const FlowA = ({ ...props }) => {
       <LinearGradient
         colors={["#000", "#DD488C"]}
         style={styles.linearGradient}>
-        <SafeAreaView style={styles.main}>
-          <View style={styles.center}>
-            <Image
-              style={{ height: 100, width: 130 }}
-              resizeMode="contain"
-              source={require("./../../assets/images/logo-bubble.png")}
-            />
-          </View>
-          <View style={styles.Profile}>
-            <Text style={styles.h1}>S'inscrire</Text>
-          </View>
-          <View style={styles.Form}>
-            <InputF
-              onChangeText={(e) => setFirstName({ value: e, error: "" })}
-              value={FirstName.value}
-              error={FirstName.error}
-              errorText={FirstName.error}
-              placeholder="Pseudo"
-              keyboardType="default"
-            />
-
-            {/* DataPicker Start */}
-            <View
-              style={{
-                width: "100%",
-                alignItems: "center",
-              }}>
-              <TextInputMask
-                placeholder="Date de naissance 27/06/1992"
-                placeholderTextColor="black"
-                style={styles.input}
-                refInput={(ref) => (this.myDateText = ref)}
-                type={"datetime"}
-                value={DOB}
-                onChangeText={(e) => {
-                  setDOB(e);
-                }}
-                options={{
-                  format: "DD/MM/YYYY",
-                }}
-              />
-            </View>
-
-            {/* DatePickerEnd */}
-            {errorText ? (
-              <View style={styles.Error}>
-                <Text style={{ color: "white" }}>{errorText}</Text>
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <SafeAreaView style={styles.main}>
+            
+              <View style={styles.center}>
+                <Image
+                  style={{ height: 100, width: 130 }}
+                  resizeMode="contain"
+                  source={require("./../../assets/images/logo-bubble.png")}
+                />
               </View>
-            ) : null}
-            <View
-              style={{
-                alignItems: "center",
-                justifyContent: "center",
-                marginVertical: 20,
-              }}>
-              <TouchableOpacity
-                onPress={() => {
-                  // const emailError = emailValidator(email.value)
+              <View style={styles.Profile}>
+                <Text style={styles.h1}>S'inscrire</Text>
+              </View>
+              <View style={styles.Form}>
+                <InputF
+                  onChangeText={(e) => setFirstName({ value: e, error: "" })}
+                  value={FirstName.value}
+                  error={FirstName.error}
+                  errorText={FirstName.error}
+                  placeholder="Pseudo"
+                  keyboardType="default"
+                />
 
-                  const firstNameError = nameValidator(FirstName.value);
+                {/* DataPicker Start */}
+                <View
+                  style={{
+                    width: "100%",
+                    alignItems: "center",
+                  }}>
+                  <TextInputMask
+                    placeholder="Date de naissance 27/06/1992"
+                    placeholderTextColor="black"
+                    style={styles.input}
+                    refInput={(ref) => (this.myDateText = ref)}
+                    type={"datetime"}
+                    value={DOB}
+                    onChangeText={(e) => {
+                      setDOB(e);
+                    }}
+                    options={{
+                      format: "DD/MM/YYYY",
+                    }}
+                  />
+                </View>
 
-                  if (firstNameError) {
-                    setFirstName({ ...FirstName, error: firstNameError });
-                  }
+                {/* DatePickerEnd */}
+                {errorText ? (
+                  <View style={styles.Error}>
+                    <Text style={{ color: "white" }}>{errorText}</Text>
+                  </View>
+                ) : null}
+                <View
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginVertical: 20,
+                  }}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      // const emailError = emailValidator(email.value)
 
-                  if (!firstNameError)
-                    props.navigation.push("MonProfil", {
-                      name: FirstName.value,
-                      date: DOB,
-                    });
-                }}>
-                <ValiderBtn />
-              </TouchableOpacity>
-            </View>
-          </View>
-        </SafeAreaView>
+                      const firstNameError = nameValidator(FirstName.value);
+
+                      if (firstNameError) {
+                        setFirstName({ ...FirstName, error: firstNameError });
+                      }
+
+                      if (!firstNameError)
+                        props.navigation.push("MonProfil", {
+                          name: FirstName.value,
+                          date: DOB,
+                        });
+                    }}>
+                    <ValiderBtn />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </SafeAreaView>
+          </TouchableWithoutFeedback>
       </LinearGradient>
     </>
   );

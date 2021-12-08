@@ -12,7 +12,7 @@ const PlacesDetails = ({ route }) => {
     route.params;
   return (
     <LinearGradient
-      colors={["#FFC1DD", "#ffffff"]}
+      colors={ ["#000", "#DD488C"] }
       style={styles.linearGradient}>
       <SafeAreaView>
         <View>

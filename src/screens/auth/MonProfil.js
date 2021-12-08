@@ -135,7 +135,9 @@ const MonProfil = ({ route, ...props }) => {
       height: 400,
       cropping: true,
     }).then((image) => {
-      console.log(image);
+      setUserProfileImage(image.path);
+      setUserProfileImageConfig(image);
+      setcontentType(image.mime);
     })
     .catch((error) => {
       console.log(error)
@@ -179,17 +181,19 @@ const MonProfil = ({ route, ...props }) => {
                 paddingHorizontal: 10,
                 marginBottom: 15,
                 paddingVertical: 0,
+                border: 0
               }}>
               <SelectBox
                 label=""
+                underlineColor='transparent'
                 inputPlaceholder="Centres d'intéret"
                 options={K_OPTIONS}
                 selectedValues={selectedTeams}
                 onMultiSelect={onMultiChange()}
                 onTapClose={onMultiChange()}
-                containerStyle={{ paddingHorizontal: 10, marginBottom: 2 }}
+                containerStyle={{ paddingHorizontal: 10, marginBottom: 2, borderBottomColor: 'transparent' }}
                 optionsLabelStyle={{ paddingHorizontal: 10 }}
-                labelStyle={{ height: 6 }}
+                labelStyle={{ height: 6, border: 0 }}
                 multiOptionContainerStyle={{ backgroundColor: Colors.darkPink }}
                 isMulti
               />
@@ -329,6 +333,7 @@ const MonProfil = ({ route, ...props }) => {
                     setLoading(true);
                     const SignUpReturn = await signUp(userDetails);
                     console.log(userDetails);
+                    console.log(SignUpReturn)
 
                     // props.navigation.reset({
                     //   index: 0,

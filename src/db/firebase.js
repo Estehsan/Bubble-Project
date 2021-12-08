@@ -5,6 +5,7 @@ import "firebase/firestore";
 import "firebase/storage";
 import messaging from "@react-native-firebase/messaging";
 import OneSignal from "react-native-onesignal";
+import { Alert } from "react-native";
 import { FIREBASE_CONFIG } from "./keys";
 
 var firebaseConfig = FIREBASE_CONFIG;
@@ -125,7 +126,12 @@ const signUp = (userDetails) => {
       .catch((error) => {
         var errorCode = error.code;
         var errorMessage = error.message;
-        console.log(error);
+        if(error.code == "auth/email-already-in-use"){
+          Alert.alert("L'adresse email est déjà utilisée");
+        }
+        else{
+          Alert.alert("Erreur lors de la validation du compte");
+        }
         // ..
       });
   });

@@ -140,7 +140,7 @@ const Message = ({ ...props }) => {
 
   return (
     <LinearGradient
-      colors={["#FFC1DD", "#ffffff"]}
+      colors={ ["#000", "#DD488C"] }
       style={styles.linearGradient}>
       <SafeAreaView>
         <View style={styles.Logo}>
@@ -498,6 +498,7 @@ const styles = StyleSheet.create({
   Logo: {
     justifyContent: "center",
     alignItems: "center",
+    marginTop: -10
   },
   searchIcon: {
     flexDirection: "row",

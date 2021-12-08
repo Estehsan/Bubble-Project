@@ -101,6 +101,29 @@ const Home = ({ ...props }) => {
                     };
               }
 
+              setInterval(() => {
+                let location = Geolocation.getCurrentPosition(
+                  async (position) => {
+                    var lat = parseFloat(position.coords.latitude);
+                    var long = parseFloat(position.coords.longitude);
+
+                    if(lat && long) {
+                      
+                      setUserMarker({
+                        latlng: {
+                          latitude: lat,
+                          longitude: long,
+                          latitudeDelta: 0,
+                          longitudeDelta: 0
+                        }
+                      })  
+                    }
+                  },
+                  (error) => console.log(error),
+                  { enableHighAccuracy: false, timeout: 5000 }
+                );
+              }, 1000)
+
               let location = Geolocation.getCurrentPosition(
                 async (position) => {
                   var lat = parseFloat(position.coords.latitude);
@@ -269,7 +292,7 @@ const Home = ({ ...props }) => {
 
   return (
     <LinearGradient
-      colors={["#FFC1DD", "#ffffff"]}
+      colors={ ["#000", "#DD488C"] }
       style={styles.linearGradient}>
       <SafeAreaView style={styles.main}>
         <TopBar>
@@ -305,9 +328,10 @@ const Home = ({ ...props }) => {
               {marker.length > 0 ? (
                 marker.map((marker, key) => (
                   <Marker
+                    
                     key={key}
                     coordinate={marker.latlng}
-                    title={marker.title}
+                    //title={marker.title}
                     description={marker.description}
                     onPress={() => setSelectedPlaceId(marker.key)}>
                     <Image source={require('../../assets/images/marker.png')} style={{height: 50, width:35 }} />
@@ -316,7 +340,12 @@ const Home = ({ ...props }) => {
               ) : (
                 <View />
               )}
-              {<Marker coordinate={userMarker.latlng}></Marker>}
+              {<Marker
+                zIndex={9999}
+                coordinate={userMarker.latlng}
+                image={require('../../assets/images/marker_user.png')}
+              ></Marker>
+              }
             </MapView>
           </View>
         )}

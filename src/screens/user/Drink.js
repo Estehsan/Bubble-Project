@@ -198,12 +198,12 @@ const Drink = ({ navigation }) => {
   // console.log(locationData);
   return (
     <LinearGradient
-      colors={["#FFC1DD", "#ffffff"]}
+      colors={ ["#000", "#DD488C"] }
       style={styles.linearGradient}>
       <ScrollView>
         <SafeAreaView>
-          <View>
-            <TopBar />
+          <View style={{marginTop: -10}}>
+            <TopBar  />
           </View>
           {/* <View style={{ marginTop: 30 }}>
             <LocationTab
