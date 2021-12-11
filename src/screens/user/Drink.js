@@ -113,6 +113,7 @@ const Drink = ({ navigation }) => {
           title: doc.data().title,
           address: doc.data().address,
           description: doc.data().description,
+          open_type: doc.data().open_type,
           schedules: doc.data().schedules,
           img: doc.data().photo,
           latlng: {
@@ -159,11 +160,18 @@ const Drink = ({ navigation }) => {
 
 
           }
+        }
 
+        let time = ""
+        if (light) {
+          time = "night"
+        }
+        else {
+          time = "day"
         }
 
 
-        setLocationData(data);
+        setLocationData(data.filter((item) => item.open_type == time));
         console.log(data);
         // }
       });
@@ -171,7 +179,7 @@ const Drink = ({ navigation }) => {
     return () => {
       isMounted = false;
     }
-  }, [userMarker, kilo]);
+  }, [userMarker, kilo, light]);
 
   // console.log(locationData);
   return (

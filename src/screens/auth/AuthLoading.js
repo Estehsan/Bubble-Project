@@ -1,11 +1,13 @@
 import React, { useEffect } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View} from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "../../component/TopBar";
 import { auth } from "../../db/firebase";
 
+
 const AuthLoading = ({ navigation }) => {
-  useEffect(() => {
+  
+  useEffect(() => {    
     auth.onAuthStateChanged((user) => {
       if (user) {
         navigation.reset({ routes: [{ name: "Home" }] });

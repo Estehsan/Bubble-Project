@@ -50,6 +50,7 @@ const Home = ({ navigation, props }) => {
   const [kilo, setKilo] = useState(true);
   const [light, setLight] = useState(true);
   const [load, setLoad] = useState(0)
+  const [uid, setUid] = useState(null);
   const [value, setValue] = useState(0); // integer state
 
 
@@ -58,8 +59,8 @@ const Home = ({ navigation, props }) => {
       latlng: {
         latitude: null,
         longitude: null,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
+        latitudeDelta: kilo ? LATITUDE_DELTA : LATITUDE_DELTA / 2,
+        longitudeDelta: kilo ? LONGITUDE_DELTA : LATITUDE_DELTA / 2,
       },
 
     }
@@ -153,9 +154,18 @@ const Home = ({ navigation, props }) => {
       isMounted = false
       subscribe();
     };
-  }, [selectedPlaceId, kilo]);
+  }, [selectedPlaceId, kilo, light]);
 
   useEffect(async () => {
+
+    let time = ""
+    if(light){
+      time = "night"
+    }
+    else{
+      time = "day"
+    }
+
     var subscribeLoc
     subscribeLoc = await firestore.collection("location").onSnapshot(async (querySnapshot) => {
       var docs = await querySnapshot.docs.map((doc) => ({
@@ -164,6 +174,7 @@ const Home = ({ navigation, props }) => {
         address: doc.data().address,
         description: doc.data().description,
         schedules: doc.data().schedules,
+        open_type: doc.data().open_type,
         img: doc.data().photo,
         latlng: {
           longitude: doc.data().longitude,
@@ -201,14 +212,14 @@ const Home = ({ navigation, props }) => {
             )
 
             dis = dis / 1000
-
             // console.log(dis)
             if (dis < 1) {
               data.push(docs[i])
+              console.log(dis)
             }
           }
         }
-        await setMarker(data);
+        await setMarker(data.filter((item) => item.open_type == time));
         console.log(marker)
         setLoading(false);
       }
@@ -239,39 +250,42 @@ const Home = ({ navigation, props }) => {
         </View>
 
         {userMarker.latlng.latitude &&
-          marker.length > 0 && (
-            <View style={styles.map}>
-              <StatusBar barStyle="dark-content" />
-              <MapView
-                customMapStyle={light ? MapStyleNight : MapStyleDay}
-                style={styles.mapContainer}
-                provider={PROVIDER_GOOGLE}
-                initialRegion={userMarker.latlng}
-              >
-                {marker.map((marker, key) => (
-                  <Marker
-                    key={key}
-                    coordinate={marker.latlng}
-                    title={marker.title}
-                    description={marker.description}
-                    onPress={() => setSelectedPlaceId(marker.key)}
-                  >
-                    <Entypo
-                      color={marker.key == selectedPlaceId ? "black" : "red"}
-                      name="drink"
-                      size={40}
-                    />
-                  </Marker>
-                ))}
-                {
-                  <Marker
-                    coordinate={userMarker.latlng}
-                  >
-                  </Marker>
-                }
-              </MapView>
-            </View>
-          )}
+          marker.length > 0 ? (
+          <View style={styles.map}>
+            <StatusBar barStyle="dark-content" />
+            <MapView
+              customMapStyle={light ? MapStyleNight : MapStyleDay}
+              style={styles.mapContainer}
+              pitchEnabled={false}
+              scrollEnabled={false}
+              rotateEnabled={false}
+              provider={PROVIDER_GOOGLE}
+              initialRegion={userMarker.latlng || 0}
+            >
+              {marker.map((marker, key) => (
+                <Marker
+                  key={key}
+                  coordinate={marker.latlng}
+                  title={marker.title}
+                  description={marker.description}
+                  onPress={() => setSelectedPlaceId(marker.key)}
+                >
+                  <Entypo
+                    color={marker.key == selectedPlaceId ? "black" : "red"}
+                    name="drink"
+                    size={40}
+                  />
+                </Marker>
+              ))}
+              {
+                <Marker
+                  coordinate={userMarker.latlng}
+                >
+                </Marker>
+              }
+            </MapView>
+          </View>
+        ) : <View />}
         {loading ? (
           <ActivityIndicator
             //visibility of Overlay Loading Spinner
@@ -282,32 +296,32 @@ const Home = ({ navigation, props }) => {
             textStyle={styles.spinnerTextStyle}
           />
         ) : (
-          marker.length &&
-          <View style={styles.Corousel}>
-            <FlatList
-              ref={flatlist}
-              data={marker}
-              showsHorizontalScrollIndicator={false}
-              snapToInterval={width - 60}
-              horizontal
-              keyExtractor={(item) => item.key}
-              snapToAlignment={"center"}
-              decelerationRate={"fast"}
-              renderItem={({ item }) => (
+          marker.length ?
+            <View style={styles.Corousel}>
+              <FlatList
+                ref={flatlist}
+                data={marker}
+                showsHorizontalScrollIndicator={false}
+                snapToInterval={width - 60}
+                horizontal
+                keyExtractor={(item) => item.key}
+                snapToAlignment={"center"}
+                decelerationRate={"fast"}
+                renderItem={({ item }) => (
 
-                <MapCorousel
-                  onPress={() =>
-                    navigation.navigate("Message")
-                  }
-                  title={item.title}
-                  place={item.description}
-                  location={item.location}
-                  code={item.code}
-                />
-              )}
-            />
-          </View>
-        )}
+                  <MapCorousel
+                    onPress={() =>
+                      navigation.navigate("Message")
+                    }
+                    title={item.title}
+                    place={item.description}
+                    location={item.location}
+                    code={item.code}
+                  />
+                )}
+              />
+            </View>
+            : <View />)}
       </SafeAreaView>
     </LinearGradient >
   );
