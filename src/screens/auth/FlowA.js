@@ -10,116 +10,117 @@ import {
   Button,
   ActivityIndicator,
 } from "react-native";
-import { auth } from '../../db/firebase';
+import { auth } from "../../db/firebase";
 import LinearGradient from "react-native-linear-gradient";
 import TopBar from "./../../component/TopBar";
-import InputF from './../../component/InputF'
-import { emailValidator } from './../../helpers/emailValidator'
-import { passwordValidator } from './../../helpers/passwordValidator'
+import InputF from "./../../component/InputF";
+import { emailValidator } from "./../../helpers/emailValidator";
+import { passwordValidator } from "./../../helpers/passwordValidator";
 import CustomModal from "../../component/basic/CustomModal";
-import WP from './../../component/basic/WP'
-import Modal from 'react-native-modal';
+import WP from "./../../component/basic/WP";
+import Modal from "react-native-modal";
+import ValiderBtn from "../../component/basic/ValiderBtn";
 
 // const handleLogIn = async (email, password) => {
 
 // }
 // This is Login SCREEN
 const FlowA = ({ ...props }) => {
-  const [email, setEmail] = useState({ value: '', error: '' });
-  const [password, setPassword] = useState({ value: '', error: '' });
+  const [email, setEmail] = useState({ value: "", error: "" });
+  const [password, setPassword] = useState({ value: "", error: "" });
   const [loading, setLoading] = useState(false);
 
-  const [error, setError] = useState()
+  const [error, setError] = useState();
   const [isModalVisible, setModalVisible] = useState(false);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
   const onLoginPress = () => {
-
-
-    const emailError = emailValidator(email.value)
-    const passwordError = passwordValidator(password.value)
+    const emailError = emailValidator(email.value);
+    const passwordError = passwordValidator(password.value);
 
     if (emailError || passwordError) {
-      setEmail({ ...email, error: emailError })
-      setPassword({ ...password, error: passwordError })
+      setEmail({ ...email, error: emailError });
+      setPassword({ ...password, error: passwordError });
     }
 
-
-
     if (email != "" && password != "") {
-
       // console.log(userDetails)
       try {
-        auth.signInWithEmailAndPassword(email.value, password.value)
+        var subscribe = auth
+          .signInWithEmailAndPassword(email.value, password.value)
           .then((userCredential) => {
-            setLoading(true)
-            // Signed in 
+            setLoading(true);
+            // Signed in
             var user = userCredential.user;
-            props.navigation.replace("Home")
-            setLoading(false)
+            props.navigation.replace("AuthLoading");
+            setLoading(false);
 
-            console.log(user)
+            console.log(user);
             // ...
           })
           .catch((error) => {
-            setLoading(true)
+            setLoading(true);
 
             var errorCode = error.code;
             var errorMessage = error.message;
-            setError(errorMessage)
-            setModalVisible(true)
-            setLoading(false)
-            console.log(error)
+            setError(errorMessage);
+            setModalVisible(true);
+            setLoading(false);
+            console.log(error);
             // ..
           });
+      } catch (error) {
+        console.log(error);
       }
-      catch (error) {
+    } else {
+      console.log("email password empty");
+    }
 
-        console.log(error)
-      }
-    }
-    else {
-      console.log("email password empty")
-    }
-  }
+    return () => {
+      subscribe();
+    };
+  };
   return (
-    <LinearGradient colors={["#DD488C", "#000"]} style={styles.linearGradient}>
+    <LinearGradient colors={["#000", "#DD488C"]} style={styles.linearGradient}>
       <SafeAreaView style={styles.main}>
-        <TopBar />
+        <View style={styles.center}>
+          <Image
+            style={{ height: 100, width: 130 }}
+            resizeMode="contain"
+            source={require("./../../assets/images/logo-bubble.png")}
+          />
+        </View>
         <View style={styles.Profile}>
           <Text style={styles.h1}>CONNEXION </Text>
         </View>
         <View style={styles.Form}>
-
-
-          <InputF onChangeText={(e) => setEmail({ value: e, error: '' })}
+          <InputF
+            onChangeText={(e) => setEmail({ value: e, error: "" })}
             value={email.value}
             error={email.error}
             errorText={email.error}
-            placeholder="email"
-            keyboardType="default" />
+            placeholder="Email"
+            keyboardType="default"
+          />
           <InputF
+            onChangeText={(e) => setEmail({ value: e, error: "" })}
             secureTextEntry={true}
-            onChangeText={(e) => setPassword({ value: e, error: '' })}
+            onChangeText={(e) => setPassword({ value: e, error: "" })}
             value={password.value}
             error={password.error}
             errorText={password.error}
             placeholder="Mot de passe"
-            keyboardType="default" />
+            keyboardType="default"
+          />
 
           <TouchableOpacity onPress={() => props.navigation.push("Reset")}>
             <WP>Mot de passe oublié ?</WP>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={onLoginPress}>
-            < View style={styles.btnopacity}>
-
-
-              <Text style={styles.f}>VALIDER</Text>
-            </View>
-
+          <TouchableOpacity style={{marginTop: 30}} onPress={onLoginPress}>
+            <ValiderBtn />
           </TouchableOpacity>
         </View>
         {/* {error === null ?
@@ -130,25 +131,22 @@ const FlowA = ({ ...props }) => {
         <Modal onBackdropPress={toggleModal} isVisible={isModalVisible}>
           <CustomModal title="Error" content={error} />
         </Modal>
-
-
-
-
-
-
-
       </SafeAreaView>
-    </LinearGradient >
+    </LinearGradient>
   );
 };
 
 export default FlowA;
 
 const styles = StyleSheet.create({
-  main: {
+  linearGradient: {
     flex: 1,
-    display: "flex",
   },
+  main: {
+    justifyContent: "center",
+    flex: 1,
+  },
+
   h1: {
     fontFamily: "FredokaOne-Regular",
 
@@ -164,7 +162,6 @@ const styles = StyleSheet.create({
   },
   Profile: { alignItems: "center", marginVertical: 30 },
 
-  linearGradient: { flex: 1 },
   Form: {
     alignItems: "center",
   },
@@ -195,5 +192,8 @@ const styles = StyleSheet.create({
   },
   f: {
     fontFamily: "FredokaOne-Regular",
+  },
+  center: {
+    alignItems: "center",
   },
 });

@@ -8,6 +8,7 @@ import {
   Modal,
   FlatList,
   ScrollView,
+  Image,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import LocationTab from "./../../../component/LocationTab";
@@ -15,8 +16,10 @@ import TopBar from "./../../../component/TopBar";
 import ListContainer from "./../../../component/ListContainer";
 import SearchBar from "./../../../component/SearchBar";
 import UserChatInfo from "../../../component/UserChatInfo";
+import RNQRGenerator from "rn-qr-generator";
+
 import { auth, firestore } from "../../../db/firebase";
-import { getDistance } from 'geolib';
+import { getDistance } from "geolib";
 
 // linear-gradient(0deg, #FFFFFF 0%, #FFC1DD 78.9%)
 
@@ -42,29 +45,54 @@ const UsersListPlace = ({ route, ...props }) => {
   const [userData, setUserData] = useState([]);
   const [currentUserId, setCurrentUserId] = useState("");
   const [currentUserData, setCurrentUserData] = useState("");
+  const [qrimage, setQrimage] = useState(null);
 
   useEffect(() => {
+    // QRCODE START
+    // const arr = JSON.stringify([title, place, location, code, img]);
+
+    // RNQRGenerator.generate({
+    //   value: id,
+    //   height: 300,
+    //   width: 300,
+    //   base64: true,
+    //   backgroundColor: "#FFC1DD",
+    //   color: "#DD488C",
+    //   correctionLevel: "M",
+    //   // padding: {
+    //   //   top: 0,
+    //   //   left: 0,
+    //   //   bottom: 0,
+    //   //   right: 0,
+    //   // }
+    // })
+    //   .then((response) => {
+    //     console.log("Response:", response);
+    //     setQrimage(response.uri);
+    //   })
+    //   .catch((err) => console.log("Cannot create QR code", err));
+
+    // QRCODE END
     let isMounted = true;
 
     if (isMounted)
       auth.onAuthStateChanged((user) => {
         if (user) {
-
           var uid = user.uid;
           setCurrentUserId(user.uid);
 
-          firestore.collection("users").doc(uid)
+          firestore
+            .collection("users")
+            .doc(uid)
             .onSnapshot(async (doc) => {
-
               let docs = {
                 id: uid,
                 userName: doc.data().userName,
                 selectedTeams: doc.data().selectedTeams,
-              }
-              await setCurrentUserData(docs)
+              };
+              await setCurrentUserData(docs);
               // console.log(docs)
-
-            })
+            });
 
           firestore.collection("users").onSnapshot((querySnapshot) => {
             let docs = querySnapshot.docs
@@ -73,6 +101,7 @@ const UsersListPlace = ({ route, ...props }) => {
                 id: doc.id,
                 name: doc.data().userName,
                 gender: doc.data().userGender,
+                dateOfBirth: (doc.data().userDateOfBirth != undefined && doc.data().userDateOfBirth) ? doc.data().userDateOfBirth.seconds : null,
                 userImg: doc.data().userProfileImageUrl,
                 selectedTeams: doc.data().selectedTeams,
                 latlng: {
@@ -80,93 +109,114 @@ const UsersListPlace = ({ route, ...props }) => {
                   latitude: doc.data().latitude,
                 },
               }));
+              
             var data = [];
             for (var i = 0; i < docs.length; i++) {
-              var dis = getDistance(
-                latlng,
-                docs[i].latlng,
-              )
+              var dis = getDistance(latlng, docs[i].latlng);
 
-              dis = dis / 1000
+              dis = dis / 1000;
 
-              // console.log(dis)
+              console.log(dis)
 
-              if (dis < 10) {
-                data.push(docs[i])
+              if (dis < 5) {
+                data.push(docs[i]);
               }
             }
 
             setUserData(data);
             // console.log(data)
-
           });
         } else {
           // User is signed out
           // ...
         }
       });
-      return () => {
-        isMounted = false
-      }
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // console.log("gettinguserid =>", currentUserId);
   return (
     <LinearGradient
-      colors={["#FFC1DD", "#ffffff"]}
-      style={styles.linearGradient}
-    >
-      <ScrollView>
-        <View>
-          <TopBar />
-        </View>
-        <View style={{ marginTop: 30 }}>
-        </View>
-        <View style={{ marginTop: 10 }}>
-          <TouchableOpacity
-            onPress={() => props.navigation.navigate("UsersListPlace")}
-          >
-            <ListContainer
-              id={id}
-              title={title}
-              place={place}
-              location={location}
-              code={code}
-              img={img}
-            />
-          </TouchableOpacity>
+      colors={ ["#000", "#DD488C"] }
+      style={styles.linearGradient}>
+      <SafeAreaView style={styles.Safe}>
+        <ScrollView >
+          <View>
+            <TopBar>
+              {/* <Image
+                style={{ height: 60, width: 60 }}
+                source={{ uri: qrimage }}
+                // source={{ uri: img }}
+              /> */}
+            </TopBar>
+          </View>
+          <View style={{ marginTop: 30 }}></View>
+          <View style={{ marginTop: 10 }}>
+            <TouchableOpacity
+              onPress={() =>
+                props.navigation.navigate("PlacesDetails", {
+                  id,
+                  title,
+                  place,
+                  location,
+                  code,
+                  img,
+                  latlng,
+                  //qrimage,
 
-          {userData && (
-            <FlatList
-              data={userData}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={styles.ListOfUsers}
-                  onPress={() => {
-                    props.navigation.navigate("ChatUser", {
-                      currentUserId: currentUserId,
-                      messageId: item.id,
-                      name: item.name,
-                      gender: item.gender,
-                      messageImg: item.userImg,
-                    });
-                  }}
-                >
+                  // title: title,
+                  // id: id,
+                  // place: place,
+                  // location: location,
+                  // code: code,
+                  // img: img,
+                })
+              }>
+              <ListContainer
+                id={id}
+                title={title}
+                place={place}
+                location={location}
+                code={code}
+                img={img}
+              />
+            </TouchableOpacity>
+
+            {userData && (
+              <FlatList
+              style={{paddingBottom: 100}}
+                data={userData}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                  // <TouchableOpacity
+                  //   style={styles.ListOfUsers}
+                  //   onPress={() => {
+                  //     props.navigation.navigate("ChatUser", {
+                  //       currentUserId: currentUserId,
+                  //       messageId: item.id,
+                  //       name: item.name,
+                  //       gender: item.gender,
+                  //       messageImg: item.userImg,
+                  //     });
+                  //   }}>
                   <UserChatInfo
                     currentUserData={currentUserData}
                     id={item.id}
                     name={item.name}
                     gender={item.gender}
+                    dateOfBirth={item.dateOfBirth}
                     userImg={item.userImg}
                     selectedTeams={item.selectedTeams}
                   />
-                </TouchableOpacity>
-              )}
-            />
-          )}
-        </View>
-      </ScrollView>
+                  // </TouchableOpacity>
+                )}
+              />
+            )}
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     </LinearGradient>
   );
 };
@@ -175,5 +225,5 @@ export default UsersListPlace;
 
 const styles = StyleSheet.create({
   linearGradient: { flex: 1 },
-  ListOfUsers: {},
+  Safe: { flex: 1, paddingBottom: 10 },
 });

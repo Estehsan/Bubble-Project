@@ -15,7 +15,8 @@ import TopBar from "../../component/TopBar";
 import ListContainer from "./../../component/ListContainer";
 import SearchBar from "./../../component/SearchBar";
 import { auth, firestore } from "../../db/firebase";
-import { getDistance } from 'geolib';
+import { getDistance } from "geolib";
+import EvilIcons from "react-native-vector-icons/EvilIcons";
 
 // linear-gradient(0deg, #FFFFFF 0%, #FFC1DD 78.9%)
 
@@ -58,23 +59,24 @@ const data = [
 
 const Drink = ({ navigation }) => {
   let [locationData, setLocationData] = useState([]);
+  let [locations, setLocations] = useState([]);
+
   const [userMarker, setUserMarker] = useState({});
   const [kilo, setKilo] = useState(true);
   const [light, setLight] = useState(true);
-
+  const [city, setCity] = useState("");
 
   useEffect(() => {
-
     let isMounted = true;
     if (isMounted)
-
       auth.onAuthStateChanged((user) => {
         if (user) {
           var uid = user.uid;
           // console.log(uid)
-          firestore.collection("users").doc(uid)
+          firestore
+            .collection("users")
+            .doc(uid)
             .onSnapshot(async (doc) => {
-
               let docs = {
                 key: user.uid,
                 title: doc.data().userName,
@@ -83,14 +85,11 @@ const Drink = ({ navigation }) => {
                   longitude: doc.data().longitude,
                   latitude: doc.data().latitude,
                 },
-              }
+              };
 
-
-              await setUserMarker(docs)
+              await setUserMarker(docs);
               // console.log(docs)
-
-            })
-
+            });
         } else {
           // User is signed out
           // ...
@@ -99,11 +98,10 @@ const Drink = ({ navigation }) => {
 
     return () => {
       isMounted = false;
-    }
-  }, [])
+    };
+  }, []);
 
   useEffect(async () => {
-
     let isMounted = true;
 
     if (isMounted)
@@ -130,35 +128,25 @@ const Drink = ({ navigation }) => {
         var data = [];
         if (kilo === true) {
           for (var i = 0; i < docs.length; i++) {
-            var dis = await getDistance(
-              userMarker.latlng,
-              docs[i].latlng,
-            )
+            var dis = await getDistance(userMarker.latlng, docs[i].latlng);
 
-            dis = dis / 1000
+            dis = dis / 1000;
 
             // console.log(dis)
             if (dis < 10) {
-              data.push(docs[i])
+              data.push(docs[i]);
             }
-
-
           }
         } else {
           for (var i = 0; i < docs.length; i++) {
-            var dis = await getDistance(
-              userMarker.latlng,
-              docs[i].latlng,
-            )
+            var dis = await getDistance(userMarker.latlng, docs[i].latlng);
 
-            dis = dis / 1000
+            dis = dis / 1000;
 
             // console.log(dis)
             if (dis < 1) {
-              data.push(docs[i])
+              data.push(docs[i]);
             }
-
-
           }
         }
 
@@ -181,9 +169,42 @@ const Drink = ({ navigation }) => {
     }
   }, [userMarker, kilo, light]);
 
+  let handleSearchBar = (event) => {
+    const searchText = event;
+    if (locationData) {
+      // Object.keys(accepted).map((val) => {
+      //   console.log(accepted[val].name)
+      // });
+      let locations = locationData.filter((val) => {
+        if(val.address != undefined && val.address){
+          return (
+            val.title
+              .toString()
+              .toLowerCase()
+              .indexOf(searchText.toString().toLowerCase()) !== -1 ||
+            val.address
+              .toString()
+              .toLowerCase()
+              .indexOf(searchText.toString().toLowerCase()) !== -1
+          );
+        }
+        else{
+          return (
+            val.title
+              .toString()
+              .toLowerCase()
+              .indexOf(searchText.toString().toLowerCase()) !== -1
+          );
+        }
+      });
+
+      setLocations(locations)
+      console.log(locations)
+    }
+  };
+
   // console.log(locationData);
   return (
-
     <LinearGradient
       colors={["#FFC1DD", "#ffffff"]}
       style={styles.linearGradient}
@@ -267,4 +288,34 @@ export default Drink;
 
 const styles = StyleSheet.create({
   linearGradient: { flex: 1 },
+  inputField: {
+    flexDirection: "row",
+    alignContent: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    marginTop: 15,
+    color: "black",
+    padding: 15,
+    backgroundColor: "#fff",
+    borderRadius: 20,
+  },
+  searchIcon: {
+    flexDirection: "row",
+    backgroundColor: "white",
+    borderRadius: 30,
+    alignItems: "center",
+    alignItems: "center",
+    width: "90%",
+    paddingHorizontal: 20,
+    marginHorizontal: "3%",
+    height: 50,
+    marginTop: 20,
+  },
+  inputField: {
+    width: "90%",
+    color: "black",
+    padding: 15,
+    backgroundColor: "#fff",
+    borderRadius: 20,
+  },
 });

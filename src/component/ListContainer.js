@@ -4,43 +4,57 @@ import Colors from "../assets/colors/Colors";
 import H2 from "./basic/H2";
 import P from "./basic/P";
 
-const ListContainer = ({ title, location, place, code, img, navigation }) => {
+const ListContainer = ({
+  title,
+  location,
+  place,
+  code,
+  img,
+  navigation,
+  qrimage,
+}) => {
   return (
     <View style={styles.Container}>
       <View style={styles.main}>
         <View style={styles.lContainer}>
           {img ? (
-            <Image style={{
-              height: 100, width: 110, ...Colors.customShadow,
-            }} source={{ uri: img }} />
+            <Image
+              style={{
+                height: 100,
+                width: 110,
+                ...Colors.customShadow,
+              }}
+              source={{ uri: img }}
+            />
           ) : (
             <Image
-              style={{ height: 100, width: 110, ...Colors.customShadow, }}
+              style={{ height: 100, width: 110, ...Colors.customShadow }}
               source={require("../assets/images/description.png")}
+              // source={{ uri: img }}
             />
           )}
         </View>
         <View style={styles.rContainer}>
-          <H2 ellipsizeMode="tail" numberOfLines={1}>
+          <H2 ellipsizeMode="tail" numberOfLines={2}>
             {title}
           </H2>
           <P ellipsizeMode="tail" numberOfLines={1}>
             {location}
           </P>
-          <P ellipsizeMode="tail" numberOfLines={1}>
+          <P ellipsizeMode="tail" numberOfLines={3}>
             {place}
           </P>
-          <P ellipsizeMode="tail" numberOfLines={1}>
+          {/* <P ellipsizeMode="tail" numberOfLines={1}>
             {code}
-          </P>
+          </P> */}
+          <Image source={{ uri: qrimage }} />
           <TouchableOpacity
             onPress={() => {
               // navigation.navigate('UsersListPlace');
-            }}
-          ></TouchableOpacity>
+            }}></TouchableOpacity>
         </View>
       </View>
-    </View >
+    </View>
   );
 };
 
@@ -72,7 +86,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   rContainer: {
-    width: "70%",
+    width: "50%",
   },
-  lContainer: { paddingHorizontal: 13, }
+  lContainer: { paddingHorizontal: 13 },
 });

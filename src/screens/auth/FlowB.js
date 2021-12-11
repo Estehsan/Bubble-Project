@@ -6,14 +6,22 @@ import {
   SafeAreaView,
   Image,
   TextInput,
-  TouchableOpacity, Button,
-  ActivityIndicator, Platform,
+  TouchableOpacity,
+  Button,
+  ActivityIndicator,
+  Platform,
+  ImageBackground,
+  TouchableWithoutFeedback,
+  Keyboard
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import InputF from "../../component/InputF";
 import { nameValidator } from "../../helpers/nameValidator";
 import TopBar from "./../../component/TopBar";
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from "@react-native-community/datetimepicker";
+import ValiderBtn from "./../../component/basic/ValiderBtn";
+
+import { TextInputMask } from "react-native-masked-text";
 
 // This is signUp SCREEN
 
@@ -22,18 +30,14 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 // }
 
 const FlowA = ({ ...props }) => {
+  const [FirstName, setFirstName] = useState({ value: "", error: "" });
+  const [DOB, setDOB] = useState();
 
-  const [FirstName, setFirstName] = useState({ value: '', error: '' });
-  const [errorText, setErrorText] = useState('');
-
-  // DatePicker 
-  const [date, setDate] = useState(new Date());
-  const [mode, setMode] = useState('date');
-  const [show, setShow] = useState(false);
+  const [errorText, setErrorText] = useState("");
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
-    setShow(Platform.OS === 'ios');
+    setShow(Platform.OS === "ios");
     setDate(currentDate);
   };
 
@@ -42,120 +46,91 @@ const FlowA = ({ ...props }) => {
     setMode(currentMode);
   };
 
-  const showDatepicker = () => {
-    showMode('date');
-  };
-  // Date Picker End
-
   return (
     <>
-      <LinearGradient colors={["#DD488C", "#000"]} style={styles.linearGradient}>
-        <SafeAreaView style={styles.main}>
-          <TopBar />
+      <LinearGradient
+        colors={["#000", "#DD488C"]}
+        style={styles.linearGradient}>
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <SafeAreaView style={styles.main}>
+            
+              <View style={styles.center}>
+                <Image
+                  style={{ height: 100, width: 130 }}
+                  resizeMode="contain"
+                  source={require("./../../assets/images/logo-bubble.png")}
+                />
+              </View>
+              <View style={styles.Profile}>
+                <Text style={styles.h1}>S'inscrire</Text>
+              </View>
+              <View style={styles.Form}>
+                <InputF
+                  onChangeText={(e) => setFirstName({ value: e, error: "" })}
+                  value={FirstName.value}
+                  error={FirstName.error}
+                  errorText={FirstName.error}
+                  placeholder="Pseudo"
+                  keyboardType="default"
+                />
 
-          <View style={styles.Profile}>
-            <Text style={styles.h1}>INSCRIPTION</Text>
-          </View>
-          <View style={styles.Form}>
-
-
-
-            <InputF onChangeText={(e) => setFirstName({ value: e, error: '' })}
-              value={FirstName.value}
-              error={FirstName.error}
-              errorText={FirstName.error}
-              placeholder="Pseudo"
-              keyboardType="default" />
-
-
-            {/* DataPicker Start */}
-
-            {
-              show ? (
-                <View style={{
-                  width: "100%",
-                  color : 'black'
-                }}>
-
-                  <DateTimePicker
-                    style={{ marginHorizontal: "15%", backgroundColor: 'white', color:  'black',}}
-                    testID="dateTimePicker"
-                    value={date}
-                    mode={mode}
-                    is24Hour={true}
-                    display="default"
-                    onChange={onChange}
+                {/* DataPicker Start */}
+                <View
+                  style={{
+                    width: "100%",
+                    alignItems: "center",
+                  }}>
+                  <TextInputMask
+                    placeholder="Date de naissance 27/06/1992"
+                    placeholderTextColor="black"
+                    style={styles.input}
+                    refInput={(ref) => (this.myDateText = ref)}
+                    type={"datetime"}
+                    value={DOB}
+                    onChangeText={(e) => {
+                      setDOB(e);
+                    }}
+                    options={{
+                      format: "DD/MM/YYYY",
+                    }}
                   />
                 </View>
-              ) : (
 
+                {/* DatePickerEnd */}
+                {errorText ? (
+                  <View style={styles.Error}>
+                    <Text style={{ color: "white" }}>{errorText}</Text>
+                  </View>
+                ) : null}
+                <View
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginVertical: 20,
+                  }}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      // const emailError = emailValidator(email.value)
 
-                <View style={{
-                  width: "100%",
-                  alignItems: 'center'
+                      const firstNameError = nameValidator(FirstName.value);
 
-                }}>
-                  <TouchableOpacity style={{
-                    width: "70%",
-                    borderRadius: 20,
-                    height: 40,
-                    justifyContent: "space-between",
-                    paddingHorizontal: 30,
-                    alignContent: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: "#fff",
-                    color: "black",
-                  }}
-                    onPress={showDatepicker}
-                  >
-                    <Text style={{ opacity: 0.5 }}>Date de naissance</Text>
+                      if (firstNameError) {
+                        setFirstName({ ...FirstName, error: firstNameError });
+                      }
+
+                      if (!firstNameError)
+                        props.navigation.push("MonProfil", {
+                          name: FirstName.value,
+                          date: DOB,
+                        });
+                    }}>
+                    <ValiderBtn />
                   </TouchableOpacity>
                 </View>
-
-
-              )
-            }
-
-            {/* DatePickerEnd */}
-            {errorText ?
-              <View style={styles.Error}>
-                <Text style={{ color: 'white' }}>{errorText}</Text>
               </View>
-              : null}
-
-            <TouchableOpacity
-              onPress={() => {
-                // const emailError = emailValidator(email.value)
-
-                const firstNameError = nameValidator(FirstName.value)
-
-
-                if (firstNameError) {
-                  setFirstName({ ...FirstName, error: firstNameError })
-
-                }
-
-
-
-
-                if (!firstNameError)
-
-
-                  props.navigation.push("MonProfil", { name: FirstName.value, date: date });
-              }}
-            >
-              <View style={{ alignItems: 'center', justifyContent: 'center', marginVertical: 20 }}>
-                <View style={styles.btnopacity}>
-
-                  <Text style={styles.f}>VALIDER</Text>
-                </View>
-              </View>
-
-            </TouchableOpacity>
-          </View>
-        </SafeAreaView>
-      </LinearGradient >
-
+            </SafeAreaView>
+          </TouchableWithoutFeedback>
+      </LinearGradient>
     </>
   );
 };
@@ -163,9 +138,16 @@ const FlowA = ({ ...props }) => {
 export default FlowA;
 
 const styles = StyleSheet.create({
-  main: {
+  linearGradient: {
     flex: 1,
-    display: "flex",
+  },
+  main: {
+    justifyContent: "center",
+
+    flex: 1,
+  },
+  center: {
+    alignItems: "center",
   },
   h1: {
     fontFamily: "FredokaOne-Regular",
@@ -182,17 +164,17 @@ const styles = StyleSheet.create({
   },
   Profile: { alignItems: "center", marginVertical: 30 },
 
-  linearGradient: { flex: 1 },
-
   input: {
     width: "70%",
     borderRadius: 20,
     marginBottom: 19,
     height: 40,
     justifyContent: "space-between",
-    paddingHorizontal: 60,
+    paddingHorizontal: 20,
+    textAlign: "center",
+
     backgroundColor: "#fff",
-    color: "black"
+    color: "black",
   },
   btn: {
     paddingHorizontal: 20,
@@ -213,7 +195,7 @@ const styles = StyleSheet.create({
     fontFamily: "FredokaOne-Regular",
   },
   Error: {
-    marginHorizontal: '16%',
-    marginTop: 10
-  }
+    marginHorizontal: "16%",
+    marginTop: 10,
+  },
 });

@@ -18,13 +18,15 @@ pod 'react-native-google-maps', :path => rn_maps_path
     :hermes_enabled => false
   )
 
-  pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
 
-  pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker'
 
-  pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
 
-  pod 'RNCCheckbox', :path => '../node_modules/@react-native-community/checkbox'
+
+
+
+  permissions_path = '../node_modules/react-native-permissions/ios'
+pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
+
 
   target 'BubbleCodeTests' do
     inherit! :complete

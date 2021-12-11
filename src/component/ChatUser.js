@@ -17,22 +17,27 @@ import {
   Keyboard,
   Dimensions,
   ActivityIndicator,
+  Modal,
+  Pressable,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import OneSignal from "react-native-onesignal";
 
 import LinearGradient from "react-native-linear-gradient";
 import LocationTab from "./LocationTab";
 import TopBar from "./TopBar";
 import ListContainer from "./ListContainer";
 import SearchBar from "./SearchBar";
-import { auth, firestore } from "../db/firebase";
+import { auth, firestore, messaging } from "../db/firebase";
 import firebase from "firebase/app";
 import { set } from "react-native-reanimated";
 import Colors from "../assets/colors/Colors";
 import H2 from "./basic/H2";
+import WP from "./basic/WP";
+
 // linear-gradient(0deg, #FFFFFF 0%, #FFC1DD 78.9%)
 const ChatUser = ({ navigation, route, ...props }) => {
-  const { currentUserId, messageId, name, gender, messageImg } = route.params;
+  const { currentUserId, messageId, name, gender, messageImg, candy } = route.params;
   // let [chatUser, setChatUser] = useState({})
   let [chats, setChats] = useState([]);
   let [message, setMessage] = useState("");
@@ -45,46 +50,72 @@ const ChatUser = ({ navigation, route, ...props }) => {
   let [getRequest, setGetRequest] = useState("");
   let [checker, setChecker] = useState(false);
 
-  let [loading, setLoading] = useState(true);
+  let [loading, setLoading] = useState(null);
 
+  let [check, setCheck] = useState(0);
 
-  let [check, setCheck] = useState(0)
+  let [notificationId, setNotificationId] = useState("");
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [quitmodal, setQuitModal] = useState(false);
+  const [notification, setNotification] = useState([]);
 
   const scrollViewRef = useRef();
   const width = useWindowDimensions().width;
   useLayoutEffect(() => {
     navigation.setOptions({
+      tabBarVisible: false,
       headerStyle: {
         backgroundColor: "#fFC1DD",
       },
       headerTitle: () => (
-        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: 'center' }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}>
           <Text style={styles.ChatUserName}>{name}</Text>
         </View>
       ),
-      headerLeft: () => <View></View>,
+      headerLeft: () => <View />,
+      headerRight: () => <View />,
     });
   }, [navigation]);
+
   useEffect(async () => {
+    setLoading(true);
     let merge = uid_merge(currentUserId, messageId);
     get_messages(merge);
 
-    // console.log(currentUserId, messageId, name, gender, messageImg);
+    firestore
+      .collection("users")
+      .doc(currentUserId)
+      .onSnapshot((doc) => {
+        setNotification(doc.data().notification);
+      });
 
-    // console.log(messageImg);
     let datum = await firestore
       .collection("users")
       .doc(currentUserId)
       .get()
       .then((doc) => {
-        setLoading(true)
-
         setcurrentName(doc.data().userName);
         setcurrentGender(doc.data().userGender);
         setcurrentImage(doc.data().userProfileImageUrl);
-        console.log(doc.data().userProfileImageUrl);
-        setLoading(false)
+      })
+      .catch((error) => {
+        console.log("Error getting documents: ", error);
+      });
 
+    let messagedatum = await firestore
+      .collection("users")
+      .doc(messageId)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          setNotificationId(doc.data().notificationId);
+        }
       })
       .catch((error) => {
         console.log("Error getting documents: ", error);
@@ -95,20 +126,12 @@ const ChatUser = ({ navigation, route, ...props }) => {
       .doc(messageId)
       .collection("friends")
       .doc(currentUserId)
-      .get()
-      .then((doc) => {
-        setLoading(true)
-
+      .onSnapshot(async (doc) => {
         if (doc.exists) {
           setGetRequest(doc.data().status);
-
         }
-        setLoading(false)
 
         // console.log(doc.data())
-      })
-      .catch((error) => {
-        console.log("Error getting documents: ", error);
       });
 
     let dataUser = await firestore
@@ -116,28 +139,18 @@ const ChatUser = ({ navigation, route, ...props }) => {
       .doc(currentUserId)
       .collection("friends")
       .doc(messageId)
-      .get()
-      .then(async (doc) => {
-        setLoading(true)
-
+      .onSnapshot(async (doc) => {
         if (doc.exists) {
           await setRequest(doc.data().status);
           await setChecker(doc.data().requestGetter);
-          console.log(doc.data());
+          console.log("This ==> ", doc.data());
         }
-        setLoading(false)
-
-      })
-      .catch((error) => {
-        console.log("Error getting documents: ", error);
       });
-   
+    await setModalVisible(checker);
+    setLoading(false);
+  }, [checker]);
 
-  }, []);
-
-  useEffect(() => {
-
-  }, [check])
+  useEffect(() => {}, [check]);
 
   let uid_merge = (uid1, uid2) => {
     if (uid1 < uid2) {
@@ -154,7 +167,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
       .collection("message")
       .doc(uid)
       .collection(`chat`)
-      .orderBy("createdAt")
+      .orderBy("createdAt", "desc")
       .onSnapshot((querySnapshot) => {
         let docs = querySnapshot.docs.map((doc) => ({
           id: doc.id,
@@ -162,261 +175,422 @@ const ChatUser = ({ navigation, route, ...props }) => {
           message: doc.data().message,
         }));
         {
-          setLoading(true)
-
           docs && setChats(docs);
           // console.log(docs)
-          setLoading(false)
-
         }
         // console.log(docs)
       });
+    console.log(checker);
+  };
+  let leaveChat = async () => {
+    // await firestore
+    //   .collection("users")
+    //   .doc(messageId)
+    //   .collection("friends")
+    //   .doc(currentUserId)
+    //   .delete();
+
+    // await firestore
+    //   .collection("users")
+    //   .doc(currentUserId)
+    //   .collection("friends")
+    //   .doc(messageId)
+    //   .delete();
+
+    let merger = uid_merge(currentUserId, messageId);
+
+    let deleteuser = await firestore
+      .collection(`message`)
+      .doc(merger)
+      .collection(`chat`);
+    deleteuser.get().then(function (querySnapshot) {
+      querySnapshot.forEach(function (doc) {
+        doc.ref.delete();
+      });
+    });
+
+    setMessage("");
+    setGetRequest("");
+    setRequest("");
+    setQuitModal(!quitmodal);
+    Alert.alert("Vous avez quitté la conversation");
+    navigation.navigate("Home");
   };
 
-  let send_message = () => {
+  let send_candy = async () => {
+    if(candy > 0){
+      alert('Bonbon envoyé !')
+    }
+    else{
+      alert("Vous n'avez plus de bonbon")
+    }
+  }
+
+  let send_message = async () => {
     if (message.length > 0) {
       let merge = uid_merge(currentUserId, messageId);
-
       firestore.collection(`message`).doc(merge).collection(`chat`).add({
         message: message,
         id: currentUserId,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       });
-      setLoading(true);
 
+      firestore
+        .collection("users")
+        .doc(messageId)
+        .collection("friends")
+        .doc(currentUserId)
+        .update({
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+
+      firestore
+        .collection("users")
+        .doc(currentUserId)
+        .collection("friends")
+        .doc(messageId)
+        .update({
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+
+      const { userId } = await OneSignal.getDeviceState();
+
+      if (notification && notification.includes(messageId)) {
+        if (
+          notificationId != "" ||
+          notificationId != undefined ||
+          notificationId != userId
+        ) {
+          let externalUserId = notificationId; // You will supply the external user id to the OneSignal SDK
+
+          // Setting External User Id with Callback Available in SDK Version 3.9.3+
+          OneSignal.setExternalUserId(externalUserId, (results) => {
+            // The results will contain push and email success statuses
+            console.log("Results of setting external user id");
+            console.log(results);
+
+            // Push can be expected in almost every situation with a success status, but
+            // as a pre-caution its good to verify it exists
+            if (results.push && results.push.success) {
+              console.log("Results of setting external user id push status:");
+              console.log(results.push.success);
+            }
+          });
+
+          const notification = {
+            contents: {
+              en: `${currentName} :  ${message}`,
+            },
+            include_player_ids: [externalUserId],
+          };
+
+          const jsonStri = JSON.stringify(notification);
+
+          await OneSignal.postNotification(
+            jsonStri,
+            (success) => {
+              console.log("Success:", success);
+            },
+            (error) => {
+              console.log("Error:", error);
+            }
+          );
+        }
+      }
       setMessage("");
-      setLoading(false);
-
     }
   };
   return (
     <LinearGradient
-      colors={["#FFC1DD", "#ffffff"]}
-      style={styles.linearGradient}
-    >
-      <SafeAreaView
-        style={styles.container}
-      >
+      colors={ ["#000", "#DD488C"] }
+      style={styles.linearGradient}>
+      {!loading ? (
         <KeyboardAvoidingView
           behavior={Platform.OS == "ios" ? "padding" : "height"}
-          keyboardVerticalOffset={100}
-        >
-          {loading ? (
-            <ActivityIndicator
-              style={{ alignItems: "center", alignContent: 'center', justifyContent: 'center', top: 200 }}
-              size="large"
-              color="#000"
-            />
-          ) : (
+          keyboardVerticalOffset={90}
+          style={styles.container}>
+          {route.params ? (
             <>
-              <View style={styles.Top}>
-
-                {route.params ? (
-                  <>
-                    <View>
-                      {chats && (
-                        // console.log(chats)
-                        <FlatList
-                          data={chats}
-                          keyExtractor={(item, index) => {
-                            return item.id;
-                          }}
-                          renderItem={({ item }) => (
-                            // console.log(item)
-                            <View
-                              style={{
-                                padding: 10,
-                              }}
-                            >
-                              {item.userid == currentUserId ? (
-                                <View style={styles.rMessage}>
-                                  <Text
-                                    style={{
-                                      color: "#fff",
-                                      direction: "rtl",
-                                    }}
-                                  >
-                                    {item.message}
-                                  </Text>
-                                </View>
-                              ) : (
-                                <>
-                                  <View
-                                    style={{
-                                      display: "flex",
-                                      marginVertical: 5,
-                                    }}
-                                  >
-                                    {messageImg ? (
-                                      <Image
-                                        style={{
-                                          height: 35,
-                                          width: 35,
-                                          borderRadius: 35,
-                                          marginRight: 10,
-                                        }}
-                                        source={{ uri: messageImg }}
-                                      />
-                                    ) : (
-                                      <Image
-                                        style={{
-                                          height: 35,
-                                          width: 35,
-                                          borderRadius: 35,
-                                        }}
-                                        source={{
-                                          uri: "https://www.w3schools.com/howto/img_avatar.png",
-                                        }}
-                                      />
-                                    )}
-                                    <View style={styles.sMessage}>
-                                      <Text
-                                        style={{
-                                          color: "#fff",
-                                        }}
-                                      >
-                                        {item.message}
-                                      </Text>
-                                    </View>
-                                  </View>
-                                </>
-                              )}
+              {chats && (
+                // console.log(chats)
+                <FlatList
+                  data={chats}
+                  inverted
+                  keyExtractor={(item, index) => {
+                    return item.id;
+                  }}
+                  renderItem={({ item }) => (
+                    // console.log(item)
+                    <View
+                      style={{
+                        padding: 10,
+                      }}>
+                      {item.userid == currentUserId ? (
+                        <View style={styles.rMessage}>
+                          <Text
+                            style={{
+                              color: "#fff",
+                              direction: "rtl",
+                            }}>
+                            {item.message}
+                          </Text>
+                        </View>
+                      ) : (
+                        <>
+                          <View
+                            style={{
+                              display: "flex",
+                              marginVertical: 5,
+                            }}>
+                            {messageImg ? (
+                              <Image
+                                style={{
+                                  height: 35,
+                                  width: 35,
+                                  borderRadius: 35,
+                                  marginRight: 10,
+                                }}
+                                source={{ uri: messageImg }}
+                              />
+                            ) : (
+                              <Image
+                                style={{
+                                  height: 35,
+                                  width: 35,
+                                  borderRadius: 35,
+                                }}
+                                source={{
+                                  uri: "https://www.w3schools.com/howto/img_avatar.png",
+                                }}
+                              />
+                            )}
+                            <View style={styles.sMessage}>
+                              <Text
+                                style={{
+                                  color: "#fff",
+                                }}>
+                                {item.message}
+                              </Text>
                             </View>
-                          )}
-                        />
-                      )}
-
-                      {request == "" &&
-                        <View>
-                          <Button
-                            title="Send Friend Request"
-                            onPress={() => {
-                              firestore
-                                .collection("users")
-                                .doc(messageId)
-                                .collection("friends")
-                                .doc(currentUserId)
-                                .set({
-                                  friendId: currentUserId,
-                                  status: "pending",
-                                  requestGetter: true,
-                                  name: currentName,
-                                  gender: currentGender,
-                                  image: currentImage,
-                                });
-
-                              firestore
-                                .collection("users")
-                                .doc(currentUserId)
-                                .collection("friends")
-                                .doc(messageId)
-                                .set({
-                                  friendId: messageId,
-                                  status: "accept",
-                                  requestGetter: false,
-                                  name: name,
-                                  gender: gender,
-                                  image: messageImg,
-                                });
-                              setGetRequest("pending");
-                              setRequest("accept");
-                              Alert.alert("Request has been send");
-                            }}
-                          ></Button>
-                        </View>
-                      }
-
-                      {
-                        (getRequest == "pending") &&
-                        <View>
-                          <Text>Request has been send</Text>
-                        </View>
-                      }
-
-                      {checker && (
-                        <View>
-                          <Button
-                            title="accept"
-                            onPress={async () => {
-                              await firestore
-                                .collection("users")
-                                .doc(currentUserId)
-                                .collection("friends")
-                                .doc(messageId)
-                                .update({
-                                  friendId: messageId,
-                                  status: "accept",
-                                  requestGetter: false,
-                                })
-                                .then(() => {
-                                  Alert.alert("Request Accepted");
-                                  setCheck(check + 1)
-                                  setGetRequest("accept");
-                                  setChecker(false);
-                                });
-                            }}
-                          ></Button>
-
-                          <Button
-                            title="decline"
-                            onPress={() => {
-                              firestore
-                                .collection("users")
-                                .doc(currentUserId)
-                                .collection("friends")
-                                .doc(messageId)
-                                .update({
-                                  friendId: messageId,
-                                  status: "decline",
-                                });
-                              Alert.alert("user declined");
-                              setCheck(check + 1)
-                              setGetRequest("decline");
-                            }}
-                          ></Button>
-                        </View>
+                          </View>
+                        </>
                       )}
                     </View>
-                  </>
-                ) : (
-                  <View />
-                )}
-              </View>
-              <View style={styles.Footer}>
+                  )}
+                />
+              )}
+            </>
+          ) : (
+            <View />
+          )}
 
-                {getRequest != "decline" && request != "decline" ? (
-                  request != "" &&
-                  getRequest != "pending" &&
-                  request != "pending" &&
-                  // getRequest != "accept" &&
-                  <View style={styles.fieldContainer}>
-                    <TextInput
-                      style={styles.input}
-                      onChangeText={setMessage}
-                      value={message}
-                      placeholder="date de naissance"
-                      keyboardType="default"
+          <View style={styles.Footer}>
+            {getRequest != "decline" && request != "decline" ? (
+              // getRequest != "accept" &&
+              <View>
+                <View style={styles.fieldContainer}>
+                  <TextInput
+                    style={styles.input}
+                    onChangeText={setMessage}
+                    value={message}
+                    placeholder="Message ..."
+                    keyboardType="default"
+                  />
+
+                  <TouchableOpacity
+                    style={{ alignContent: "center" }}
+                    onPress={() => {
+                      send_candy();
+                    }}>
+                    <Image
+                      style={{ height: 30, width: 30, marginRight: 10 }}
+                      resizeMode="contain"
+                      source={require("./../assets/images/rose.png")}
                     />
+                  </TouchableOpacity>
 
+                  <TouchableOpacity
+                    style={{ alignContent: "center" }}
+                    onPress={() => {
+                      send_message();
+                      Keyboard.dismiss();
+                    }}>
+                    <Icon name="arrow-up-circle" size={32} />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ) : (
+              <Text style={{ textAlign: "center", fontSize: 20 }}>
+                Demande refusée. Renvoyer une demande pour continuer.
+              </Text>
+            )}
+            {/* Add Activity  */}
+            <View>
+              {getRequest != "accept" || request != "accept" ? (
+                <View style={styles.bottombtn}>
+                  <View style={styles.btn}>
                     <TouchableOpacity
-                      style={{ alignContent: "center" }}
                       onPress={() => {
-                        send_message();
-                        Keyboard.dismiss();
-                      }}
-                    >
-                      <Icon name="arrow-up-circle" size={32} />
+                        setQuitModal(true);
+                      }}>
+                      {loading ? <WP>Chargement</WP> : <WP>Quitter</WP>}
                     </TouchableOpacity>
                   </View>
+                  <View style={styles.btn}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        if (getRequest != "pending") {
+                          firestore
+                            .collection("users")
+                            .doc(messageId)
+                            .collection("friends")
+                            .doc(currentUserId)
+                            .set({
+                              friendId: currentUserId,
+                              status: "pending",
+                              requestGetter: true,
+                              name: currentName,
+                              gender: currentGender,
+                              image: currentImage,
+                            });
 
-                ) : (
-                  <Text style={{ textAlign: "center" }}>Request declined or Request Still pending</Text>
-                )}
-              </View>
-            </>)}
+                          firestore
+                            .collection("users")
+                            .doc(currentUserId)
+                            .collection("friends")
+                            .doc(messageId)
+                            .set({
+                              friendId: messageId,
+                              status: "accept",
+                              requestGetter: false,
+                              name: name,
+                              gender: gender,
+                              image: messageImg,
+                            });
+                          setGetRequest("pending");
+                          setRequest("accept");
+
+                          Alert.alert(
+                            "Vous avez accepté, attendez que l'autre personne accepte."
+                          );
+                        } else {
+                          Alert.alert(
+                            "Vous avez accepté, attendez que l'autre personne accepte."
+                          );
+                        }
+                      }}>
+                      <WP>Continuer</WP>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              ) : (
+                <View />
+              )}
+            </View>
+          </View>
         </KeyboardAvoidingView>
-      </SafeAreaView>
-    </LinearGradient >
+      ) : (
+        <View style={styles.centerpe}>
+          <ActivityIndicator
+            //visibility of Overlay Loading Spinner
+            visible={loading}
+            //Text with the Spinner
+            textContent={"Loading..."}
+            //Text style of the Spinner Text
+            textStyle={styles.spinnerTextStyle}
+          />
+        </View>
+      )}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={quitmodal}
+        onRequestClose={() => {
+          setQuitModal(!quitmodal);
+        }}
+        contentContainerStyle={styles.modalStyle}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.Headinghai}>Êtes-vous sur(e) ?</Text>
+            <Text style={styles.Headinghai}></Text>
+
+            <Text style={styles.modalText}>
+              Voulez-vous quitter définitivement cette conversation ?{" "}
+            </Text>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => leaveChat()}>
+              <Text style={styles.textStyle}>Oui</Text>
+            </Pressable>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => {
+                setQuitModal(!quitmodal);
+              }}>
+              <Text style={styles.textStyle}>Non</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          navigation.goBack();
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>
+              Voulez-vous continuer la conversation ?
+            </Text>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={async () => {
+                await firestore
+                  .collection("users")
+                  .doc(currentUserId)
+                  .collection("friends")
+                  .doc(messageId)
+                  .update({
+                    friendId: messageId,
+                    status: "accept",
+                    requestGetter: false,
+                  })
+                  .then(() => {
+                    Alert.alert("Demande acceptée");
+                    setGetRequest("accept");
+                    setChecker(false);
+                    setCheck(check + 1);
+                  });
+              }}>
+              <Text style={styles.textStyle}>Accepter</Text>
+            </Pressable>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => {
+                firestore
+                  .collection("users")
+                  .doc(currentUserId)
+                  .collection("friends")
+                  .doc(messageId)
+                  .update({
+                    friendId: messageId,
+                    status: "decline",
+                    requestGetter: false,
+                  });
+                Alert.alert("Demande refusée");
+                setGetRequest("decline");
+                setChecker(false);
+                setCheck(check + 1);
+              }}>
+              <Text style={styles.textStyle}>Refus</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+    </LinearGradient>
   );
 };
 
@@ -427,9 +601,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    justifyContent: "flex-end",
     flex: 1,
-
+    marginBottom: 15,
   },
   input: {
     borderRadius: 20,
@@ -439,7 +612,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     bottom: 0,
     paddingHorizontal: 15,
-    color: 'black'
+    color: "black",
   },
   fieldContainer: {
     display: "flex",
@@ -448,6 +621,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingVertical: 10,
     paddingHorizontal: 10,
+    paddingRight: 50,
     height: 50,
     borderRadius: 50,
     backgroundColor: "white",
@@ -478,5 +652,78 @@ const styles = StyleSheet.create({
     fontFamily: "FredokaOne-Regular",
     fontSize: 25,
   },
+  bottombtn: {
+    justifyContent: "space-evenly",
+    flexDirection: "row",
+    display: "flex",
+    width: "100%",
+  },
+  btn: {
+    height: 40,
+    width: 150,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    backgroundColor: Colors.darkPink,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    backgroundColor: Colors.darkPink,
 
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    elevation: 2,
+    margin: 10,
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+  },
+  buttonClose: {
+    backgroundColor: "white",
+  },
+  textStyle: {
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+    color: "white",
+  },
+  modalStyle: {
+    backgroundColor: Colors.darkPink,
+  },
+  Headinghai: {
+    fontFamily: "FredokaOne-Regular",
+    fontSize: 25,
+    color: "#fff",
+  },
+  centerpe: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });

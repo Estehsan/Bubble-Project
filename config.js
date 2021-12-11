@@ -1,0 +1,19 @@
+import {
+  APIKEY,
+  AUTHDOMAIN,
+  PROJECTID,
+  STORAGE_BUCKET,
+  MESSAGINGID,
+  APP_ID,
+  MEASUREMENT_ID,
+} from "react-native-dotenv";
+
+export default {
+  APIKEY,
+  AUTHDOMAIN,
+  PROJECTID,
+  STORAGE_BUCKET,
+  MESSAGINGID,
+  APP_ID,
+  MEASUREMENT_ID,
+};
