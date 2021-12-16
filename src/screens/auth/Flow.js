@@ -20,7 +20,12 @@ function Flow(props) {
   return (
     <LinearGradient colors={["#000", "#DD488C"]} style={styles.linearGradient}>
       <SafeAreaView style={styles.main}>
-        <TopBar />
+        
+        <View style={{ 
+          marginTop: 10
+         }}>
+          <TopBar />
+        </View>
 
         <View style={styles.Form}>
           <TouchableOpacity onPress={() => props.navigation.push("FlowA")}>

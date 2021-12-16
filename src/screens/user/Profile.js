@@ -80,12 +80,62 @@ const Profile = (props) => {
       height: 400,
       cropping: true,
     }).then((image) => {
-      console.log(image);
       setUserProfileImage(image.path);
       setUserProfileImageConfig(image);
       setcontentType(image.mime);
       setImage(image.path);
-    });
+
+      const metadata = {
+        contentType: contentType,
+      };
+      const filename = image.path.substring(
+        image.path.lastIndexOf("/") + 1
+      );
+      console.log(filename)
+      new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.onload = function () {
+          resolve(xhr.response);
+        };
+        xhr.onerror = function () {
+          reject(new TypeError("Network request failed"));
+        };
+        xhr.responseType = "blob";
+        xhr.open("GET", userProfileImage, true);
+        xhr.send(null);
+      }).then((blob) => {
+        storage
+          .ref()
+          .child(`userProfileImage/${id}/` + filename)
+          .put(blob, metadata)
+          .then((url) => {
+            url.ref
+              .getDownloadURL()
+              .then((success) => {
+                firestore
+                  .collection("users")
+                  .doc(id)
+                  .update({
+                    userProfileImageUrl: success,
+                  })
+                  .then(() => {
+                    console.log("PROFILE: Document successfully written!");
+                  })
+                  .catch((error) => {
+                    console.error("Error writing document: ", error);
+                  });
+              })
+              .catch((e) => {
+                console.log(e);
+              });
+          })
+          .catch((e) => {
+            console.error(e);
+          });
+        });
+      });
+
+      
   };
 
   useEffect(() => {
@@ -175,7 +225,7 @@ const Profile = (props) => {
                     userDateOfBirth: date,
                   })
                   .then(() => {
-                    console.log("Document successfully written!");
+                    console.log("PROFILE: Document successfully written!");
                     Alert.alert("record has been successfully changed");
                     setGender("");
                     setFirstName("");
@@ -202,10 +252,17 @@ const Profile = (props) => {
   return (
     <LinearGradient colors={["#000", "#DD488C"]} style={styles.linearGradient}>
       <SafeAreaView style={styles.main}>
-        <ScrollView style={{marginTop: -10}}>
-          <View >
+
+          <View style={{ 
+            marginTop: 10
+           }}>
             <TopBar />
           </View>
+
+        <ScrollView style={{
+          
+        }}>
+          
           <View style={styles.Profile}>
             {/* <Text style={styles.h1}>MON PROFIL</Text> */}
 
@@ -447,10 +504,10 @@ const Profile = (props) => {
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "center",
-                marginTop: 40
+                marginTop: 20
               }}>
               <Image
-                style={{ height: 70, width: 70, borderRadius: 70 }}
+                style={{ height: 50, width: 50, borderRadius: 70 }}
                 resizeMode="contain"
                 source={require("./../../assets/images/rose.png")}
               />
@@ -513,7 +570,7 @@ const styles = StyleSheet.create({
   h2: {
     fontFamily: "FredokaOne-Regular",
     color: "#fff",
-    fontSize: 50,
+    fontSize: 30,
     opacity: 0.5,
   },
   h3: {

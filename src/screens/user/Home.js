@@ -36,6 +36,7 @@ import MapStyleDay from "./MapStyles/MapStyleDay";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
+
 // import haversine from "haversine";
 
 const { width, height } = Dimensions.get("window");
@@ -54,6 +55,7 @@ const Home = ({ ...props }) => {
   const [light, setLight] = useState(true);
   const [load, setLoad] = useState(0);
   const [value, setValue] = useState(0); // integer state
+  const [currentUser, setCurrentUser] = useState(null); // integer state
 
   const [userMarker, setUserMarker] = useState({
     // latlng: {
@@ -68,6 +70,70 @@ const Home = ({ ...props }) => {
   const width = useWindowDimensions().width;
 
   const flatlist = useRef();
+
+
+
+  // Geolocation interval
+  
+function useInterval(callback, delay) {
+  const savedCallback = useRef();
+
+  // Se souvenir de la dernière fonction de rappel.
+  useEffect(() => {
+    savedCallback.current = callback;
+  });
+
+  // Configurer l’intervalle.
+  useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+    if (delay !== null) {
+      let id = setInterval(tick, delay);
+      return () => clearInterval(id);
+    }
+  }, [delay]);
+}
+
+  useInterval(() => {
+    let location = Geolocation.getCurrentPosition(
+      async (position) => {
+        var lat = parseFloat(position.coords.latitude);
+        var long = parseFloat(position.coords.longitude);
+
+        if(lat && long) {
+          
+          setUserMarker({
+            latlng: {
+              latitude: lat,
+              longitude: long,
+              latitudeDelta: 0,
+              longitudeDelta: 0
+            }
+          })  
+
+          firestore
+            .collection("users")
+            .doc(currentUser.uid)
+            .update({
+              latitude: lat,
+              longitude: long,
+            })
+            .then(() => {
+              console.log("HOME: Document successfully written !");
+            })
+            .catch((error) => {
+              console.error("Error writing document: ", error);
+            });
+        }
+      },
+      (error) => console.log(error),
+      { enableHighAccuracy: false, timeout: 5000 }
+    );
+  }, 10000);
+  
+  // END Geolocation interval
+
   useEffect(async () => {
     let isMounted = true;
     var subscribe;
@@ -75,101 +141,88 @@ const Home = ({ ...props }) => {
     if (isMounted)
       await auth.onAuthStateChanged(async (user) => {
         if (user) {
+
+          console.log('AUTH STATE CHANGED')
+
           const latitudeDelta = 0.1522;
           const longitudeDelta = 0.0921;
 
+          setCurrentUser(user)
           var uid = user.uid;
-          // console.log(uid)
+          console.log("USER UID: ", uid)
           subscribe = await firestore
             .collection("users")
             .doc(uid)
-            .onSnapshot((doc) => {
-              if (doc.exists) {
-                var docs = undefined
-                  ? {}
-                  : {
-                      key: user.uid,
-                      title: doc.data().userName,
-                      latlng: undefined
-                        ? {}
-                        : {
-                            longitude: parseFloat(doc.data().longitude),
-                            latitude: parseFloat(doc.data().latitude),
-                            latitudeDelta: latitudeDelta,
-                            longitudeDelta: longitudeDelta,
-                          },
-                    };
-              }
 
-              setInterval(() => {
-                let location = Geolocation.getCurrentPosition(
-                  async (position) => {
-                    var lat = parseFloat(position.coords.latitude);
-                    var long = parseFloat(position.coords.longitude);
+          let doc = await subscribe.get()
+          console.log('DOC USER: ', doc)
+          if (doc.exists) {
+            var docs = undefined
+              ? {}
+              : {
+                  key: user.uid,
+                  title: doc.data().userName,
+                  latlng: undefined
+                    ? {}
+                    : {
+                        longitude: parseFloat(doc.data().longitude),
+                        latitude: parseFloat(doc.data().latitude),
+                        latitudeDelta: latitudeDelta,
+                        longitudeDelta: longitudeDelta,
+                      },
+                };
+          }
 
-                    if(lat && long) {
-                      
-                      setUserMarker({
-                        latlng: {
-                          latitude: lat,
-                          longitude: long,
-                          latitudeDelta: 0,
-                          longitudeDelta: 0
-                        }
-                      })  
-                    }
-                  },
-                  (error) => console.log(error),
-                  { enableHighAccuracy: false, timeout: 5000 }
-                );
-              }, 1000)
+          
 
-              let location = Geolocation.getCurrentPosition(
-                async (position) => {
-                  var lat = parseFloat(position.coords.latitude);
-                  var long = parseFloat(position.coords.longitude);
+          let location = Geolocation.getCurrentPosition(
+            async (position) => {
+              var lat = parseFloat(position.coords.latitude);
+              var long = parseFloat(position.coords.longitude);
 
-                  var initialRegion = await {
-                    latlng: {
-                      latitude: lat && lat,
-                      longitude: long && long,
-                      latitudeDelta: latitudeDelta,
-                      longitudeDelta: longitudeDelta,
-                    },
-                  };
-                  // console.log("initial region=> ", initialRegion.latlng.latitude)
-                  // console.log("docs=> ", docs.latlng.latitude)
-
-                  if (
-                    docs.latlng.latitude != initialRegion.latlng.latitude ||
-                    docs.latlng.longitude != initialRegion.latlng.longitude
-                  ) {
-                    if (initialRegion) {
-                      setUserMarker(initialRegion);
-                    }
-                    firestore
-                      .collection("users")
-                      .doc(uid)
-                      .update({
-                        latitude: initialRegion.latlng.latitude,
-                        longitude: initialRegion.latlng.longitude,
-                      })
-                      .then(() => {
-                        console.log("Document successfully written!");
-                      })
-                      .catch((error) => {
-                        console.error("Error writing document: ", error);
-                      });
-                  } else {
-                    if (docs) {
-                      setUserMarker(docs);
-                    }
-                  }
+              var initialRegion = await {
+                latlng: {
+                  latitude: lat && lat,
+                  longitude: long && long,
+                  latitudeDelta: latitudeDelta,
+                  longitudeDelta: longitudeDelta,
                 },
-                (error) => console.log(error),
-                { enableHighAccuracy: false, timeout: 5000 }
-              );
-            });
+              };
+              // console.log("initial region=> ", initialRegion.latlng.latitude)
+              // console.log("docs=> ", docs.latlng.latitude)
+
+              if (
+                docs.latlng.latitude != initialRegion.latlng.latitude ||
+                docs.latlng.longitude != initialRegion.latlng.longitude
+              ) {
+                if (initialRegion) {
+                  setUserMarker(initialRegion);
+                }
+                firestore
+                  .collection("users")
+                  .doc(uid)
+                  .update({
+                    latitude: initialRegion.latlng.latitude,
+                    longitude: initialRegion.latlng.longitude,
+                  })
+                  .then(() => {
+                    console.log("HOME: Document successfully written !");
+                  })
+                  .catch((error) => {
+                    console.error("Error writing document: ", error);
+                  });
+              } else {
+                if (docs) {
+                  setUserMarker(docs);
+                }
+              }
+            },
+            (error) => console.log(error),
+            { enableHighAccuracy: false, timeout: 5000 }
+          );
+
+
+            
         } else {
           // User is signed out
           // ...
@@ -189,6 +242,8 @@ const Home = ({ ...props }) => {
   }, [selectedPlaceId, kilo, light]);
 
   useEffect(async () => {
+
+
     let isMounted = true;
 
     var subscribeLoc;
@@ -205,6 +260,7 @@ const Home = ({ ...props }) => {
             schedules: doc.data().schedules,
             img: doc.data().photo,
             open_type: doc.data().open_type,
+            link: doc.data().link,
             latlng: {
               longitude: doc.data().longitude,
               latitude: doc.data().latitude,
@@ -213,12 +269,11 @@ const Home = ({ ...props }) => {
 
           let latitudeDelta;
           let longitudeDelta;
+          
 
           // 24.93986404097375, 67.04325282594995
           if (docs.length > 0) {
             var data = [];
-
-            
 
             if (kilo === true) {
               latitudeDelta = 0.1522;
@@ -295,14 +350,20 @@ const Home = ({ ...props }) => {
       colors={ ["#000", "#DD488C"] }
       style={styles.linearGradient}>
       <SafeAreaView style={styles.main}>
-        <TopBar>
-          {userMarker != null && userMarker != undefined && userMarker.latlng && (
-            <TouchableOpacity onPress={() => props.navigation.navigate("Scan")}>
-              <MaterialCommunityIcons name="qrcode-scan" size={35} />
+        <View style={{ 
+          marginTop: 10
+         }}>
+          <TopBar>
+          </TopBar>
+          <TouchableOpacity onPress={() => props.navigation.navigate("Scan")} style={{ 
+              position: 'absolute',
+              zIndex: 9,
+              top: 30,
+              right: 30,
+            }}>
+              <MaterialCommunityIcons name="qrcode-scan" size={35} color={Colors.darkPink} />
             </TouchableOpacity>
-          )}
-          
-        </TopBar>
+        </View>
 
         <View style={{ marginTop: 30 }}>
           {userMarker != null && userMarker != undefined && userMarker.latlng && (
@@ -371,12 +432,15 @@ const Home = ({ ...props }) => {
               decelerationRate={"fast"}
               renderItem={({ item }) => (
                 <MapCorousel
-                  key={item.key}
+                  id={item.key}
                   title={item.title}
                   place={item.description}
                   location={item.address}
                   code={item.code}
+                  link={item.link}
+                  img={item.img}
                   latlng={item.latlng}
+                  schedules={item.schedules}
                 />
               )}
             />
@@ -470,7 +534,7 @@ const styles = StyleSheet.create({
     // bottom: 110,
     zIndex: 1,
     elevation: 1,
-    marginBottom: 100,
+    marginBottom: 90,
     marginLeft: "10%",
   },
 });

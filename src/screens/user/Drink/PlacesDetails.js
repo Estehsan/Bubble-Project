@@ -1,69 +1,120 @@
 import React from "react";
-import { Image, SafeAreaView, StyleSheet, Text, View, ScrollView } from "react-native";
+import { Image, SafeAreaView, StyleSheet, Text, View, ScrollView, TouchableOpacity } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import Colors from "../../../assets/colors/Colors";
 import H1 from "../../../component/basic/H1";
 import H2 from "../../../component/basic/H2";
 import P from "../../../component/basic/P";
 import TopBar from "../../../component/TopBar";
+import { webBrowser } from '../../../helpers/webBrowser'
 
 const PlacesDetails = ({ route }) => {
-  const { id, title, place, location, code, img, latlng, qrimage } =
+
+
+  
+  const { id, title, place, location, code, img, link, latlng, qrimage } =
     route.params;
   return (
     <LinearGradient
       colors={ ["#000", "#DD488C"] }
       style={styles.linearGradient}>
       <SafeAreaView>
-        <View>
-          <View>
-            <View style={styles.center}>
-              <Image
-                style={{ height: 100, width: 130 }}
-                resizeMode="contain"
-                source={require("./../../../assets/images/logo-bubble.png")}
-              />
-              <Image
-                style={{ height: 60, width: 60 }}
-                source={{ uri: qrimage }}
-              />
-            </View>
-          </View>
-          <View style={{ marginTop: 30 }}></View>
+        <View style={{ 
+          height: "100%",
+          paddingBottom: 120
+         }}>
 
-          <ScrollView style={styles.Data} contentContainerStyle={{ flexGrow: 1, alignItems: 'center' }}>
-            <Image
-              style={{ height: 100, width: 130, marginTop: -100 }}
-              resizeMode="contain"
-              source={{ uri: img }}
-            />
+          <View style={{ 
+            marginTop: 10,
+            marginBottom: 30
+           }}>
+            <TopBar/>
+          </View>
+
+          <ScrollView style={styles.Data}>
+            
             {img ? (
-              <Image
-                style={{
-                  height: 180,
-                  width: 240,
-                  ...Colors.customShadow,
-                }}
-                source={{ uri: img }}
-              />
-            ) : (
-              <Image
-                style={{ height: 180, width: 240, ...Colors.customShadow }}
-                source={require("./../../../assets/images/description.png")}
-                // source={{ uri: img }}
-              />
-            )}
-            <H2></H2>
+              <View style={{ 
+                display: "flex",
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+                <Image
+                  style={{
+                    height: 200,
+                    width: "90%",
+                    borderWidth: 1,
+                    borderColor: "white",  
+                    borderRadius: 5
+                  }}
+                  source={{ uri: img }}
+                />
+              </View>
+            ) : (<View></View>)}
+            
 
             <Text style={styles.Heading}>{title}</Text>
             {/* <H2>{place}</H2> */}
-            <H2>{location}</H2>
-            <H2>{code}</H2>
-            <View style={{ width: "80%" }}>
-              <P style={{fontSize: 14}}>
+
+            <View style={{ 
+              display: "flex",
+              justifyContent: 'flex-start',
+              // alignItems: 'center',
+              paddingHorizontal: 20,
+              marginTop: 15
+             }}>
+              <P style={{fontSize: 16, color: "white",}}>
                 {place}
               </P>
             </View>
+
+            <View style={{ 
+              display: "flex",
+              justifyContent: 'flex-start',
+              // alignItems: 'center',
+              paddingHorizontal: 20,
+              marginTop: 10
+             }}>
+              <H2 style={{
+                color: "white",
+                fontSize: 16,
+                textAlign: "left",
+                fontFamily: "FredokaOne-Regular",
+              }}>{code}</H2>
+            </View>
+
+            <TouchableOpacity onPress={() => {
+                webBrowser(link)
+             }}>
+              <View style={{ 
+                display: "flex",
+                justifyContent: 'flex-start',
+                // alignItems: 'center',
+                paddingHorizontal: 20,
+                marginTop: 20
+              }}>
+                <Text style={{ 
+                  color: Colors.blue,
+                  fontFamily: "FredokaOne-Regular",
+                  fontSize: 16
+                }}>{link}</Text>
+              </View>
+            </TouchableOpacity>
+
+            <View style={{ 
+              display: "flex",
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingHorizontal: 20,
+              marginTop: 20
+             }}>
+              <Text style={{ 
+                color: "white",
+                fontFamily: "FredokaOne-Regular",
+                fontSize: 16
+              }}>{location}</Text>
+            </View>
+
           </ScrollView>
         </View>
       </SafeAreaView>
@@ -83,11 +134,16 @@ const styles = StyleSheet.create({
     // justifyContent: "center",
     // alignItems: "center",
     //alignContent: "center",
-    marginTop: -30
+    height: "100%",
+    
   },
   Heading: {
     fontFamily: "FredokaOne-Regular",
     fontSize: 35,
     flexWrap: "wrap",
+    marginTop: 20,
+    color:"white",
+    textAlign: "left",
+    paddingHorizontal: 20,
   },
 });

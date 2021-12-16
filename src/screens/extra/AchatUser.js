@@ -156,24 +156,27 @@ const AchatUser = ({ ...props }) => {
       colors={ ["#000", "#DD488C"] }
       style={styles.linearGradient}>
       <SafeAreaView style={styles.linearGradient}>
-        <ScrollView>
-          <View style={{ width: "100%", height: 100 }}>
+        <View style={{ width: "100%", height: 100, marginBottom: 30, marginTop: 10 }}>
             <TopBar />
           </View>
+        <ScrollView style={{ 
+          height: "100%",
+          marginBottom: 100
+         }}>
           <View
             style={{
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",
-              marginVertical: 10,
+              marginBottom: 10,
             }}>
             <Text style={styles.ChatUserName}>CANDY SHOP</Text>
           </View>
           <View style={styles.TopBarExtra}>
             <Image
               style={{
-                height: 70,
-                width: 70,
+                height: 50,
+                width: 50,
                 borderRadius: 70,
                 marginRight: 10,
               }}
@@ -212,11 +215,6 @@ const AchatUser = ({ ...props }) => {
                   resizeMode="contain"
                   source={require("./../../assets/images/rose.png")}
                 />
-                <Image
-                  style={{ height: 35, width: 35, borderRadius: 35 }}
-                  resizeMode="contain"
-                  source={require("./../../assets/images/rose.png")}
-                />
               </View>
             </View>
             <View style={styles.boxes}>
@@ -244,7 +242,7 @@ const AchatUser = ({ ...props }) => {
           <View style={styles.mainBoxExtra}>
             <View style={styles.part}>
               <Text style={styles.BoxText}>0,99 €</Text>
-              <View>
+              <View style={styles.cartBtnContainer}>
                 <TouchableOpacity
                   onPress={() => {
                     setTotal(total + 0.99);
@@ -277,7 +275,7 @@ const AchatUser = ({ ...props }) => {
             </View>
             <View style={styles.part}>
               <Text style={styles.BoxText}>2,99 €</Text>
-              <View>
+              <View  style={styles.cartBtnContainer}>
                 <TouchableOpacity
                   onPress={() => {
                     setTotal(total + +2.99);
@@ -310,7 +308,7 @@ const AchatUser = ({ ...props }) => {
             </View>
             <View style={styles.part}>
               <Text style={styles.BoxText}>4,99 €</Text>
-              <View>
+              <View  style={styles.cartBtnContainer}>
                 <TouchableOpacity
                   onPress={() => {
                     setTotal(total + +4.99);
@@ -379,20 +377,20 @@ export default AchatUser;
 const styles = StyleSheet.create({
   linearGradient: { flex: 1 },
   TopBarExtra: {
-    marginTop: 20,
-    marginBottom: 10,
+    marginTop: 10,
+    marginBottom: 15,
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 30,
   },
-  topFont: { fontFamily: "Montserrat-Bold" },
+  topFont: { fontFamily: "Montserrat-Bold", color: "white" },
   threeFont: {
     fontFamily: "FredokaOne-Regular",
     fontSize: 40,
     marginLeft: 10,
-    color: Colors.darkPink,
+    color: Colors.darkPink
   },
   BoxText: {
     fontFamily: "FredokaOne-Regular",
@@ -400,6 +398,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
     alignContent: "center",
     textAlign: "center",
+    color: "black"
   },
   montantText: {
     fontFamily: "FredokaOne-Regular",
@@ -415,7 +414,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   boxes: {
-    height: 180,
+    height: 130,
     borderRadius: 28,
     backgroundColor: "#fff",
     width: "29%",
@@ -444,6 +443,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 10,
     alignItems: "center",
+    flex: 2
   },
   btnMontant: {
     backgroundColor: "#fff",
@@ -506,5 +506,10 @@ const styles = StyleSheet.create({
   ChatUserName: {
     fontFamily: "FredokaOne-Regular",
     fontSize: 25,
+    color: "white"
+  },
+  cartBtnContainer: {
+    display: "flex",
+    flexDirection: "column"
   },
 });

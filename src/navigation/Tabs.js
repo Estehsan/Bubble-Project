@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { Platform, StyleSheet, Text, View } from "react-native";
+import { Platform, StyleSheet, Text, View, Image } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import FaIcon from "react-native-vector-icons/FontAwesome5";
 import MIcon from "react-native-vector-icons/MaterialIcons";
@@ -34,7 +34,12 @@ import PlacesDetails from "../screens/user/Drink/PlacesDetails";
 import Scan from "../screens/extra/Scan";
 import { auth } from "../db/firebase";
 
+import  TabBar  from "./TabBar";
+import  CustomTabBarComponent  from "./CustomTabBarComponent";
+import Colors from "../assets/colors/Colors";
+
 const Tab = createBottomTabNavigator();
+let currentRouteName = "";
 
 function Tabs() {
   getTabBarVisibility = (route) => {
@@ -42,6 +47,9 @@ function Tabs() {
       ? route.state.routes[route.state.index].name
       : '';
   
+    currentRouteName = routeName;
+
+    // ChatUser
     if (routeName === 'ChatUser') {
       return false;
     }
@@ -52,16 +60,31 @@ function Tabs() {
   return (
     <Tab.Navigator
       initialRouteName="Home"
+      screenOptions={{
+        tabBarStyle: {
+          //background: "red"
+        },
+      }}
+      sceneContainerStyle={{ 
+        
+      }}
+
+      // tabBar={props => <TabBar {...props} />}
+      
       tabBarOptions={{
         activeTintColor: "#DD488C",
         inactiveTintColor: "black",
         showLabel: false,
+        
         style: {
+          
           position: "absolute",
           marginHorizontal: "10%",
-          marginVertical: "10%",
+          marginBottom: "10%",
+          // bottom: 30,
           elevation: 0,
           alignContent: "center",
+          
 
           borderRadius: 30,
           ...styles.shadow,
@@ -71,17 +94,20 @@ function Tabs() {
         name="Home"
         component={AllScreens}
         
-        options={({ route }) => ({
-          tabBarVisible: this.getTabBarVisibility(route),
-          tabBarIcon: ({ color }) => (
-            <MIcon
-              style={Platform.OS == "ios" ? styles.position : styles.position2}
-              name="home"
-              size={38}
-              color={color}
-            />
-          ),
-        })}
+        options={({ route }) => {
+          return {
+            // tabBarVisible: false,
+            // tabBarBadge: 3,
+            tabBarIcon: ({ color }) => (
+              <MIcon
+                style={Platform.OS == "ios" ? styles.position : styles.position2}
+                name="home"
+                size={38}
+                color={color}
+              />
+            ),
+          }
+        }}
       />
       {/* <Tab.Screen
         name="AchatUser"
@@ -96,6 +122,7 @@ function Tabs() {
         name="Message"
         component={Message}
         options={{
+          tabBarBadge: 3,
           tabBarIcon: ({ color }) => (
             <Ionicons
               style={Platform.OS == "ios" ? styles.position : styles.position2}
@@ -110,14 +137,19 @@ function Tabs() {
         name="Drink"
         component={Drink}
         options={{
-          tabBarIcon: ({ color }) => (
-            <McIcon
-              style={Platform.OS == "ios" ? styles.position : styles.position2}
-              name="glass-cocktail"
-              size={35}
-              color={color}
-            />
-          ),
+          tabBarIcon: ({ color }) => {
+            let button;
+            if (color != "black") {
+              button = <Image resizeMode={"contain"} source={require('../assets/images/marker.png')} style={[Platform.OS == "ios" ? styles.position : styles.position2], {
+                width: 25
+              }} />;
+            } else {
+              button = <Image resizeMode={"contain"} source={require('../assets/images/marker-black.png')} style={[Platform.OS == "ios" ? styles.position : styles.position2], {
+                width: 25
+              }} />;
+            }
+            return button;
+          },
         }}
       />
       <Tab.Screen

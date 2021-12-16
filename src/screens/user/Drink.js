@@ -114,6 +114,7 @@ const Drink = ({ navigation }) => {
           description: doc.data().description,
           schedules: doc.data().schedules,
           img: doc.data().photo,
+          link: doc.data().link,
           latlng: {
             longitude: doc.data().longitude,
             latitude: doc.data().latitude,
@@ -152,7 +153,7 @@ const Drink = ({ navigation }) => {
 
         setLocationData(data);
         setLocations(data)
-        console.log(data);
+        
         // }
       });
 
@@ -191,7 +192,7 @@ const Drink = ({ navigation }) => {
       });
 
       setLocations(locations)
-      console.log(locations)
+      
     }
   };
 
@@ -200,19 +201,30 @@ const Drink = ({ navigation }) => {
     <LinearGradient
       colors={ ["#000", "#DD488C"] }
       style={styles.linearGradient}>
-      <ScrollView>
+
+      <View style={{
+        marginTop: 10,
+        
+      }}>
+        <TopBar  />
+      </View>
+
+      <ScrollView style={{ 
+        marginTop: 20
+       }}>
         <SafeAreaView>
-          <View style={{marginTop: -10}}>
-            <TopBar  />
-          </View>
+          
           {/* <View style={{ marginTop: 30 }}>
             <LocationTab
               ChangeKilo={(e) => setKilo(e)}
               ChangeLight={(e) => setLight(e)}
             />
           </View> */}
-          <View style={styles.searchIcon}>
+          <View style={[styles.searchIcon, {
+            
+          }]}>
             <TextInput
+              placeholderTextColor="black"
               placeholder="Rechercher"
               onChangeText={(e) => handleSearchBar(e)}
               // value={defaultSearchValue}
@@ -265,6 +277,7 @@ const Drink = ({ navigation }) => {
                         location: item.description,
                         code: item.schedules,
                         img: item.img,
+                        link: item.link,
                         latlng: item.latlng,
                       })
 
@@ -281,8 +294,8 @@ const Drink = ({ navigation }) => {
                     }>
                     <ListContainer
                       title={item.title}
-                      place={item.address}
-                      location={item.description}
+                      place={item.description}
+                      location={item.address}
                       code={item.schedules}
                       img={item.photo}
                       navigation={navigation}

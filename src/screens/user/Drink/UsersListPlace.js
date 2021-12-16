@@ -41,7 +41,7 @@ const users = [
 ];
 
 const UsersListPlace = ({ route, ...props }) => {
-  const { id, title, place, location, code, img, latlng } = route.params;
+  const { id, title, place, location, code, img, link, schedules, latlng } = route.params;
   const [userData, setUserData] = useState([]);
   const [currentUserId, setCurrentUserId] = useState("");
   const [currentUserData, setCurrentUserData] = useState("");
@@ -116,8 +116,6 @@ const UsersListPlace = ({ route, ...props }) => {
 
               dis = dis / 1000;
 
-              console.log(dis)
-
               if (dis < 5) {
                 data.push(docs[i]);
               }
@@ -143,7 +141,9 @@ const UsersListPlace = ({ route, ...props }) => {
       style={styles.linearGradient}>
       <SafeAreaView style={styles.Safe}>
         <ScrollView >
-          <View>
+          <View style={{ 
+            marginTop: 10
+           }}>
             <TopBar>
               {/* <Image
                 style={{ height: 60, width: 60 }}
@@ -157,13 +157,22 @@ const UsersListPlace = ({ route, ...props }) => {
             <TouchableOpacity
               onPress={() =>
                 props.navigation.navigate("PlacesDetails", {
-                  id,
-                  title,
-                  place,
-                  location,
-                  code,
-                  img,
-                  latlng,
+                  id: id,
+                  title: title,
+                  place: place,
+                  location: location,
+                  code: schedules,
+                  img: img,
+                  link: link,
+                  latlng: latlng,
+                  // id,
+                  // title,
+                  // place,
+                  // location,
+                  // code,
+                  // img,
+                  // link,
+                  // latlng,
                   //qrimage,
 
                   // title: title,
@@ -177,10 +186,11 @@ const UsersListPlace = ({ route, ...props }) => {
               <ListContainer
                 id={id}
                 title={title}
-                place={place}
-                location={location}
+                place={location}
+                location={place}
                 code={code}
                 img={img}
+                schedules={schedules}
               />
             </TouchableOpacity>
 

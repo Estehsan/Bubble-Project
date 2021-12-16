@@ -316,13 +316,16 @@ const MonProfil = ({ route, ...props }) => {
                   toggleCheckBox != "false" &&
                   selectedTeams.length > 0
                 ) {
+                  let dates = date.split('/')
+                  let dob = new Date(dates[2] + "-" + dates[1] + "-" + dates[0]);
+
                   var userDetails = {
                     email: email.value,
                     password: password.value,
                     userProfileImage: userProfileImage,
                     gender: gender,
                     name: name,
-                    DOB: date,
+                    DOB: dob,
                     UserProfileImageConfig: UserProfileImageConfig,
                     contentType: contentType,
                     selectedTeams: selectedTeams,

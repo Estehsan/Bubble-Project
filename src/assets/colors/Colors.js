@@ -4,6 +4,7 @@ const Colors = {
   // bgGradient: linear-gradient(90deg, rgba(243,195,220,1) 0%, rgba(255,255,255,1) 100%, rgba(0,212,255,1) 100%);
   textB: '#CDCDCD',
   darkPink: '#DD488C',
+  blue: '#57ebff',
   primary: '#F5CA48',
   secondary: '#F26C68',
   price: '#E4723C',
@@ -16,7 +17,7 @@ const Colors = {
     shadowOpacity: 0.36,
     shadowRadius: 6.68,
 
-    elevation: 11,
+    // elevation: 11,
   },
 };
 

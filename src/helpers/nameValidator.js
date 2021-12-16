@@ -1,4 +1,4 @@
 export function nameValidator(name) {
-  if (!name) return "Name can't be empty."
+  if (!name) return "Vous devez entrer un pseudo."
   return ''
 }

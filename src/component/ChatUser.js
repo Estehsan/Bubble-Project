@@ -37,7 +37,7 @@ import WP from "./basic/WP";
 
 // linear-gradient(0deg, #FFFFFF 0%, #FFC1DD 78.9%)
 const ChatUser = ({ navigation, route, ...props }) => {
-  const { currentUserId, messageId, name, gender, messageImg, candy } = route.params;
+  const { currentUserId, messageId, name, gender, age, messageImg, candy } = route.params;
   // let [chatUser, setChatUser] = useState({})
   let [chats, setChats] = useState([]);
   let [message, setMessage] = useState("");
@@ -45,6 +45,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
   let [currentName, setcurrentName] = useState("");
   let [currentGender, setcurrentGender] = useState("");
   let [currentImage, setcurrentImage] = useState("");
+  
 
   let [request, setRequest] = useState("");
   let [getRequest, setGetRequest] = useState("");
@@ -55,6 +56,9 @@ const ChatUser = ({ navigation, route, ...props }) => {
   let [check, setCheck] = useState(0);
 
   let [notificationId, setNotificationId] = useState("");
+  let [hasRecievedMessage, setHasRecievedMessage] = useState(false);
+  let [messageCounter, setMessageCounter] = useState(0);
+  let [showContinueButton, setShowContinueButton] = useState(false);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [quitmodal, setQuitModal] = useState(false);
@@ -66,7 +70,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
     navigation.setOptions({
       tabBarVisible: false,
       headerStyle: {
-        backgroundColor: "#fFC1DD",
+        backgroundColor: "#000",
       },
       headerTitle: () => (
         <View
@@ -75,11 +79,72 @@ const ChatUser = ({ navigation, route, ...props }) => {
             alignItems: "center",
             justifyContent: "center",
           }}>
+            {messageImg && (
+                <Image
+                  style={{
+                    height: 35,
+                    width: 35,
+                    borderRadius: 35,
+                    marginRight: 10,
+                  }}
+                  source={{ uri: messageImg }}
+                />
+              ) 
+            }
           <Text style={styles.ChatUserName}>{name}</Text>
         </View>
       ),
-      headerLeft: () => <View />,
-      headerRight: () => <View />,
+      headerLeft: () => (
+        <View style={{ 
+          marginLeft: 10
+         }}>
+          <TouchableOpacity onPress={() => {
+            navigation.goBack()
+          }}>
+            <Icon name="chevron-back" size={30} color="#fff" />
+          </TouchableOpacity>
+        </View>
+      ),
+      headerRight: () => (
+        <View style={{ 
+          marginRight: 10,
+          display: "flex",
+          flexDirection: "row"
+         }}>
+          <Text style={{ 
+            // fontFamily: "FredokaOne-Regular",
+            color: "white",
+            fontSize: 16,
+            marginRight: 5,
+            marginTop: 5
+           }}>26 ans</Text>
+          {gender == "female" && (
+            <Icon
+              style={styles.position}
+              name="female"
+              size={30}
+              color={"#fff"}
+            />
+          )}
+          {gender == "male" && (
+            <Icon
+              style={styles.position}
+              name="male"
+              size={30}
+              color={"#fff"}
+            />
+          )}
+          
+          {gender != "female" && gender != "male" && (
+            <Icon
+              style={styles.position}
+              name="male-female"
+              size={30}
+              color={"#fff"}
+            />
+          )}
+        </View>
+      ),
     });
   }, [navigation]);
 
@@ -163,6 +228,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
   };
 
   let get_messages = (uid) => {
+    console.log("CHAT UID: ", uid)
     firestore
       .collection("message")
       .doc(uid)
@@ -175,7 +241,12 @@ const ChatUser = ({ navigation, route, ...props }) => {
           message: doc.data().message,
         }));
         {
-          docs && setChats(docs);
+          if(docs){
+            console.log("Messages length: ", docs.length)
+            setHasRecievedMessage(true)
+            setMessageCounter(0)
+            setChats(docs)
+          }
           // console.log(docs)
         }
         // console.log(docs)
@@ -197,17 +268,17 @@ const ChatUser = ({ navigation, route, ...props }) => {
     //   .doc(messageId)
     //   .delete();
 
-    let merger = uid_merge(currentUserId, messageId);
+    // let merger = uid_merge(currentUserId, messageId);
 
-    let deleteuser = await firestore
-      .collection(`message`)
-      .doc(merger)
-      .collection(`chat`);
-    deleteuser.get().then(function (querySnapshot) {
-      querySnapshot.forEach(function (doc) {
-        doc.ref.delete();
-      });
-    });
+    // let deleteuser = await firestore
+    //   .collection(`message`)
+    //   .doc(merger)
+    //   .collection(`chat`);
+    // deleteuser.get().then(function (querySnapshot) {
+    //   querySnapshot.forEach(function (doc) {
+    //     doc.ref.delete();
+    //   });
+    // });
 
     setMessage("");
     setGetRequest("");
@@ -219,39 +290,113 @@ const ChatUser = ({ navigation, route, ...props }) => {
 
   let send_candy = async () => {
     if(candy > 0){
-      alert('Bonbon envoyé !')
+      Alert.alert('Bonbon envoyé !')
+      addNotification();
     }
     else{
-      alert("Vous n'avez plus de bonbon")
+      Alert.alert("Vous n'avez plus de bonbon")
     }
+  }
+
+  let addNotification = async () => {
+
+    if (candy > 0) {
+      await firestore.collection("users").doc(currentUserData.id).update({
+        // notification: firebase.firestore.FieldValue.arrayUnion(id),
+        candy: firebase.firestore.FieldValue.increment(-1)
+      })
+
+      let externalUserId = notificationId; // You will supply the external user id to the OneSignal SDK
+
+      // Setting External User Id with Callback Available in SDK Version 3.9.3+
+      OneSignal.setExternalUserId(externalUserId, (results) => {
+        // The results will contain push and email success statuses
+        console.log("Results of setting external user id");
+        console.log(results);
+
+        // Push can be expected in almost every situation with a success status, but
+        // as a pre-caution its good to verify it exists
+        if (results.push && results.push.success) {
+          console.log("Results of setting external user id push status:");
+          console.log(results.push.success);
+        }
+      });
+
+      const notification = {
+        contents: {
+          en: `${currentUserData.userName} vous propose de discuter`,
+        },
+        include_player_ids: [externalUserId],
+      };
+
+      const jsonStri = JSON.stringify(notification);
+
+      await OneSignal.postNotification(
+        jsonStri,
+        (success) => {
+          console.log("Success:", success);
+        },
+        (error) => {
+          console.log("Error:", error);
+        }
+      );
+
+
+
+      setNotificationModel(false)
+    }
+
+    else {
+      Alert.alert("Vous n'avez plus de bonbon")
+      setNotificationModel(false)
+
+    }
+
+
+
   }
 
   let send_message = async () => {
     if (message.length > 0) {
+
+      let msg = message;
+      setMessage("");
+
       let merge = uid_merge(currentUserId, messageId);
-      firestore.collection(`message`).doc(merge).collection(`chat`).add({
-        message: message,
+      console.log('SEND MESSAGE: ', msg, " => ", merge, '('+ merge.length +')')
+      
+      // await firestore.collection('message').doc(merge).set({
+      //   createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      // })  
+      
+      await firestore.collection('message').doc(merge).collection('chat').add({
+        message: msg,
         id: currentUserId,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       });
 
-      firestore
-        .collection("users")
-        .doc(messageId)
-        .collection("friends")
-        .doc(currentUserId)
-        .update({
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        });
+      if(messageCounter == 5){
+        setShowContinueButton(true)
+      }
+      setMessageCounter(messageCounter + 1)
 
-      firestore
-        .collection("users")
-        .doc(currentUserId)
-        .collection("friends")
-        .doc(messageId)
-        .update({
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        });
+      // firestore
+      //   .collection("users")
+      //   .doc(messageId)
+      //   .collection("friends")
+      //   .doc(currentUserId)
+      //   .update({
+      //     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      //   });
+
+      // firestore
+      //   .collection("users")
+      //   .doc(currentUserId)
+      //   .collection("friends")
+      //   .doc(messageId)
+      //   .update({
+      //     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      //   });
 
       const { userId } = await OneSignal.getDeviceState();
 
@@ -279,7 +424,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
 
           const notification = {
             contents: {
-              en: `${currentName} :  ${message}`,
+              en: `${currentName} :  ${msg}`,
             },
             include_player_ids: [externalUserId],
           };
@@ -297,13 +442,15 @@ const ChatUser = ({ navigation, route, ...props }) => {
           );
         }
       }
-      setMessage("");
+      
     }
   };
   return (
     <LinearGradient
       colors={ ["#000", "#DD488C"] }
-      style={styles.linearGradient}>
+      style={[styles.linearGradient, {
+        marginBottom: 200
+      }]}>
       {!loading ? (
         <KeyboardAvoidingView
           behavior={Platform.OS == "ios" ? "padding" : "height"}
@@ -342,7 +489,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
                               display: "flex",
                               marginVertical: 5,
                             }}>
-                            {messageImg ? (
+                            {/* {messageImg ? (
                               <Image
                                 style={{
                                   height: 35,
@@ -363,7 +510,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
                                   uri: "https://www.w3schools.com/howto/img_avatar.png",
                                 }}
                               />
-                            )}
+                            )} */}
                             <View style={styles.sMessage}>
                               <Text
                                 style={{
@@ -388,6 +535,25 @@ const ChatUser = ({ navigation, route, ...props }) => {
             {getRequest != "decline" && request != "decline" ? (
               // getRequest != "accept" &&
               <View>
+                {(!loading && chats.length == 0) && (
+                  <View style={{ 
+                    backgroundColor: "white",
+                    opacity: .7,
+                    padding: 10,
+                    borderRadius: 5,
+                    marginBottom: 10,
+                    marginLeft: 30,
+                    marginRight: 30,
+                   }}>
+                     <Text style={{ 
+                      //  fontFamily: "FredokaOne-Regular",
+                       fontSize: 16,
+                       color: "#000"
+                      }}>
+                        Vous pouvez envoyer votre premier message. Utilisez le bonbon pour envoyer une notification à {name}.
+                     </Text>
+                  </View>
+                )}
                 <View style={styles.fieldContainer}>
                   <TextInput
                     style={styles.input}
@@ -425,68 +591,70 @@ const ChatUser = ({ navigation, route, ...props }) => {
               </Text>
             )}
             {/* Add Activity  */}
-            <View>
-              {getRequest != "accept" || request != "accept" ? (
-                <View style={styles.bottombtn}>
-                  <View style={styles.btn}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        setQuitModal(true);
-                      }}>
-                      {loading ? <WP>Chargement</WP> : <WP>Quitter</WP>}
-                    </TouchableOpacity>
-                  </View>
-                  <View style={styles.btn}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        if (getRequest != "pending") {
-                          firestore
-                            .collection("users")
-                            .doc(messageId)
-                            .collection("friends")
-                            .doc(currentUserId)
-                            .set({
-                              friendId: currentUserId,
-                              status: "pending",
-                              requestGetter: true,
-                              name: currentName,
-                              gender: currentGender,
-                              image: currentImage,
-                            });
+              {showContinueButton &&
+                <View>
+                  {getRequest != "accept" || request != "accept" ? (
+                    <View style={styles.bottombtn}>
+                      {/* <View style={styles.btn}>
+                        <TouchableOpacity
+                          onPress={() => {
+                            setQuitModal(true);
+                          }}>
+                          {loading ? <WP style={{ color: Colors.darkPink }}>Chargement</WP> : <WP style={{ color: Colors.darkPink }}>Quitter</WP>}
+                        </TouchableOpacity>
+                      </View> */}
+                      <View style={styles.btn}>
+                        <TouchableOpacity
+                          onPress={() => {
+                            if (getRequest != "pending") {
+                              firestore
+                                .collection("users")
+                                .doc(messageId)
+                                .collection("friends")
+                                .doc(currentUserId)
+                                .set({
+                                  friendId: currentUserId,
+                                  status: "pending",
+                                  requestGetter: true,
+                                  name: currentName,
+                                  gender: currentGender,
+                                  image: currentImage,
+                                });
 
-                          firestore
-                            .collection("users")
-                            .doc(currentUserId)
-                            .collection("friends")
-                            .doc(messageId)
-                            .set({
-                              friendId: messageId,
-                              status: "accept",
-                              requestGetter: false,
-                              name: name,
-                              gender: gender,
-                              image: messageImg,
-                            });
-                          setGetRequest("pending");
-                          setRequest("accept");
+                              firestore
+                                .collection("users")
+                                .doc(currentUserId)
+                                .collection("friends")
+                                .doc(messageId)
+                                .set({
+                                  friendId: messageId,
+                                  status: "accept",
+                                  requestGetter: false,
+                                  name: name,
+                                  gender: gender,
+                                  image: messageImg,
+                                });
+                              setGetRequest("pending");
+                              setRequest("accept");
 
-                          Alert.alert(
-                            "Vous avez accepté, attendez que l'autre personne accepte."
-                          );
-                        } else {
-                          Alert.alert(
-                            "Vous avez accepté, attendez que l'autre personne accepte."
-                          );
-                        }
-                      }}>
-                      <WP>Continuer</WP>
-                    </TouchableOpacity>
+                              Alert.alert(
+                                "Vous avez accepté, attendez que l'autre personne accepte."
+                              );
+                            } else {
+                              Alert.alert(
+                                "Vous avez accepté, attendez que l'autre personne accepte."
+                              );
+                            }
+                          }}>
+                          <WP style={{ color: Colors.darkPink, fontSize: 18 }}>Ajouter le contact</WP>
+                        </TouchableOpacity>
+                      </View>
                   </View>
-                </View>
-              ) : (
-                <View />
-              )}
-            </View>
+                ) : (
+                  <View />
+                )}
+              </View>
+            }
           </View>
         </KeyboardAvoidingView>
       ) : (
@@ -585,7 +753,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
                 setChecker(false);
                 setCheck(check + 1);
               }}>
-              <Text style={styles.textStyle}>Refus</Text>
+              <Text style={styles.textStyle}>Refuser</Text>
             </Pressable>
           </View>
         </View>
@@ -651,6 +819,7 @@ const styles = StyleSheet.create({
   ChatUserName: {
     fontFamily: "FredokaOne-Regular",
     fontSize: 25,
+    color: "white"
   },
   bottombtn: {
     justifyContent: "space-evenly",
@@ -660,10 +829,11 @@ const styles = StyleSheet.create({
   },
   btn: {
     height: 40,
-    width: 150,
-    paddingVertical: 10,
+    width: "80%",
+    paddingVertical: 5,
     paddingHorizontal: 10,
-    backgroundColor: Colors.darkPink,
+    backgroundColor: "white",
+    
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,

@@ -81,7 +81,7 @@ const FlowA = ({ ...props }) => {
                     alignItems: "center",
                   }}>
                   <TextInputMask
-                    placeholder="Date de naissance 27/06/1992"
+                    placeholder="Date de naissance"
                     placeholderTextColor="black"
                     style={styles.input}
                     refInput={(ref) => (this.myDateText = ref)}
@@ -116,6 +116,11 @@ const FlowA = ({ ...props }) => {
 
                       if (firstNameError) {
                         setFirstName({ ...FirstName, error: firstNameError });
+                      }
+
+                      if(DOB.length != 10){
+                        alert('Votre date de naissance n\'est pas valide')
+                        return false;
                       }
 
                       if (!firstNameError)

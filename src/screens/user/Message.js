@@ -143,14 +143,20 @@ const Message = ({ ...props }) => {
       colors={ ["#000", "#DD488C"] }
       style={styles.linearGradient}>
       <SafeAreaView>
-        <View style={styles.Logo}>
+        <View style={{ 
+          marginTop: 10,
+          marginBottom: 30
+         }}>
+          <TopBar />
+        </View>
+        {/* <View style={styles.Logo}>
           <Image
             style={{ height: 100, width: 130 }}
             resizeMode="contain"
             source={require("./../../assets/images/logo-bubble.png")}
           />
-        </View>
-        <ScrollView>
+        </View> */}
+        <ScrollView style={{  }}>
           <View
             style={{
               alignItems: "center",
@@ -161,6 +167,7 @@ const Message = ({ ...props }) => {
           <View style={styles.searchIcon}>
             <TextInput
               placeholder="Rechercher"
+              placeholderTextColor="black"
               onChangeText={(e) => handleSearchBar(e)}
               value={defaultSearchValue}
               style={styles.inputField}
@@ -234,7 +241,7 @@ const Message = ({ ...props }) => {
               )} */}
 
 
-                {accepted.length == 0 && <Text style={{textAlign:"center"}}>Aucune conversation</Text>}
+                {accepted.length == 0 && <Text style={{textAlign:"center", color: "white", marginTop: 20}}>Aucune conversation</Text>}
 
                 {renderAccepted && (
                   <FlatList
@@ -510,7 +517,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginHorizontal: "3%",
     height: 50,
-    marginVertical: 10,
+    marginBottom: 10,
   },
   inputField: {
     width: "90%",

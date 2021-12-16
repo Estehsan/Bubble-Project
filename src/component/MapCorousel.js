@@ -20,12 +20,14 @@ const MapCorousel = ({
   onPress,
   isSelected,
   title,
-  key,
+  id,
   location,
   place,
   code,
   img,
+  link,
   latlng,
+  schedules,
   UsersListPlace,
 }) => {
   const width = useWindowDimensions().width;
@@ -53,13 +55,15 @@ const MapCorousel = ({
 
         if(dis < .250){
           navigation.navigate("UsersListPlace", {
-            id: key,
+            id: id,
             title: title,
             place: place,
             location: location,
             code: code,
             img: img,
+            link: link,
             latlng: latlng,
+            schedules: schedules,
           })
         }
         else {
@@ -137,7 +141,7 @@ const styles = StyleSheet.create({
     height: "100%",
     width: 110,
     resizeMode: "cover",
-    borderBottomStartRadius: 50,
-    borderTopStartRadius: 50,
+    // borderBottomStartRadius: 50,
+    // borderTopStartRadius: 50,
   },
 });

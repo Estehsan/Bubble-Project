@@ -22,6 +22,7 @@ const ListContainer = ({
               style={{
                 height: 100,
                 width: 110,
+                borderRadius: 5,
                 ...Colors.customShadow,
               }}
               source={{ uri: img }}

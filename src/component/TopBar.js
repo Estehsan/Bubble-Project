@@ -23,13 +23,16 @@ export default TopBar;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    flexDirection: "row-reverse",
-    display: "flex",
-    height: 100,
-    justifyContent: "space-evenly",
-    alignItems: "center",
-    width: "100%",
+    // flex: 1,
+    // flexDirection: "row-reverse",
+    // display: "flex",
+    // height: 100,
+    // // justifyContent: "space-evenly",
+    // alignItems: "center",
+    // width: "100%",
+  },
+  center: {
+    alignSelf: "center"
   },
   main: {
     alignItems: "center",

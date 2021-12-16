@@ -235,7 +235,30 @@ const UserChatInfo = ({
           <TouchableOpacity onPress={() => renderTeamModal()}>
             <Text style={[{ color: "white" }]}>{mutualInterest()}</Text>
           </TouchableOpacity>
+          
+          <View style={{ 
+            backgroundColor: Colors.darkPink,
+            width: 8,
+            height: 8,
+            position: "absolute",
+            top: 30,
+            left: 12,
+            zIndex: 99,
+           }}></View>
+
+          <View style={{ 
+            backgroundColor: Colors.darkPink,
+            width: 5,
+            height: 5,
+            position: "absolute",
+            top: 40, 
+            left: 18,
+            zIndex: 99,
+            borderRadius: 5
+           }}></View>
+
         </View>
+        
       )}
       <View style={styles.main}>
         <View style={styles.lContainer}>
@@ -352,8 +375,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     position: "absolute",
-    left: 20,
-    top: 2,
+    left: 10,
+    top: 0,
+    borderWidth: 1,
+    borderColor: "white"
   },
   modalText: {
     margin: 15,

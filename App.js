@@ -11,15 +11,29 @@ import Purchases from "react-native-purchases";
 import AuthNavi from "./src/navigation/AuthNavi";
 import { auth, firestore } from "./src/db/firebase";
 import { FA5Style } from "react-native-vector-icons/FontAwesome5";
+import Colors from "./src/assets/colors/Colors";
 
 const App = () => {
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(false);
+  const navigationRef = React.useRef(null);
+  const [noTabBar, setNoTabBar] = useState(false);
 
   useEffect(async () => {
     Purchases.setDebugLogsEnabled(true);
     Purchases.setup("zifxuZYCNFKPfOvPmTfCtFWrhgUhxezw");
     SplashScreen.hide();
+
+    const state = navigationRef.current?.getRootState();
+    const unsubscribe = navigationRef.current?.addListener('state', (e) => {
+      
+      if(navigationRef.current?.getCurrentRoute().name == "ChatUser"){
+        setNoTabBar(true)
+      }
+      else{
+        setNoTabBar(false)
+      }
+    });
 
     console.log('-------> 0.1')
 
@@ -66,17 +80,22 @@ const App = () => {
   }, [user]);
 
   return (
-    <Provider store={store}>
-      <NavigationContainer>
-        {loading ? (
-          <ActivityIndicator size="large" />
-        ) : user ? (
-          <Tabs />
-        ) : (
-          <AuthNavi />
-        )}
-        {LogBox.ignoreAllLogs()}
-      </NavigationContainer>
+    <Provider store={store} >
+      <View style={{ 
+        flex: 1,
+        marginBottom: noTabBar ? -200 : 0
+       }}>
+        <NavigationContainer  ref={navigationRef}>
+          {loading ? (
+            <ActivityIndicator size="large" />
+          ) : user ? (
+            <Tabs />
+          ) : (
+            <AuthNavi />
+          )}
+          {LogBox.ignoreAllLogs()}
+        </NavigationContainer>
+      </View>
     </Provider>
   );
 };
