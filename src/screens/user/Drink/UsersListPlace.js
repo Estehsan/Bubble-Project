@@ -159,8 +159,8 @@ const UsersListPlace = ({ route, ...props }) => {
                 props.navigation.navigate("PlacesDetails", {
                   id: id,
                   title: title,
-                  place: place,
-                  location: location,
+                  place: location,
+                  location: place,
                   code: schedules,
                   img: img,
                   link: link,
@@ -186,8 +186,8 @@ const UsersListPlace = ({ route, ...props }) => {
               <ListContainer
                 id={id}
                 title={title}
-                place={location}
-                location={place}
+                place={place}
+                location={location}
                 code={code}
                 img={img}
                 schedules={schedules}

@@ -466,6 +466,8 @@ PODS:
     - React-Core
     - React-RCTImage
     - TOCropViewController
+  - RNInAppBrowser (3.6.3):
+    - React-Core
   - RNPermissions (3.1.0):
     - React-Core
   - RNPurchases (4.3.1):
@@ -582,6 +584,7 @@ DEPENDENCIES:
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
+  - RNInAppBrowser (from `../node_modules/react-native-inappbrowser-reborn`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNPurchases (from `../node_modules/react-native-purchases`)
   - RNQrGenerator (from `../node_modules/rn-qr-generator`)
@@ -717,6 +720,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-gesture-handler"
   RNImageCropPicker:
     :path: "../node_modules/react-native-image-crop-picker"
+  RNInAppBrowser:
+    :path: "../node_modules/react-native-inappbrowser-reborn"
   RNPermissions:
     :path: "../node_modules/react-native-permissions"
   RNPurchases:
@@ -809,6 +814,7 @@ SPEC CHECKSUMS:
   RNFBMessaging: 05fab1f37684b76582667cd2e8b50c2c5361ae8e
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNImageCropPicker: 35a3ceb837446fa11547704709bb22b5fac6d584
+  RNInAppBrowser: 3ff3a3b8f458aaf25aaee879d057352862edf357
   RNPermissions: 4b54095940aea8c03fa3e6c92d4ac3647b31ed4e
   RNPurchases: ef07f897760dd7639c36281a05e1ddbf30abc9f5
   RNQrGenerator: 86fb623932ed29627c6a95b8dc94af5e93d8abe1
