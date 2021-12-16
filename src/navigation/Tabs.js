@@ -34,8 +34,6 @@ import PlacesDetails from "../screens/user/Drink/PlacesDetails";
 import Scan from "../screens/extra/Scan";
 import { auth } from "../db/firebase";
 
-import  TabBar  from "./TabBar";
-import  CustomTabBarComponent  from "./CustomTabBarComponent";
 import Colors from "../assets/colors/Colors";
 
 const Tab = createBottomTabNavigator();
