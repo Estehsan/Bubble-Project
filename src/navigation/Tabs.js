@@ -120,7 +120,7 @@ function Tabs() {
         name="Message"
         component={Message}
         options={{
-          tabBarBadge: 3,
+        tabBarBadge: 3,
           tabBarIcon: ({ color }) => (
             <Ionicons
               style={Platform.OS == "ios" ? styles.position : styles.position2}
@@ -138,13 +138,15 @@ function Tabs() {
           tabBarIcon: ({ color }) => {
             let button;
             if (color != "black") {
-              button = <Image resizeMode={"contain"} source={require('../assets/images/marker.png')} style={[Platform.OS == "ios" ? styles.position : styles.position2], {
-                width: 25
-              }} />;
+              button = (<View style={{display: "flex",alignItems:"center",justifyContent:"center"}}><Image resizeMode={"contain"} source={require('../assets/images/marker.png')} style={[Platform.OS == "ios" ? styles.position : styles.position2], {
+                width: 25,
+                marginTop: 30
+              }} /></View>);
             } else {
-              button = <Image resizeMode={"contain"} source={require('../assets/images/marker-black.png')} style={[Platform.OS == "ios" ? styles.position : styles.position2], {
-                width: 25
-              }} />;
+              button = <View style={{flex: 1,display: "flex",alignItems:"center",justifyContent:"center"}}><Image resizeMode={"contain"} source={require('../assets/images/marker-black.png')} style={[Platform.OS == "ios" ? styles.position : styles.position2], {
+                width: 25,
+                marginTop: 30
+              }} /></View>;
             }
             return button;
           },
