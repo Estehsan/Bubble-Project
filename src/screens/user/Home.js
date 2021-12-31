@@ -35,6 +35,8 @@ import MapStyleDay from "./MapStyles/MapStyleDay";
 
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { distanceGPS } from "./../../helpers/distanceGPS";
+import { distanceGPSReverse } from "./../../helpers/distanceGPSReverse";
 
 
 // import haversine from "haversine";
@@ -248,9 +250,29 @@ function useInterval(callback, delay) {
 
     var subscribeLoc;
 
-    if (isMounted)
+    if (isMounted) {
+      let distance = 1;
+      if (kilo === true) {
+        distance = 10;
+      }
+
+      const maxLat = distanceGPSReverse(userMarker.latlng.latitude, userMarker.latlng.longitude, 0, distance).lat;
+      const minLat = distanceGPSReverse(userMarker.latlng.latitude, userMarker.latlng.longitude, 180, distance).lat;
+      const maxLng = distanceGPSReverse(userMarker.latlng.latitude, userMarker.latlng.longitude, 90, distance).lng;
+      const minLng = distanceGPSReverse(userMarker.latlng.latitude, userMarker.latlng.longitude, 270, distance).lng;
+
+      console.log("Minimum latitude: ", minLat)
+      console.log("Maximum latitude: ", maxLat)
+      console.log("Minimum longitude: ", minLng)
+      console.log("Maximum longitude: ", maxLng)
+
       subscribeLoc = await firestore
         .collection("location")
+        .where('latitude', '<=', maxLat)
+        .where('latitude', '>=', minLat)
+        // .where('longitude', '<=', maxLng)
+        // .where('longitude', '>=', minLng)
+        .limit(50)
         .onSnapshot(async (querySnapshot) => {
           var docs = await querySnapshot.docs.map((doc) => ({
             key: doc.id,
@@ -334,6 +356,7 @@ function useInterval(callback, delay) {
             }
           }
         });
+    }
 
     return () => {
       subscribeLoc();
@@ -384,6 +407,7 @@ function useInterval(callback, delay) {
               style={styles.mapContainer}
               provider={PROVIDER_GOOGLE}
               initialRegion={userMarker.latlng}
+              showsUserLocation={true}
               ref={mapRef}
               >
               {marker.length > 0 ? (
@@ -401,12 +425,12 @@ function useInterval(callback, delay) {
               ) : (
                 <View />
               )}
-              {<Marker
+              {/* {<Marker
                 zIndex={9999}
                 coordinate={userMarker.latlng}
                 image={require('../../assets/images/marker_user.png')}
               ></Marker>
-              }
+              } */}
             </MapView>
           </View>
         )}
