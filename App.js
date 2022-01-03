@@ -24,6 +24,12 @@ const App = () => {
     Purchases.setup("zifxuZYCNFKPfOvPmTfCtFWrhgUhxezw");
     SplashScreen.hide();
 
+    // Notification ////////////////////////
+
+    
+
+    // End Notification ////////////////////
+
     const state = navigationRef.current?.getRootState();
     const unsubscribe = navigationRef.current?.addListener('state', (e) => {
       
