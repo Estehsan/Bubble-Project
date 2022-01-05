@@ -112,18 +112,18 @@ const UserChatInfo = ({
       let externalUserId = notificationId; // You will supply the external user id to the OneSignal SDK
 
       // Setting External User Id with Callback Available in SDK Version 3.9.3+
-      OneSignal.setExternalUserId(externalUserId, (results) => {
-        // The results will contain push and email success statuses
-        console.log("Results of setting external user id");
-        console.log(results);
+      // OneSignal.setExternalUserId(externalUserId, (results) => {
+      //   // The results will contain push and email success statuses
+      //   console.log("Results of setting external user id");
+      //   console.log(results);
 
-        // Push can be expected in almost every situation with a success status, but
-        // as a pre-caution its good to verify it exists
-        if (results.push && results.push.success) {
-          console.log("Results of setting external user id push status:");
-          console.log(results.push.success);
-        }
-      });
+      //   // Push can be expected in almost every situation with a success status, but
+      //   // as a pre-caution its good to verify it exists
+      //   if (results.push && results.push.success) {
+      //     console.log("Results of setting external user id push status:");
+      //     console.log(results.push.success);
+      //   }
+      // });
 
       const notification = {
         contents: {
@@ -244,6 +244,7 @@ const UserChatInfo = ({
             top: 30,
             left: 12,
             zIndex: 99,
+            borderRadius: 8
            }}></View>
 
           <View style={{ 
@@ -314,6 +315,7 @@ const UserChatInfo = ({
               dateOfBirth: dateOfBirth,
               messageImg: userImg,
               candy: candy,
+              age: age
             });
           }}>
             <Text style={styles.messageButton}>Bubbler</Text>

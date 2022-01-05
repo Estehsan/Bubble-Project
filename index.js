@@ -9,7 +9,7 @@ import OneSignal from "react-native-onesignal"
 
 
 OneSignal.setLogLevel(6, 0);
-OneSignal.setAppId("ec5258e7-8335-4404-9082-636eab53a79e");
+OneSignal.setAppId("de488c72-675d-4cc9-ab12-ba372009259f");
 //END OneSignal Init Code
 
 //Prompt for push on iOS

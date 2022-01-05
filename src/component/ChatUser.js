@@ -64,6 +64,8 @@ const ChatUser = ({ navigation, route, ...props }) => {
   const [quitmodal, setQuitModal] = useState(false);
   const [notification, setNotification] = useState([]);
 
+  const [notificationModel, setNotificationModel] = useState(false)
+
   const scrollViewRef = useRef();
   const width = useWindowDimensions().width;
   useLayoutEffect(() => {
@@ -117,7 +119,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
             fontSize: 16,
             marginRight: 5,
             marginTop: 5
-           }}>26 ans</Text>
+           }}>{age}</Text>
           {gender == "female" && (
             <Icon
               style={styles.position}
@@ -301,7 +303,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
   let addNotification = async () => {
 
     if (candy > 0) {
-      await firestore.collection("users").doc(currentUserData.id).update({
+      await firestore.collection("users").doc(currentUserId).update({
         // notification: firebase.firestore.FieldValue.arrayUnion(id),
         candy: firebase.firestore.FieldValue.increment(-1)
       })
@@ -309,22 +311,23 @@ const ChatUser = ({ navigation, route, ...props }) => {
       let externalUserId = notificationId; // You will supply the external user id to the OneSignal SDK
 
       // Setting External User Id with Callback Available in SDK Version 3.9.3+
-      OneSignal.setExternalUserId(externalUserId, (results) => {
-        // The results will contain push and email success statuses
-        console.log("Results of setting external user id");
-        console.log(results);
+      // OneSignal.setExternalUserId(externalUserId, (results) => {
+      //   // The results will contain push and email success statuses
+      //   console.log("Results of setting external user id");
+      //   console.log(results);
 
-        // Push can be expected in almost every situation with a success status, but
-        // as a pre-caution its good to verify it exists
-        if (results.push && results.push.success) {
-          console.log("Results of setting external user id push status:");
-          console.log(results.push.success);
-        }
-      });
+      //   // Push can be expected in almost every situation with a success status, but
+      //   // as a pre-caution its good to verify it exists
+      //   if (results.push && results.push.success) {
+      //     console.log("Results of setting external user id push status:");
+      //     console.log(results.push.success);
+      //   }
+      // });
+
 
       const notification = {
         contents: {
-          en: `${currentUserData.userName} vous propose de discuter`,
+          en: `${currentName} vous propose de discuter`,
         },
         include_player_ids: [externalUserId],
       };
@@ -399,6 +402,7 @@ const ChatUser = ({ navigation, route, ...props }) => {
       //   });
 
       const { userId } = await OneSignal.getDeviceState();
+      
 
       if (notification && notification.includes(messageId)) {
         if (
@@ -409,18 +413,18 @@ const ChatUser = ({ navigation, route, ...props }) => {
           let externalUserId = notificationId; // You will supply the external user id to the OneSignal SDK
 
           // Setting External User Id with Callback Available in SDK Version 3.9.3+
-          OneSignal.setExternalUserId(externalUserId, (results) => {
-            // The results will contain push and email success statuses
-            console.log("Results of setting external user id");
-            console.log(results);
+          // OneSignal.setExternalUserId(externalUserId, (results) => {
+          //   // The results will contain push and email success statuses
+          //   console.log("Results of setting external user id");
+          //   console.log(results);
 
-            // Push can be expected in almost every situation with a success status, but
-            // as a pre-caution its good to verify it exists
-            if (results.push && results.push.success) {
-              console.log("Results of setting external user id push status:");
-              console.log(results.push.success);
-            }
-          });
+          //   // Push can be expected in almost every situation with a success status, but
+          //   // as a pre-caution its good to verify it exists
+          //   if (results.push && results.push.success) {
+          //     console.log("Results of setting external user id push status:");
+          //     console.log(results.push.success);
+          //   }
+          // });
 
           const notification = {
             contents: {

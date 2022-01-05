@@ -122,7 +122,7 @@ function useInterval(callback, delay) {
               longitude: long,
             })
             .then(() => {
-              console.log("HOME: Document successfully written !");
+              //console.log("HOME: Document successfully written !");
             })
             .catch((error) => {
               console.error("Error writing document: ", error);
@@ -208,7 +208,7 @@ function useInterval(callback, delay) {
                     longitude: initialRegion.latlng.longitude,
                   })
                   .then(() => {
-                    console.log("HOME: Document successfully written !");
+                    //console.log("HOME: Document successfully written !");
                   })
                   .catch((error) => {
                     console.error("Error writing document: ", error);
@@ -261,10 +261,10 @@ function useInterval(callback, delay) {
       const maxLng = distanceGPSReverse(userMarker.latlng.latitude, userMarker.latlng.longitude, 90, distance).lng;
       const minLng = distanceGPSReverse(userMarker.latlng.latitude, userMarker.latlng.longitude, 270, distance).lng;
 
-      console.log("Minimum latitude: ", minLat)
-      console.log("Maximum latitude: ", maxLat)
-      console.log("Minimum longitude: ", minLng)
-      console.log("Maximum longitude: ", maxLng)
+      // console.log("Minimum latitude: ", minLat)
+      // console.log("Maximum latitude: ", maxLat)
+      // console.log("Minimum longitude: ", minLng)
+      // console.log("Maximum longitude: ", maxLng)
 
       subscribeLoc = await firestore
         .collection("location")
@@ -417,7 +417,7 @@ function useInterval(callback, delay) {
                     key={key}
                     coordinate={marker.latlng}
                     //title={marker.title}
-                    description={marker.description}
+                    //description={marker.description}
                     onPress={() => setSelectedPlaceId(marker.key)}>
                     <Image source={require('../../assets/images/marker.png')} style={{height: 50, width:35 }} />
                   </Marker>

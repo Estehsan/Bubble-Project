@@ -35,9 +35,13 @@ import Scan from "../screens/extra/Scan";
 import { auth } from "../db/firebase";
 
 import Colors from "../assets/colors/Colors";
+import { ifIphoneX } from 'react-native-iphone-x-helper'
+
 
 const Tab = createBottomTabNavigator();
 let currentRouteName = "";
+
+console.log("PLATFORM VERSION: ", Platform)
 
 function Tabs() {
   getTabBarVisibility = (route) => {
@@ -75,12 +79,12 @@ function Tabs() {
         showLabel: false,
         
         style: {
-          
+          height: 60,
           position: "absolute",
           marginHorizontal: "10%",
           marginBottom: "10%",
           // bottom: 30,
-          elevation: 0,
+          //elevation: 0,
           alignContent: "center",
           
 
@@ -120,7 +124,7 @@ function Tabs() {
         name="Message"
         component={Message}
         options={{
-        tabBarBadge: 3,
+        //tabBarBadge: false,
           tabBarIcon: ({ color }) => (
             <Ionicons
               style={Platform.OS == "ios" ? styles.position : styles.position2}
@@ -138,14 +142,22 @@ function Tabs() {
           tabBarIcon: ({ color }) => {
             let button;
             if (color != "black") {
-              button = (<View style={{display: "flex",alignItems:"center",justifyContent:"center"}}><Image resizeMode={"contain"} source={require('../assets/images/marker.png')} style={[Platform.OS == "ios" ? styles.position : styles.position2], {
+              button = (<View style={{height: 60, display: "flex",alignItems:"center",justifyContent:"center"}}><Image resizeMode={"contain"} source={require('../assets/images/marker.png')} style={[Platform.OS == "ios" ? styles.position : styles.position2], {
                 width: 25,
-                marginTop: 30
+                ...ifIphoneX({
+                  marginTop: 30,
+                }, {
+                  marginTop: 0
+                })
               }} /></View>);
             } else {
-              button = <View style={{flex: 1,display: "flex",alignItems:"center",justifyContent:"center"}}><Image resizeMode={"contain"} source={require('../assets/images/marker-black.png')} style={[Platform.OS == "ios" ? styles.position : styles.position2], {
+              button = <View style={{height: 60, flex: 1,display: "flex",alignItems:"center",justifyContent:"center"}}><Image resizeMode={"contain"} source={require('../assets/images/marker-black.png')} style={[Platform.OS == "ios" ? styles.position : styles.position2], {
                 width: 25,
-                marginTop: 30
+                ...ifIphoneX({
+                  marginTop: 30,
+                }, {
+                  marginTop: 0
+                })
               }} /></View>;
             }
             return button;
@@ -254,10 +266,14 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.25,
     shadowRadius: 3.6,
-    elevation: 5,
+    //levation: 5,
   },
   position: {
-    top: "40%",
+    ...ifIphoneX({
+      top: "40%",
+    }, {
+      top: "0%",
+    })
   },
   position2: {
     top: "0%",

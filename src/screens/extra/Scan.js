@@ -98,10 +98,19 @@ const Scan = ({ navigation }) => {
               this.scanner = node;
             }}
             onRead={this.onSuccess}
-            topContent={<H2>Scanner le QRCode de l'établissement</H2>}
+            topContent={<H2 style={{
+              color: "white",
+              fontFamily: "FredokaOne-Regular",
+              fontSize: 15,
+              lineHeight: 15,
+              paddingVertical: 3,
+              textTransform: 'uppercase',
+
+              flexWrap: "wrap",
+            }}>Scanner le QRCode de l'établissement</H2>}
             bottomContent={
               <TouchableOpacity
-                style={{marginBottom: 50}}
+                style={{marginBottom: 130}}
                 onPress={() => navigation.goBack()}>
                 <Text style={styles.buttonText}>Retour</Text>
               </TouchableOpacity>
@@ -127,4 +136,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  buttonText: {
+    color: "white",
+    fontFamily: "FredokaOne-Regular",
+    fontSize: 12,
+    lineHeight: 12,
+    paddingVertical: 3,
+    textTransform: 'uppercase',
+
+    flexWrap: "wrap",
+  }
 });

@@ -271,13 +271,13 @@ const Profile = (props) => {
                 <View
                   style={{
                     backgroundColor: "silver",
-                    height: 70,
-                    width: 70,
-                    borderRadius: 70,
+                    height: 110,
+                    width: 110,
+                    borderRadius: 110,
                     marginVertical: 10,
                   }}>
                   <Image
-                    style={{ height: 70, width: 70, borderRadius: 70 }}
+                    style={{ height: 110, width: 110, borderRadius: 110 }}
                     resizeMode="cover"
                     source={{ uri: image }}
                   />
@@ -285,9 +285,9 @@ const Profile = (props) => {
               ) : (
                 <Image
                   style={{
-                    height: 70,
-                    width: 70,
-                    borderRadius: 70,
+                    height: 110,
+                    width: 110,
+                    borderRadius: 110,
                     marginVertical: 10,
                   }}
                   resizeMode="cover"
@@ -302,7 +302,7 @@ const Profile = (props) => {
             <Text style={{
                 color:"#fff",
                 textAlign:"center",
-                marginTop: 10,
+                marginTop: 0,
                 fontWeight: "bold",
                 fontSize: 28,
                 fontFamily: "FredokaOne-Regular",

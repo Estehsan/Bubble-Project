@@ -3,6 +3,7 @@ import ImagePicker from "react-native-image-crop-picker";
 import CheckBox from "@react-native-community/checkbox";
 import { StackActions } from '@react-navigation/native';
 import { CommonActions } from '@react-navigation/native';
+import { webBrowser } from '../../helpers/webBrowser'
 
 
 
@@ -288,14 +289,22 @@ const MonProfil = ({ route, ...props }) => {
                   onValueChange={(newValue) => setToggleCheckBox(newValue)}
                 />
               </View>
-              <View>
-                <Text style={{ color: "white", marginHorizontal: 10 }}>
-                  Accepter les termes et conditions
+              <View style={{
+                flexDirection: "row"
+              }}>
+                <Text style={{ color: "white", marginLeft: 10 }}>
+                  Accepter les 
                 </Text>
+                <Text style={{ color: "white", marginRight: 10 }} onPress={() => {
+                  webBrowser("https://bubbleapp.fr/conditions-generales.html")
+                }}> conditions générales</Text>
               </View>
             </View>
 
             <TouchableOpacity
+            style={{
+              display: isLoading ? "none" : "flex"
+            }}
               onPress={async () => {
                 const emailError = emailValidator(email.value);
 
@@ -304,6 +313,11 @@ const MonProfil = ({ route, ...props }) => {
                 if (emailError || passwordError) {
                   setEmail({ ...email, error: emailError });
                   setPassword({ ...password, error: passwordError });
+                }
+
+                if(toggleCheckBox == false){
+                  Alert.alert('Veuillez lire et accepter les conditions générales')
+                  return false;
                 }
 
                 if (

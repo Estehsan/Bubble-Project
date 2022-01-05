@@ -18,6 +18,7 @@ import SearchBar from "./../../component/SearchBar";
 import { auth, firestore } from "../../db/firebase";
 import { getDistance } from "geolib";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
+import { distanceGPSReverse } from "./../../helpers/distanceGPSReverse";
 
 // linear-gradient(0deg, #FFFFFF 0%, #FFC1DD 78.9%)
 
@@ -105,57 +106,60 @@ const Drink = ({ navigation }) => {
   useEffect(async () => {
     let isMounted = true;
 
-    if (isMounted)
-      firestore.collection("location").onSnapshot(async (querySnapshot) => {
-        let docs = querySnapshot.docs.map((doc) => ({
-          key: doc.id,
-          title: doc.data().title,
-          address: doc.data().address,
-          description: doc.data().description,
-          schedules: doc.data().schedules,
-          img: doc.data().photo,
-          link: doc.data().link,
-          latlng: {
-            longitude: doc.data().longitude,
-            latitude: doc.data().latitude,
-          },
-        }));
+    if (isMounted){
+      const distance = 30;
 
-        // setLocationData(docs);
-        // console.log(docs);
+      const maxLat = distanceGPSReverse(userMarker.latlng.latitude, userMarker.latlng.longitude, 0, distance).lat;
+      const minLat = distanceGPSReverse(userMarker.latlng.latitude, userMarker.latlng.longitude, 180, distance).lat;
+      const maxLng = distanceGPSReverse(userMarker.latlng.latitude, userMarker.latlng.longitude, 90, distance).lng;
+      const minLng = distanceGPSReverse(userMarker.latlng.latitude, userMarker.latlng.longitude, 270, distance).lng;
 
-        // if (userMarker.length) {
+        firestore.collection("location")
+        .where('latitude', '<=', maxLat)
+        .where('latitude', '>=', minLat)
+        // .where('longitude', '<=', maxLng)
+        // .where('longitude', '>=', minLng)
+        .limit(1000)
+        .onSnapshot(async (querySnapshot) => {
+          let docs = querySnapshot.docs.map((doc) => ({
+            key: doc.id,
+            title: doc.data().title,
+            address: doc.data().address,
+            description: doc.data().description,
+            schedules: doc.data().schedules,
+            img: doc.data().photo,
+            link: doc.data().link,
+            latlng: {
+              longitude: doc.data().longitude,
+              latitude: doc.data().latitude,
+            },
+          }));
 
-        var data = [];
-        if (kilo === true) {
+          // setLocationData(docs);
+          // console.log(docs);
+
+          // if (userMarker.length) {
+
+          var data = [];
           for (var i = 0; i < docs.length; i++) {
             var dis = await getDistance(userMarker.latlng, docs[i].latlng);
 
             dis = dis / 1000;
 
-            // console.log(dis)
-            if (dis < 10) {
+            console.log(dis)
+            if (dis < 30) {
               data.push(docs[i]);
             }
           }
-        } else {
-          for (var i = 0; i < docs.length; i++) {
-            var dis = await getDistance(userMarker.latlng, docs[i].latlng);
 
-            dis = dis / 1000;
+          setLocationData(data);
+          setLocations(data)
+          
+          // }
+        });
+    }
 
-            // console.log(dis)
-            if (dis < 1) {
-              data.push(docs[i]);
-            }
-          }
-        }
-
-        setLocationData(data);
-        setLocations(data)
-        
-        // }
-      });
+    
 
     return () => {
       isMounted = false;
@@ -202,6 +206,8 @@ const Drink = ({ navigation }) => {
       colors={ ["#000", "#DD488C"] }
       style={styles.linearGradient}>
 
+    <SafeAreaView style={styles.main}>
+
       <View style={{
         marginTop: 10,
         
@@ -212,7 +218,6 @@ const Drink = ({ navigation }) => {
       <ScrollView style={{ 
         marginTop: 20
        }}>
-        <SafeAreaView>
           
           {/* <View style={{ marginTop: 30 }}>
             <LocationTab
@@ -305,8 +310,9 @@ const Drink = ({ navigation }) => {
               />
             )}
           </View>
-        </SafeAreaView>
-      </ScrollView>
+        
+        </ScrollView>
+      </SafeAreaView>
     </LinearGradient>
   );
 };
