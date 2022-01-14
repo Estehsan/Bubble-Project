@@ -143,7 +143,7 @@ function Tabs() {
             let button;
             if (color != "black") {
               button = (<View style={{height: 60, display: "flex",alignItems:"center",justifyContent:"center"}}><Image resizeMode={"contain"} source={require('../assets/images/marker.png')} style={[Platform.OS == "ios" ? styles.position : styles.position2], {
-                width: 25,
+                width: 35,
                 ...ifIphoneX({
                   marginTop: 30,
                 }, {
@@ -152,7 +152,7 @@ function Tabs() {
               }} /></View>);
             } else {
               button = <View style={{height: 60, flex: 1,display: "flex",alignItems:"center",justifyContent:"center"}}><Image resizeMode={"contain"} source={require('../assets/images/marker-black.png')} style={[Platform.OS == "ios" ? styles.position : styles.position2], {
-                width: 25,
+                width: 35,
                 ...ifIphoneX({
                   marginTop: 30,
                 }, {

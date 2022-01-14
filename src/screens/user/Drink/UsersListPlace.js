@@ -93,8 +93,9 @@ const UsersListPlace = ({ route, ...props }) => {
               await setCurrentUserData(docs);
               // console.log(docs)
             });
-
-          firestore.collection("users").onSnapshot((querySnapshot) => {
+            const MS_PER_MINUTE = 60000;
+            let limit = new Date(Date.now() - 10 * MS_PER_MINUTE);
+          firestore.collection("users").where('last_activity', '>', limit).onSnapshot((querySnapshot) => {
             let docs = querySnapshot.docs
               .filter((datam) => datam.id != user.uid)
               .map((doc) => ({

@@ -63,59 +63,34 @@ const MonProfil = ({ route, ...props }) => {
   };
 
   const K_OPTIONS = [
-    {
-      item: "Juventus",
-      id: "JUVE",
-    },
-    {
-      item: "Real Madrid",
-      id: "RM",
-    },
-    {
-      item: "Barcelona",
-      id: "BR",
-    },
-    {
-      item: "PSG",
-      id: "PSG",
-    },
-    {
-      item: "FC Bayern Munich",
-      id: "FBM",
-    },
-    {
-      item: "Manchester United FC",
-      id: "MUN",
-    },
-    {
-      item: "Manchester City FC",
-      id: "MCI",
-    },
-    {
-      item: "Everton FC",
-      id: "EVE",
-    },
-    {
-      item: "Tottenham Hotspur FC",
-      id: "TOT",
-    },
-    {
-      item: "Chelsea FC",
-      id: "CHE",
-    },
-    {
-      item: "Liverpool FC",
-      id: "LIV",
-    },
-    {
-      item: "Arsenal FC",
-      id: "ARS",
-    },
-
-    {
-      item: "Leicester City FC",
-      id: "LEI",
-    },
+    {item: "Road Trip",id: "road-trip",},
+    {item: "Cinéma",id: "cinema",},
+    {item: "Rat de bibliothèque",id: "bibliotheque",},
+    {item: "Sport",id: "sport",},
+    {item: "Musique",id: "musique",},
+    {item: "Sapologie",id: "sapologie",},
+    {item: "Chill and Netflix",id: "chill",},
+    {item: "Art",id: "art",},
+    {item: "Fast Food",id: "fastfood",},
+    {item: "Geek",id: "geek",},
+    {item: "Êtes à découvert",id: "decouvert",},
+    {item: "Pass vaccinal",id: "pass-vaccinal",},
+    {item: "Raclette party",id: "raclette",},
+    {item: "Fleur bleue",id: "fleurbleue",},
+    {item: "Twerk",id: "twerk",},
+    {item: "Bague au doigt",id: "bague-au-doigt",},
+    {item: "Zéro déchet",id: "zero-dechet",},
+    {item: "Healthy",id: "healthy",},
+    {item: "Harry Potter",id: "harry-potter",},
+    {item: "Sushis",id: "sushis",},
+    {item: "Disney",id: "disney",},
+    {item: "Fée du logis",id: "fee-du-logis",},
+    {item: "Miaou",id: "miaou",},
+    {item: "Jamais à l'heure",id: "jamais-a-lheure",},
+    {item: "Sans alcool",id: "sans-alcool",},
+    {item: "Family First",id: "family-first",},
+    {item: "Good Vibes only",id: "good-vibes",},
+    {item: "Coffee time",id: "coffee",},
   ];
 
   const TakeImgFromGallery = () => {
@@ -369,6 +344,7 @@ const MonProfil = ({ route, ...props }) => {
                     console.log(err);
                   }
                 } else {
+                  setLoading(false);
                   Alert.alert("Veuillez remplir tous les champs");
                 }
               }}>

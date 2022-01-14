@@ -120,6 +120,7 @@ function useInterval(callback, delay) {
             .update({
               latitude: lat,
               longitude: long,
+              last_activity: new Date()
             })
             .then(() => {
               //console.log("HOME: Document successfully written !");
@@ -206,6 +207,7 @@ function useInterval(callback, delay) {
                   .update({
                     latitude: initialRegion.latlng.latitude,
                     longitude: initialRegion.latlng.longitude,
+                    last_activity: new Date()
                   })
                   .then(() => {
                     //console.log("HOME: Document successfully written !");
@@ -216,6 +218,12 @@ function useInterval(callback, delay) {
               } else {
                 if (docs) {
                   setUserMarker(docs);
+                  firestore
+                    .collection("users")
+                    .doc(uid)
+                    .update({
+                      last_activity: new Date()
+                    })
                 }
               }
             },

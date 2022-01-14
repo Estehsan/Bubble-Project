@@ -97,7 +97,7 @@ const signUp = (userDetails) => {
                   longitude: 0,
                   candy: 0,
                   notificationId: userId,
-                  created_at: firebase.database.ServerValue.TIMESTAMP,
+                  created_at: new Date(),
                 };
                 let user = firestore
                   .collection("users")

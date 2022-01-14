@@ -179,7 +179,7 @@ const UserChatInfo = ({
               data={commonTeams}
               renderItem={({ item }) => <Text>{commonTeams}</Text>}
             /> */}
-            <Text style={[styles.modalText, {}]}>{commonTeams}</Text>
+            <Text style={[styles.modalText, {}]}>{commonTeams.join('\n\n')}</Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => {
@@ -232,32 +232,52 @@ const UserChatInfo = ({
       </Modal>
       {selectedTeams && mutualInterest() > 0 && (
         <View style={styles.Badge}>
-          <TouchableOpacity onPress={() => renderTeamModal()}>
-            <Text style={[{ color: "white" }]}>{mutualInterest()}</Text>
+          <TouchableOpacity onPress={() => renderTeamModal()}  style={[{ 
+            //backgroundColor: "red",
+            width: 30,
+            height: 30,
+            zIndex: 9,
+            alignItems: "center",
+            justifyContent: "center",
+            top: 0,
+            left: 0
+          }]}>
+            
+              <Text style={[{
+                color: "white",
+                width: 30,
+                height: 30,
+                //backgroundColor: "red",
+                alignItems: "center",
+                justifyContent: "center",
+                alignSelf: "center",
+                textAlign: "center",
+                paddingTop: 5
+                }]}>{mutualInterest()}</Text>
+            
+            <View style={{ 
+              backgroundColor: Colors.darkPink,
+              width: 8,
+              height: 8,
+              position: "absolute",
+              top: 32,
+              left: 12,
+              zIndex: 99,
+              borderRadius: 8
+            }}></View>
+
+            <View style={{ 
+              backgroundColor: Colors.darkPink,
+              width: 5,
+              height: 5,
+              position: "absolute",
+              top: 42, 
+              left: 18,
+              zIndex: 99,
+              borderRadius: 5
+            }}></View>
+
           </TouchableOpacity>
-          
-          <View style={{ 
-            backgroundColor: Colors.darkPink,
-            width: 8,
-            height: 8,
-            position: "absolute",
-            top: 30,
-            left: 12,
-            zIndex: 99,
-            borderRadius: 8
-           }}></View>
-
-          <View style={{ 
-            backgroundColor: Colors.darkPink,
-            width: 5,
-            height: 5,
-            position: "absolute",
-            top: 40, 
-            left: 18,
-            zIndex: 99,
-            borderRadius: 5
-           }}></View>
-
         </View>
         
       )}

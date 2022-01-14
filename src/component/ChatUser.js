@@ -245,6 +245,10 @@ const ChatUser = ({ navigation, route, ...props }) => {
         {
           if(docs){
             console.log("Messages length: ", docs.length)
+
+            if(docs.length >= 10){
+              setShowContinueButton(true)
+            }
             setHasRecievedMessage(true)
             setMessageCounter(0)
             setChats(docs)
@@ -377,6 +381,8 @@ const ChatUser = ({ navigation, route, ...props }) => {
         id: currentUserId,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       });
+
+      console.log(messageCounter)
 
       if(messageCounter == 5){
         setShowContinueButton(true)
