@@ -98,42 +98,21 @@ function useInterval(callback, delay) {
 }
 
   useInterval(() => {
-    let location = Geolocation.getCurrentPosition(
-      async (position) => {
-        var lat = parseFloat(position.coords.latitude);
-        var long = parseFloat(position.coords.longitude);
-
-        if(lat && long) {
-          
-          setUserMarker({
-            latlng: {
-              latitude: lat,
-              longitude: long,
-              latitudeDelta: 0,
-              longitudeDelta: 0
-            }
-          })  
-
-          firestore
-            .collection("users")
-            .doc(currentUser.uid)
-            .update({
-              latitude: lat,
-              longitude: long,
-              last_activity: new Date()
-            })
-            .then(() => {
-              //console.log("HOME: Document successfully written !");
-            })
-            .catch((error) => {
-              console.error("Error writing document: ", error);
-            });
-        }
-      },
-      (error) => console.log(error),
-      { enableHighAccuracy: false, timeout: 5000 }
-    );
+    firestore
+      .collection("users")
+      .doc(currentUser.uid)
+      .update({
+        last_activity: new Date()
+      })
+      .then(() => {
+        //console.log("HOME: Document successfully written !");
+      })
+      .catch((error) => {
+        console.error("Error writing document: ", error);
+      });
   }, 10000);
+
+  
   
   // END Geolocation interval
 
@@ -210,6 +189,49 @@ function useInterval(callback, delay) {
                     last_activity: new Date()
                   })
                   .then(() => {
+
+                    const _watchId = Geolocation.watchPosition(
+                      (position) => {
+                        var lat = parseFloat(position.coords.latitude);
+                        var long = parseFloat(position.coords.longitude);
+                  
+                        if(lat && long && currentUser) {
+                          
+                          setUserMarker({
+                            latlng: {
+                              latitude: lat,
+                              longitude: long,
+                              latitudeDelta: 0,
+                              longitudeDelta: 0
+                            }
+                          })  
+                  
+                          firestore
+                            .collection("users")
+                            .doc(currentUser.uid)
+                            .update({
+                              latitude: lat,
+                              longitude: long,
+                              last_activity: new Date()
+                            })
+                            .then(() => {
+                              //console.log("HOME: Document successfully written !");
+                            })
+                            .catch((error) => {
+                              console.error("Error writing document: ", error);
+                            });
+                        }
+                      },
+                      error => {
+                        console.log(error);
+                      },
+                      {
+                        enableHighAccuracy: true,
+                        distanceFilter: 0,
+                        interval: 5000,
+                        fastestInterval: 2000,
+                      },
+                    );
                     //console.log("HOME: Document successfully written !");
                   })
                   .catch((error) => {
@@ -427,7 +449,7 @@ function useInterval(callback, delay) {
                     //title={marker.title}
                     //description={marker.description}
                     onPress={() => setSelectedPlaceId(marker.key)}>
-                    <Image source={require('../../assets/images/marker.png')} style={{height: 50, width:35 }} />
+                    <Image source={require('../../assets/images/marker2.png')} style={{height: 50, width:35 }} />
                   </Marker>
                 ))
               ) : (

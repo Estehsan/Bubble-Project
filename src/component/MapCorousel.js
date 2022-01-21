@@ -36,39 +36,40 @@ const MapCorousel = ({
   var userLat;
   var userLng;
 
-  let loc = Geolocation.getCurrentPosition(
-    async (position) => {
-      userLat = parseFloat(position.coords.latitude);
-      userLng = parseFloat(position.coords.longitude);
-    },
-    (error) => console.log(error),
-    { enableHighAccuracy: false, timeout: 5000 }
-  );
-
   return (
     <TouchableOpacity
       style={([styles.Container], { width: width - 60 })}
       onPress={() => {
-        var dis = getDistance({lat: userLat, lng: userLng}, latlng);
 
-        dis = dis / 1000;
+        Geolocation.getCurrentPosition(
+          async (position) => {
+            userLat = parseFloat(position.coords.latitude);
+            userLng = parseFloat(position.coords.longitude);
 
-        if(dis < .250){
-          navigation.navigate("UsersListPlace", {
-            id: id,
-            title: title,
-            place: place,
-            location: location,
-            code: code,
-            img: img,
-            link: link,
-            latlng: latlng,
-            schedules: schedules,
-          })
-        }
-        else {
-          alert('Vous ne pouvez pas entrer dans cette bulle. Vous êtes trop loin.')
-        }
+            var dis = getDistance({lat: userLat, lng: userLng}, latlng);
+
+            console.log("DISTANCE: ", dis)
+
+            if(dis < 250){
+              navigation.navigate("UsersListPlace", {
+                id: id,
+                title: title,
+                place: place,
+                location: location,
+                code: code,
+                img: img,
+                link: link,
+                latlng: latlng,
+                schedules: schedules,
+              })
+            }
+            else {
+              alert('Vous ne pouvez pas entrer dans cette bulle. Vous êtes trop loin.')
+            }
+          },
+          (error) => console.log(error),
+          { enableHighAccuracy: false, timeout: 5000 }
+        )
 
         
       }

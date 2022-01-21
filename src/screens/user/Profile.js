@@ -260,10 +260,13 @@ const Profile = (props) => {
           </View>
 
         <ScrollView style={{
-          
+          //backgroundColor: "red",
+          marginBottom: 110
         }}>
           
-          <View style={styles.Profile}>
+          <View style={[styles.Profile, {
+            
+          }]}>
             {/* <Text style={styles.h1}>MON PROFIL</Text> */}
 
             <TouchableOpacity onPress={TakeImgFromGallery} style={styles.Image}>
