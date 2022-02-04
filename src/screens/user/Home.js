@@ -97,20 +97,20 @@ function useInterval(callback, delay) {
   }, [delay]);
 }
 
-  useInterval(() => {
-    firestore
-      .collection("users")
-      .doc(currentUser.uid)
-      .update({
-        last_activity: new Date()
-      })
-      .then(() => {
-        //console.log("HOME: Document successfully written !");
-      })
-      .catch((error) => {
-        console.error("Error writing document: ", error);
-      });
-  }, 10000);
+  // useInterval(() => {
+  //   firestore
+  //     .collection("users")
+  //     .doc(currentUser.uid)
+  //     .update({
+  //       last_activity: new Date()
+  //     })
+  //     .then(() => {
+  //       //console.log("HOME: Document successfully written !");
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error writing document: ", error);
+  //     });
+  // }, 10000);
 
   
   
@@ -400,7 +400,8 @@ function useInterval(callback, delay) {
 
   return (
     <LinearGradient
-      colors={ ["#000", "#DD488C"] }
+      // colors={ ["#FFC1DD", "#FFE5F1"] }
+      colors={ ["#FFC1DD", "#FFE5F1"] }
       style={styles.linearGradient}>
       <SafeAreaView style={styles.main}>
         <View style={{ 
@@ -462,6 +463,9 @@ function useInterval(callback, delay) {
               ></Marker>
               } */}
             </MapView>
+
+            
+            
           </View>
         )}
         {loading ? (
@@ -475,6 +479,33 @@ function useInterval(callback, delay) {
           />
         ) : marker.length > 0 ? (
           <View style={styles.Corousel}>
+
+            <View style={{ 
+              position: "absolute",
+              top: 0,
+              right: 0,
+              zIndex: 9
+             }}>
+              <View style={[{ 
+                width: 7,
+                height: 7,
+                top: -25,
+                right: 34,
+              }, styles.bubblemap]}></View>
+              <View style={[{ 
+                width: 13,
+                height: 13,
+                top: -14,
+                right: 39,
+              }, styles.bubblemap]}></View>
+              <View style={[{ 
+                width: 17,
+                height: 17,
+                top: 0,
+                right: 50,
+              }, styles.bubblemap]}></View>
+            </View>
+
             <FlatList
               ref={flatlist}
               data={marker}
@@ -516,6 +547,23 @@ function useInterval(callback, delay) {
 export default Home;
 
 const styles = StyleSheet.create({
+
+  bubblemap: {
+    position: "absolute",
+    zIndex: 10,
+    borderRadius:100,
+    backgroundColor: "white",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 5,
+  },
+  
   main: {
     flex: 1,
     display: "flex",
@@ -531,6 +579,8 @@ const styles = StyleSheet.create({
   map: {
     ...StyleSheet.absoluteFillObject,
     height: 400,
+    position: "relative",
+    overflow: "visible"
   },
   bubble: {
     flex: 1,

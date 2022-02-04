@@ -138,7 +138,7 @@ const UsersListPlace = ({ route, ...props }) => {
   // console.log("gettinguserid =>", currentUserId);
   return (
     <LinearGradient
-      colors={ ["#000", "#DD488C"] }
+      colors={ ["#FFC1DD", "#FFE5F1"] }
       style={styles.linearGradient}>
       <SafeAreaView style={styles.Safe}>
         <ScrollView >

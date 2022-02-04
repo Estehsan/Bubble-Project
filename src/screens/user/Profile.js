@@ -273,14 +273,19 @@ const Profile = (props) => {
               {image ? (
                 <View
                   style={{
-                    backgroundColor: "silver",
+                    backgroundColor: "white",
                     height: 110,
                     width: 110,
-                    borderRadius: 110,
-                    marginVertical: 10,
+                    borderRadius: 0,
+                    marginVertical: 5,
+                    borderColor: "white",
+                    borderBottomWidth: 20,
+                    borderTopWidth: 6,
+                    borderLeftWidth: 6,
+                    borderRightWidth: 6,
                   }}>
                   <Image
-                    style={{ height: 110, width: 110, borderRadius: 110 }}
+                    style={{ height: 83, width: 98, borderRadius: 0 }}
                     resizeMode="cover"
                     source={{ uri: image }}
                   />

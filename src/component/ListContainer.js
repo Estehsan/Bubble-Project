@@ -19,17 +19,12 @@ const ListContainer = ({
         <View style={styles.lContainer}>
           {img ? (
             <Image
-              style={{
-                height: 100,
-                width: 110,
-                borderRadius: 5,
-                ...Colors.customShadow,
-              }}
+              style={styles.cover}
               source={{ uri: img }}
             />
           ) : (
             <Image
-              style={{ height: 100, width: 110, ...Colors.customShadow }}
+              style={styles.cover}
               source={require("../assets/images/description.png")}
               // source={{ uri: img }}
             />
@@ -69,10 +64,13 @@ const styles = StyleSheet.create({
   main: {
     backgroundColor: "#fff",
     width: "90%",
-    padding: 20,
+    paddingRight: 20,
     marginBottom: 20,
     height: 145,
-    borderRadius: 100,
+    borderTopRightRadius: 100,
+    borderBottomRightRadius: 100,
+    borderTopLeftRadius: 20,
+    borderBottomLeftRadius: 20,
     display: "flex",
     flexDirection: "row",
   },
@@ -87,7 +85,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   rContainer: {
+    paddingTop: 20,
+    paddingBottom: 20,
     width: "50%",
   },
-  lContainer: { paddingHorizontal: 13 },
+  lContainer: { paddingRight: 13 },
+  cover:{
+    borderTopLeftRadius: 15,
+    borderBottomLeftRadius: 15,
+    height: "100%",
+    width: 150,
+    resizeMode: "cover",
+  }
 });

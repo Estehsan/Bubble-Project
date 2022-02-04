@@ -146,7 +146,6 @@ const Drink = ({ navigation }) => {
 
             dis = dis / 1000;
 
-            console.log(dis)
             if (dis < 30) {
               data.push(docs[i]);
             }
@@ -203,7 +202,7 @@ const Drink = ({ navigation }) => {
   // console.log(locationData);
   return (
     <LinearGradient
-      colors={ ["#000", "#DD488C"] }
+      colors={ ["#FFC1DD", "#FFE5F1"] }
       style={styles.linearGradient}>
 
     <SafeAreaView style={styles.main}>
@@ -302,7 +301,7 @@ const Drink = ({ navigation }) => {
                       place={item.description}
                       location={item.address}
                       code={item.schedules}
-                      img={item.photo}
+                      img={item.img}
                       navigation={navigation}
                     />
                   </TouchableOpacity>

@@ -16,7 +16,7 @@ const PlacesDetails = ({ route }) => {
     route.params;
   return (
     <LinearGradient
-      colors={ ["#000", "#DD488C"] }
+      colors={ ["#FFC1DD", "#FFE5F1"] }
       style={styles.linearGradient}>
       <SafeAreaView>
         <View style={{ 
@@ -63,7 +63,7 @@ const PlacesDetails = ({ route }) => {
               paddingHorizontal: 20,
               marginTop: 15
              }}>
-              <P style={{fontSize: 16, color: "white",}}>
+              <P style={{fontSize: 16, color: "black",}}>
                 {place}
               </P>
             </View>
@@ -76,7 +76,7 @@ const PlacesDetails = ({ route }) => {
               marginTop: 10
              }}>
               <H2 style={{
-                color: "white",
+                color: "black",
                 fontSize: 16,
                 textAlign: "left",
                 fontFamily: "FredokaOne-Regular",
@@ -109,7 +109,7 @@ const PlacesDetails = ({ route }) => {
               marginTop: 20
              }}>
               <Text style={{ 
-                color: "white",
+                color: "black",
                 fontFamily: "FredokaOne-Regular",
                 fontSize: 16
               }}>{location}</Text>
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     fontSize: 35,
     flexWrap: "wrap",
     marginTop: 20,
-    color:"white",
+    color:"black",
     textAlign: "left",
     paddingHorizontal: 20,
   },

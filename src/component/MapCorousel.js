@@ -74,6 +74,8 @@ const MapCorousel = ({
         
       }
       }>
+
+
       <View style={styles.main}>
         <View style={styles.lContainer}>
           {img ? (
@@ -102,6 +104,7 @@ const MapCorousel = ({
 export default MapCorousel;
 
 const styles = StyleSheet.create({
+
   Container: {
     height: 10,
     alignItems: "center",

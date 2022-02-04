@@ -54,7 +54,7 @@ const Scan = ({ navigation }) => {
   };
   return (
     <LinearGradient
-      colors={ ["#000", "#DD488C"] }
+      colors={ ["#FFC1DD", "#FFE5F1"] }
       style={styles.linearGradient}>
       <SafeAreaView style={styles.main}>
         {result && (

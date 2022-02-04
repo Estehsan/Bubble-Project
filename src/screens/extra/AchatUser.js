@@ -153,7 +153,7 @@ const AchatUser = ({ ...props }) => {
 
   return (
     <LinearGradient
-      colors={ ["#000", "#DD488C"] }
+    colors={ ["#000", "#DD488C"] }
       style={styles.linearGradient}>
       <SafeAreaView style={styles.linearGradient}>
         <View style={{ width: "100%", height: 100, marginBottom: 30, marginTop: 10 }}>
